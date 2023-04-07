@@ -1,0 +1,25 @@
+{
+  "name": "ao3-toolkit",
+  "version": "1.0.0",
+  "description": "A Toolkit for interfacing with the Archive of our Own",
+  "main": "public/index.js",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucaengelhard/ao3-toolkit.git"
+  },
+  "author": "Luca Engelhard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucaengelhard/ao3-toolkit/issues"
+  },
+  "homepage": "https://github.com/lucaengelhard/ao3-toolkit#readme",
+  "dependencies": {
+    "typescript": "^5.0.3"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
