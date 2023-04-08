@@ -33,15 +33,19 @@ class Fanfiction {
     #chapters;
     #relationships;
     #characters;
+    #rating;
+    #archiveWarnings;
+    #categories;
     #tags;
     #language;
     #series;
     #collections;
     #summary;
     #preNote;
+    #endNote;
     #content;
     #adult;
-    constructor(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content, adult) {
+    constructor(title, id, author, fandom, words, chapters, relationships, characters, rating, archiveWarnings, categories, tags, language, series, collections, summary, preNote, endNote, content, adult) {
         this.#title = title;
         this.#id = id;
         this.#author = author;
@@ -50,12 +54,16 @@ class Fanfiction {
         this.#chapters = chapters;
         this.#relationships = relationships;
         this.#characters = characters;
+        this.#rating = rating;
+        this.#archiveWarnings = archiveWarnings;
+        this.#categories = categories;
         this.#tags = tags;
         this.#language = language;
         this.#series = series;
         this.#collections = collections;
         this.#summary = summary;
         this.#preNote = preNote;
+        this.#endNote = endNote;
         this.#content = content;
         this.#adult = adult;
     }
@@ -83,6 +91,15 @@ class Fanfiction {
     get characters() {
         return this.#characters;
     }
+    get rating() {
+        return this.#rating;
+    }
+    get warnings() {
+        return this.#archiveWarnings;
+    }
+    get categories() {
+        return this.#categories;
+    }
     get tags() {
         return this.#tags;
     }
@@ -101,6 +118,9 @@ class Fanfiction {
     get preNote() {
         return this.#preNote;
     }
+    get endNote() {
+        return this.#endNote;
+    }
     get content() {
         return this.#content;
     }
@@ -114,8 +134,8 @@ class historyFanfiction extends Fanfiction {
     #chapters;
     #timesVisited;
     #lastVisit;
-    constructor(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content, adult, lastVisit, timesVisited) {
-        super(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content, adult);
+    constructor(title, id, author, fandom, words, chapters, relationships, characters, rating, archiveWarnings, categories, tags, language, series, collections, summary, preNote, endNote, content, adult, lastVisit, timesVisited) {
+        super(title, id, author, fandom, words, chapters, relationships, characters, rating, archiveWarnings, categories, tags, language, series, collections, summary, preNote, endNote, content, adult);
         this.#words = words;
         this.#chapters = chapters;
         this.#lastVisit = lastVisit;
@@ -156,5 +176,5 @@ let id = "19865440";
 download(id);
 async function download(id) {
     let fic1 = await (0, functions_1.getFic)(id);
-    console.log(fic1.adult);
+    console.log(fic1.endNote);
 }

@@ -25,6 +25,21 @@ export interface Character {
   characterLink: string | undefined;
 }
 
+export interface Rating {
+  ratingName: string;
+  ratingLink: string | undefined;
+}
+
+export interface archiveWarning {
+  warningName: string;
+  warningLink: string | undefined;
+}
+
+export interface Category {
+  categoryName: string;
+  categoryLink: string | undefined;
+}
+
 export interface Tag {
   tagName: string;
   tagLink: string | undefined;
@@ -80,12 +95,16 @@ export class Fanfiction {
   #chapters;
   #relationships;
   #characters;
+  #rating;
+  #archiveWarnings;
+  #categories;
   #tags;
   #language;
   #series;
   #collections;
   #summary;
   #preNote;
+  #endNote;
   #content;
   #adult;
   constructor(
@@ -97,12 +116,16 @@ export class Fanfiction {
     chapters: ChaptersWritten,
     relationships: Array<Relationship>,
     characters: Array<Character>,
+    rating: Rating,
+    archiveWarnings: Array<archiveWarning>,
+    categories: Array<Category>,
     tags: Array<Tag>,
     language: string,
     series: Series,
     collections: Array<Collection>,
     summary: string,
     preNote: string,
+    endNote: string,
     content: Array<Chapter>,
     adult: boolean
   ) {
@@ -114,12 +137,16 @@ export class Fanfiction {
     this.#chapters = chapters;
     this.#relationships = relationships;
     this.#characters = characters;
+    this.#rating = rating;
+    this.#archiveWarnings = archiveWarnings;
+    this.#categories = categories;
     this.#tags = tags;
     this.#language = language;
     this.#series = series;
     this.#collections = collections;
     this.#summary = summary;
     this.#preNote = preNote;
+    this.#endNote = endNote;
     this.#content = content;
     this.#adult = adult;
   }
@@ -156,6 +183,18 @@ export class Fanfiction {
     return this.#characters;
   }
 
+  get rating() {
+    return this.#rating;
+  }
+
+  get warnings() {
+    return this.#archiveWarnings;
+  }
+
+  get categories() {
+    return this.#categories;
+  }
+
   get tags() {
     return this.#tags;
   }
@@ -178,6 +217,10 @@ export class Fanfiction {
 
   get preNote() {
     return this.#preNote;
+  }
+
+  get endNote() {
+    return this.#endNote;
   }
 
   get content() {
@@ -208,12 +251,16 @@ export class historyFanfiction extends Fanfiction {
     chapters: ChaptersWritten,
     relationships: Array<Relationship>,
     characters: Array<Character>,
+    rating: Rating,
+    archiveWarnings: Array<archiveWarning>,
+    categories: Array<Category>,
     tags: Array<Tag>,
     language: string,
     series: Series,
     collections: Array<Collection>,
     summary: string,
     preNote: string,
+    endNote: string,
     content: Array<Chapter>,
     adult: boolean,
     lastVisit: string,
@@ -228,12 +275,16 @@ export class historyFanfiction extends Fanfiction {
       chapters,
       relationships,
       characters,
+      rating,
+      archiveWarnings,
+      categories,
       tags,
       language,
       series,
       collections,
       summary,
       preNote,
+      endNote,
       content,
       adult
     );
@@ -283,5 +334,5 @@ download(id);
 
 async function download(id: string) {
   let fic1 = await getFic(id);
-  console.log(fic1.adult);
+  console.log(fic1.endNote);
 }

@@ -45,7 +45,7 @@ async function getFic(id) {
     let adultContent = $("p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')");
     let adult = false;
     if (adultContent.length <= 1) {
-        console.log("adult content");
+        //console.log("adult content");
         adult = true;
         let proceedLink = "https://archiveofourown.org" +
             adultContent.next().find("a").first().attr("href");
@@ -57,7 +57,7 @@ async function getFic(id) {
         });
     }
     //Download
-    console.log("download Link: " + download);
+    //console.log("download Link: " + download);
     let completeDownload = await (0, axios_1.default)({
         method: "get",
         url: download,
@@ -110,6 +110,32 @@ async function getFic(id) {
             characterLink: $(el).attr("href"),
         };
     });
+    let rating = {
+        ratingName: $(".tags dt:contains('Rating:')").next().text(),
+        ratingLink: $(".tags dt:contains('Rating:')").next().find("a").attr("href"),
+    };
+    let archiveWarnings = $(".tags dt:contains('Archive Warning:')")
+        .next()
+        .filter("dd")
+        .find("a")
+        .get()
+        .map((el) => {
+        return {
+            warningName: $(el).text(),
+            warningLink: $(el).attr("href"),
+        };
+    });
+    let categories = $(".tags dt:contains('Category:')")
+        .next()
+        .filter("dd")
+        .find("a")
+        .get()
+        .map((el) => {
+        return {
+            categoryName: $(el).text(),
+            categoryLink: $(el).attr("href"),
+        };
+    });
     let tags = $(".tags dt:contains('Additional Tags:')")
         .next()
         .filter("dd")
@@ -146,6 +172,7 @@ async function getFic(id) {
     });
     let summary = $("#preface p:contains('Summary')").next().text();
     let preNote = $("#preface p:contains('Notes')").next().text();
+    let endNote = $("#endnotes").find("blockquote").text();
     let chapters = $("#chapters")
         .find(".meta")
         .get()
@@ -164,6 +191,6 @@ async function getFic(id) {
         };
     });
     //Create Fic Object
-    return new _1.historyFanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, tags, language, series, collections, summary, preNote, chapters, adult, "", 3);
+    return new _1.historyFanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, rating, archiveWarnings, categories, tags, language, series, collections, summary, preNote, endNote, chapters, adult, "", 3);
 }
 exports.getFic = getFic;

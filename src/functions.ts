@@ -108,6 +108,35 @@ export async function getFic(id: string) {
       };
     });
 
+  let rating = {
+    ratingName: $(".tags dt:contains('Rating:')").next().text(),
+    ratingLink: $(".tags dt:contains('Rating:')").next().find("a").attr("href"),
+  };
+
+  let archiveWarnings = $(".tags dt:contains('Archive Warning:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        warningName: $(el).text(),
+        warningLink: $(el).attr("href"),
+      };
+    });
+
+  let categories = $(".tags dt:contains('Category:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        categoryName: $(el).text(),
+        categoryLink: $(el).attr("href"),
+      };
+    });
+
   let tags = $(".tags dt:contains('Additional Tags:')")
     .next()
     .filter("dd")
@@ -154,6 +183,8 @@ export async function getFic(id: string) {
 
   let preNote = $("#preface p:contains('Notes')").next().text();
 
+  let endNote = $("#endnotes").find("blockquote").text();
+
   let chapters = $("#chapters")
     .find(".meta")
     .get()
@@ -183,12 +214,16 @@ export async function getFic(id: string) {
     chapterNumber,
     relationships,
     characters,
+    rating,
+    archiveWarnings,
+    categories,
     tags,
     language,
     series,
     collections,
     summary,
     preNote,
+    endNote,
     chapters,
     adult,
     "",
