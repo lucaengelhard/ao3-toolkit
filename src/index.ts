@@ -87,7 +87,7 @@ export class Fanfiction {
   #summary;
   #preNote;
   #content;
-
+  #adult;
   constructor(
     title: string,
     id: number,
@@ -103,7 +103,8 @@ export class Fanfiction {
     collections: Array<Collection>,
     summary: string,
     preNote: string,
-    content: Array<Chapter>
+    content: Array<Chapter>,
+    adult: boolean
   ) {
     this.#title = title;
     this.#id = id;
@@ -120,6 +121,7 @@ export class Fanfiction {
     this.#summary = summary;
     this.#preNote = preNote;
     this.#content = content;
+    this.#adult = adult;
   }
 
   get title() {
@@ -182,6 +184,10 @@ export class Fanfiction {
     return this.#content;
   }
 
+  get adult() {
+    return this.#adult;
+  }
+
   /*
   get ratio() {
     return this.#chapters / this.#timesVisited;
@@ -189,6 +195,7 @@ export class Fanfiction {
 }
 
 export class historyFanfiction extends Fanfiction {
+  #words;
   #chapters;
   #timesVisited;
   #lastVisit;
@@ -208,6 +215,7 @@ export class historyFanfiction extends Fanfiction {
     summary: string,
     preNote: string,
     content: Array<Chapter>,
+    adult: boolean,
     lastVisit: string,
     timesVisited: number
   ) {
@@ -226,8 +234,10 @@ export class historyFanfiction extends Fanfiction {
       collections,
       summary,
       preNote,
-      content
+      content,
+      adult
     );
+    this.#words = words;
     this.#chapters = chapters;
     this.#lastVisit = lastVisit;
     this.#timesVisited = timesVisited;
@@ -243,6 +253,10 @@ export class historyFanfiction extends Fanfiction {
 
   get ratio() {
     return this.#timesVisited / this.#chapters.chaptersWritten;
+  }
+
+  get wordsRead() {
+    return this.#words * (this.#timesVisited / this.#chapters.chaptersWritten);
   }
 }
 
@@ -269,5 +283,5 @@ download(id);
 
 async function download(id: string) {
   let fic1 = await getFic(id);
-  console.log(fic1.ratio);
+  console.log(fic1.adult);
 }

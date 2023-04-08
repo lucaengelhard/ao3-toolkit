@@ -23,9 +23,10 @@ export async function getFic(id: string) {
   let adultContent = $(
     "p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')"
   );
-
+  let adult = false;
   if (adultContent.length <= 1) {
-    console.log("adult content");
+    //console.log("adult content");
+    adult = true;
     let proceedLink =
       "https://archiveofourown.org" +
       adultContent.next().find("a").first().attr("href");
@@ -40,7 +41,7 @@ export async function getFic(id: string) {
   }
 
   //Download
-  console.log("download Link: " + download);
+  //console.log("download Link: " + download);
 
   let completeDownload = await axios({
     method: "get",
@@ -189,6 +190,7 @@ export async function getFic(id: string) {
     summary,
     preNote,
     chapters,
+    adult,
     "",
     3
   );

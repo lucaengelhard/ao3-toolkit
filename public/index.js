@@ -40,7 +40,8 @@ class Fanfiction {
     #summary;
     #preNote;
     #content;
-    constructor(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content) {
+    #adult;
+    constructor(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content, adult) {
         this.#title = title;
         this.#id = id;
         this.#author = author;
@@ -56,6 +57,7 @@ class Fanfiction {
         this.#summary = summary;
         this.#preNote = preNote;
         this.#content = content;
+        this.#adult = adult;
     }
     get title() {
         return this.#title;
@@ -102,14 +104,19 @@ class Fanfiction {
     get content() {
         return this.#content;
     }
+    get adult() {
+        return this.#adult;
+    }
 }
 exports.Fanfiction = Fanfiction;
 class historyFanfiction extends Fanfiction {
+    #words;
     #chapters;
     #timesVisited;
     #lastVisit;
-    constructor(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content, lastVisit, timesVisited) {
-        super(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content);
+    constructor(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content, adult, lastVisit, timesVisited) {
+        super(title, id, author, fandom, words, chapters, relationships, characters, tags, language, series, collections, summary, preNote, content, adult);
+        this.#words = words;
         this.#chapters = chapters;
         this.#lastVisit = lastVisit;
         this.#timesVisited = timesVisited;
@@ -121,8 +128,10 @@ class historyFanfiction extends Fanfiction {
         return this.#lastVisit;
     }
     get ratio() {
-        console.log(this.#timesVisited / this.#chapters.chaptersWritten);
-        return;
+        return this.#timesVisited / this.#chapters.chaptersWritten;
+    }
+    get wordsRead() {
+        return this.#words * (this.#timesVisited / this.#chapters.chaptersWritten);
     }
 }
 exports.historyFanfiction = historyFanfiction;
@@ -147,5 +156,5 @@ let id = "19865440";
 download(id);
 async function download(id) {
     let fic1 = await (0, functions_1.getFic)(id);
-    console.log(fic1.ratio);
+    console.log(fic1.adult);
 }

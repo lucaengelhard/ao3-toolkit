@@ -43,8 +43,10 @@ async function getFic(id) {
         $(".download").find("li:contains('HTML')").find("a").attr("href");
     //Check for adult Content
     let adultContent = $("p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')");
+    let adult = false;
     if (adultContent.length <= 1) {
         console.log("adult content");
+        adult = true;
         let proceedLink = "https://archiveofourown.org" +
             adultContent.next().find("a").first().attr("href");
         let browser = await puppeteer_1.default.launch();
@@ -162,6 +164,6 @@ async function getFic(id) {
         };
     });
     //Create Fic Object
-    return new _1.historyFanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, tags, language, series, collections, summary, preNote, chapters, "", 3);
+    return new _1.historyFanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, tags, language, series, collections, summary, preNote, chapters, adult, "", 3);
 }
 exports.getFic = getFic;
