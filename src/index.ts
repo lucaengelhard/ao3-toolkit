@@ -48,6 +48,8 @@ export interface Chapter {
   chapterContent: string | null;
 }
 
+/*
+
 export interface Fic {
   title: string;
   id: number;
@@ -67,7 +69,7 @@ export interface Fic {
   timesVisited: number;
   lastVisit: string;
   ratio: number;
-}
+}*/
 
 export class Fanfiction {
   #title;
@@ -85,8 +87,7 @@ export class Fanfiction {
   #summary;
   #preNote;
   #content;
-  #timesVisited;
-  #lastVisit;
+
   constructor(
     title: string,
     id: number,
@@ -102,9 +103,7 @@ export class Fanfiction {
     collections: Array<Collection>,
     summary: string,
     preNote: string,
-    content: Array<Chapter>,
-    timesVisited: number,
-    lastVisit: string
+    content: Array<Chapter>
   ) {
     this.#title = title;
     this.#id = id;
@@ -121,8 +120,6 @@ export class Fanfiction {
     this.#summary = summary;
     this.#preNote = preNote;
     this.#content = content;
-    this.#timesVisited = timesVisited;
-    this.#lastVisit = lastVisit;
   }
 
   get title() {
@@ -165,12 +162,20 @@ export class Fanfiction {
     return this.#language;
   }
 
-  get timesVisited() {
-    return this.#timesVisited;
+  get series() {
+    return this.#series;
   }
 
-  get lastVisit() {
-    return this.#lastVisit;
+  get collections() {
+    return this.#collections;
+  }
+
+  get summary() {
+    return this.#summary;
+  }
+
+  get preNote() {
+    return this.#preNote;
   }
 
   get content() {
@@ -181,6 +186,64 @@ export class Fanfiction {
   get ratio() {
     return this.#chapters / this.#timesVisited;
   }*/
+}
+
+export class historyFanfiction extends Fanfiction {
+  #chapters;
+  #timesVisited;
+  #lastVisit;
+  constructor(
+    title: string,
+    id: number,
+    author: Author,
+    fandom: Array<Fandom>,
+    words: number,
+    chapters: ChaptersWritten,
+    relationships: Array<Relationship>,
+    characters: Array<Character>,
+    tags: Array<Tag>,
+    language: string,
+    series: Series,
+    collections: Array<Collection>,
+    summary: string,
+    preNote: string,
+    content: Array<Chapter>,
+    lastVisit: string,
+    timesVisited: number
+  ) {
+    super(
+      title,
+      id,
+      author,
+      fandom,
+      words,
+      chapters,
+      relationships,
+      characters,
+      tags,
+      language,
+      series,
+      collections,
+      summary,
+      preNote,
+      content
+    );
+    this.#chapters = chapters;
+    this.#lastVisit = lastVisit;
+    this.#timesVisited = timesVisited;
+  }
+
+  get timesVisited() {
+    return this.#timesVisited;
+  }
+
+  get lastVisit() {
+    return this.#lastVisit;
+  }
+
+  get ratio() {
+    return this.#timesVisited / this.#chapters.chaptersWritten;
+  }
 }
 
 /*const fic1: Fic = new Fanfiction(
@@ -198,13 +261,13 @@ export class Fanfiction {
   "",
   ""
 );
+
+*/
 let id: string = "19865440";
 
 download(id);
 
 async function download(id: string) {
   let fic1 = await getFic(id);
-  console.log(fic1.title);
+  console.log(fic1.ratio);
 }
-
-*/

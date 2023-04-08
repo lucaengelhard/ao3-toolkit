@@ -1,4 +1,4 @@
-import { Fanfiction } from ".";
+import { Fanfiction, historyFanfiction } from ".";
 
 import axios from "axios";
 import * as cheerio from "cheerio";
@@ -173,7 +173,7 @@ export async function getFic(id: string) {
     });
 
   //Create Fic Object
-  return new Fanfiction(
+  return new historyFanfiction(
     title,
     parseInt(id),
     author,
@@ -189,7 +189,7 @@ export async function getFic(id: string) {
     summary,
     preNote,
     chapters,
-    NaN,
-    ""
+    "",
+    3
   );
 }

@@ -162,6 +162,6 @@ async function getFic(id) {
         };
     });
     //Create Fic Object
-    return new _1.Fanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, tags, language, chapters, NaN, "");
+    return new _1.historyFanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, tags, language, series, collections, summary, preNote, chapters, "", 3);
 }
 exports.getFic = getFic;
