@@ -205,7 +205,7 @@ export async function getFic(id: string) {
     });
 
   //Create Fic Object
-  return new historyFanfiction(
+  return new Fanfiction(
     title,
     parseInt(id),
     author,
@@ -225,8 +225,6 @@ export async function getFic(id: string) {
     preNote,
     endNote,
     chapters,
-    adult,
-    "",
-    3
+    adult
   );
 }
