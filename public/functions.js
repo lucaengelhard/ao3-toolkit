@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFic = void 0;
-const _1 = require(".");
+const ao3_toolkit_1 = require("./ao3-toolkit");
 const axios_1 = __importDefault(require("axios"));
 const cheerio = __importStar(require("cheerio"));
 const puppeteer_1 = __importDefault(require("puppeteer"));
@@ -191,6 +191,6 @@ async function getFic(id) {
         };
     });
     //Create Fic Object
-    return new _1.historyFanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, rating, archiveWarnings, categories, tags, language, series, collections, summary, preNote, endNote, chapters, adult, "", 3);
+    return new ao3_toolkit_1.Fanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, rating, archiveWarnings, categories, tags, language, series, collections, summary, preNote, endNote, chapters, adult);
 }
 exports.getFic = getFic;

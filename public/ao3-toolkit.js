@@ -2,28 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.historyFanfiction = exports.Fanfiction = void 0;
 const functions_1 = require("./functions");
-/*
-
-export interface Fic {
-  title: string;
-  id: number;
-  author: Author;
-  fandom: Array<Fandom>;
-  words: number;
-  chapters: ChaptersWritten;
-  relationships: Array<Relationship>;
-  characters: Array<Character>;
-  tags: Array<Tag>;
-  language: string;
-  series: Series;
-  collections: Array<Collection>;
-  summary: string;
-  preNote: string;
-  content: Array<Chapter>;
-  timesVisited: number;
-  lastVisit: string;
-  ratio: number;
-}*/
 class Fanfiction {
     #title;
     #id;
@@ -155,23 +133,6 @@ class historyFanfiction extends Fanfiction {
     }
 }
 exports.historyFanfiction = historyFanfiction;
-/*const fic1: Fic = new Fanfiction(
-  "titel",
-  1234,
-  "Luca",
-  ["Harry Potter", "other Fandom"],
-  13000,
-  10,
-  ["Hermione Ganger/Harry Potter"],
-  ["Harry Potter", "Hermione Granger"],
-  ["test"],
-  "English",
-  3,
-  "",
-  ""
-);
-
-*/
 let id = "19865440";
 download(id);
 async function download(id) {
