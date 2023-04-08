@@ -11,7 +11,7 @@ interface Fic {
       language: string;
       timesVisited: number;
       lastVisit: string;
-      content: any;
+      content: string;
       ratio: number;
 }
 
@@ -42,7 +42,7 @@ class Fanfiction {
       language: string,
       timesVisited: number,
       lastVisit: string,
-      content: any
+      content: string
     ) {
       this.#title = title;
       this.#id = id;
