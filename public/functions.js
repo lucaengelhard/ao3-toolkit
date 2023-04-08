@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFic = void 0;
+exports.getHistory = exports.getFic = void 0;
 const ao3_toolkit_1 = require("./ao3-toolkit");
 const axios_1 = __importDefault(require("axios"));
 const cheerio = __importStar(require("cheerio"));
@@ -194,3 +194,18 @@ async function getFic(id) {
     return new ao3_toolkit_1.Fanfiction(title, parseInt(id), author, fandom, words, chapterNumber, relationships, characters, rating, archiveWarnings, categories, tags, language, series, collections, summary, preNote, endNote, chapters, adult);
 }
 exports.getFic = getFic;
+async function getHistory(logindata) {
+    let baseURL = "https://archiveofourown.org/";
+    let historyURL = "https://archiveofourown.org/users/" + logindata.username + "/readings";
+    let browser = await puppeteer_1.default.launch({ headless: false });
+    let page = await browser.newPage();
+    await page.goto(historyURL);
+    await page.click("#login-dropdown");
+    await page.click("#user_remember_me_small");
+    await page.waitForSelector("#user_session_login_small");
+    await page.type("#user_session_login_small", logindata.username);
+    await page.waitForSelector("#user_session_password_small");
+    await page.type("#user_session_password_small", logindata.password);
+    await page.keyboard.press("Enter");
+}
+exports.getHistory = getHistory;

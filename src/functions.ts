@@ -1,4 +1,4 @@
-import { Fanfiction, historyFanfiction } from "./ao3-toolkit";
+import { Fanfiction, historyFanfiction, Login } from "./ao3-toolkit";
 
 import axios from "axios";
 import * as cheerio from "cheerio";
@@ -227,4 +227,24 @@ export async function getFic(id: string) {
     chapters,
     adult
   );
+}
+
+export async function getHistory(logindata: Login) {
+  let historyURL: string =
+    "https://archiveofourown.org/users/" + logindata.username + "/readings";
+
+  let browser = await puppeteer.launch({ headless: false });
+  let page = await browser.newPage();
+  await page.goto(historyURL);
+
+  await page.click("#login-dropdown");
+  await page.click("#user_remember_me_small");
+
+  await page.waitForSelector("#user_session_login_small");
+  await page.type("#user_session_login_small", logindata.username);
+
+  await page.waitForSelector("#user_session_password_small");
+  await page.type("#user_session_password_small", logindata.password);
+
+  await page.keyboard.press("Enter");
 }

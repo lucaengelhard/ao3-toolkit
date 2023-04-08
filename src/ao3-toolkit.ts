@@ -1,4 +1,4 @@
-import { getFic } from "./functions";
+import { getFic, getHistory } from "./functions";
 
 export interface Author {
   authorName: string;
@@ -288,6 +288,19 @@ export class historyFanfiction extends Fanfiction {
   }
 }
 
+export interface Login {
+  username: string;
+  password: string;
+}
+
+let logindata: Login = {
+  username: "",
+  password: "",
+};
+
+getHistory(logindata);
+
+/*
 let id: string = "19865440";
 
 download(id);
@@ -296,3 +309,4 @@ async function download(id: string) {
   let fic1 = await getFic(id);
   console.log(fic1.endNote);
 }
+*/

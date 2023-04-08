@@ -133,9 +133,18 @@ class historyFanfiction extends Fanfiction {
     }
 }
 exports.historyFanfiction = historyFanfiction;
-let id = "19865440";
+let logindata = {
+    username: "capmaennle",
+    password: "Computer2208.",
+};
+(0, functions_1.getHistory)(logindata);
+/*
+let id: string = "19865440";
+
 download(id);
-async function download(id) {
-    let fic1 = await (0, functions_1.getFic)(id);
-    console.log(fic1.endNote);
+
+async function download(id: string) {
+  let fic1 = await getFic(id);
+  console.log(fic1.endNote);
 }
+*/
