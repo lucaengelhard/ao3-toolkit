@@ -298,7 +298,12 @@ let logindata: Login = {
   password: "",
 };
 
-getHistory(logindata);
+history(logindata);
+
+async function history(logindata: Login) {
+  let userhistory = await getHistory(logindata);
+  console.log(userhistory);
+}
 
 /*
 let id: string = "19865440";
