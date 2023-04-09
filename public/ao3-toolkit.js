@@ -134,10 +134,14 @@ class historyFanfiction extends Fanfiction {
 }
 exports.historyFanfiction = historyFanfiction;
 let logindata = {
-    username: "capmaennle",
-    password: "Computer2208.",
+    username: "",
+    password: "",
 };
-(0, functions_1.getHistory)(logindata);
+history(logindata);
+async function history(logindata) {
+    let userhistory = await (0, functions_1.getHistory)(logindata);
+    console.log(userhistory);
+}
 /*
 let id: string = "19865440";
 

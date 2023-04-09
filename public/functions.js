@@ -195,11 +195,15 @@ async function getFic(id) {
 }
 exports.getFic = getFic;
 async function getHistory(logindata) {
-    let baseURL = "https://archiveofourown.org/";
-    let historyURL = "https://archiveofourown.org/users/" + logindata.username + "/readings";
-    let browser = await puppeteer_1.default.launch({ headless: false });
+    let historyURLinit = "https://archiveofourown.org/users/" +
+        logindata.username +
+        "/readings?page=1";
+    let browser = await puppeteer_1.default.launch({ headless: true });
     let page = await browser.newPage();
-    await page.goto(historyURL);
+    await page.goto(historyURLinit);
+    //get number of pages
+    //open new page for each number
+    //download ids + visited data
     await page.click("#login-dropdown");
     await page.click("#user_remember_me_small");
     await page.waitForSelector("#user_session_login_small");
@@ -207,5 +211,60 @@ async function getHistory(logindata) {
     await page.waitForSelector("#user_session_password_small");
     await page.type("#user_session_password_small", logindata.password);
     await page.keyboard.press("Enter");
+    await page.waitForSelector("#footer");
+    let navLength = await page.$$eval(".pagination li", (elements) => {
+        let lastNumber;
+        if (elements[elements.length - 1].classList.contains("next")) {
+            lastNumber = parseInt(elements[elements.length - 2].innerText);
+            return lastNumber;
+        }
+        else {
+            lastNumber = parseInt(elements[elements.length - 1].innerText);
+            return lastNumber;
+        }
+    });
+    let userHistory = [];
+    for (let i = 2; i < navLength; i++) {
+        console.log("Scanning Page " + i);
+        let newPage = await browser.newPage();
+        await newPage.goto("https://archiveofourown.org/users/capmaennle/readings?page=" + i);
+        await newPage.waitForSelector("#footer");
+        let content = await newPage.content();
+        await newPage.close();
+        let $ = cheerio.load(content);
+        let works = $("li[role='article']").toArray();
+        works.forEach((currentWork) => {
+            let $ = cheerio.load(currentWork);
+            let isdeleted = false;
+            isdeleted = currentWork.attribs.class.includes("deleted");
+            if (isdeleted) {
+                return;
+            }
+            let id = parseInt(currentWork.attribs.id.replace("work_", ""));
+            let viewedText = $("h4.viewed.heading")
+                .text()
+                .replace("Last visited: ", "")
+                .trim();
+            let lastindex = viewedText.indexOf("(");
+            let lastsub = viewedText.substring(0, lastindex).trim();
+            let lastVisit = new Date(lastsub);
+            let visitedindex = viewedText.indexOf("Visited");
+            let visitedsub = viewedText.substring(visitedindex);
+            let timesVisited;
+            if (visitedsub.includes("once")) {
+                timesVisited = 1;
+            }
+            else {
+                timesVisited = parseInt(visitedsub.match(/(\d+)/)[0]);
+            }
+            let historyElement = {
+                id: id,
+                lastVisit: lastVisit,
+                timesVisited: timesVisited,
+            };
+            userHistory.push(historyElement);
+        });
+    }
+    return userHistory;
 }
 exports.getHistory = getHistory;
