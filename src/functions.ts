@@ -1,4 +1,5 @@
-import { Fanfiction, historyFanfiction, Login } from "./ao3-toolkit";
+import { Fanfiction, historyFanfiction } from "./ao3-toolkit";
+import { Login } from "./login";
 
 import axios from "axios";
 import * as cheerio from "cheerio";

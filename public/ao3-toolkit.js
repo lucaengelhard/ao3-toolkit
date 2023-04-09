@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.historyFanfiction = exports.Fanfiction = void 0;
 const functions_1 = require("./functions");
+const login_1 = require("./login");
 class Fanfiction {
     #title;
     #id;
@@ -133,11 +134,7 @@ class historyFanfiction extends Fanfiction {
     }
 }
 exports.historyFanfiction = historyFanfiction;
-let logindata = {
-    username: "",
-    password: "",
-};
-history(logindata);
+history(login_1.logindata);
 async function history(logindata) {
     let userhistory = await (0, functions_1.getHistory)(logindata);
     console.log(userhistory);

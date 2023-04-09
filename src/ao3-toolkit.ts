@@ -1,4 +1,5 @@
 import { getFic, getHistory } from "./functions";
+import { logindata, Login } from "./login";
 
 export interface Author {
   authorName: string;
@@ -287,16 +288,6 @@ export class historyFanfiction extends Fanfiction {
     return this.#words * (this.#timesVisited / this.#chapters.chaptersWritten);
   }
 }
-
-export interface Login {
-  username: string;
-  password: string;
-}
-
-let logindata: Login = {
-  username: "",
-  password: "",
-};
 
 history(logindata);
 
