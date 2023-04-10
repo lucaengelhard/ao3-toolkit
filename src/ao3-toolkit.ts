@@ -1,5 +1,6 @@
-import { getFic, getHistory } from "./functions";
+import { getContent, getFic, getHistory, getInfo } from "./functions";
 import { logindata, Login } from "./login";
+import * as cheerio from "cheerio";
 
 export interface Author {
   authorName: string;
@@ -57,6 +58,14 @@ export interface Collection {
   collectionLink: string | undefined;
 }
 
+export interface Stats {
+  words: number;
+  chapters: ChaptersWritten;
+  kudos: number;
+  hits: number;
+  bookmarks: number;
+}
+
 export interface Chapter {
   chapterTitle: string;
   chapterSummary: string;
@@ -64,210 +73,193 @@ export interface Chapter {
   chapterContent: string | null;
 }
 
+export interface Info {
+  title: string;
+  id: number;
+  author: Author;
+  fandom: Array<Fandom>;
+  stats: Stats;
+  relationships: Array<Relationship>;
+  characters: Array<Character>;
+  adult: boolean;
+  rating: Rating;
+  archiveWarnings: Array<archiveWarning>;
+  categories: Array<Category>;
+  tags: Array<Tag>;
+  language: string;
+  series: Series;
+  collections: Array<Collection>;
+  summary: string;
+  preNote: string;
+  endNote: string;
+}
+
+export class ao3 {
+  #logindata;
+  constructor(logindata: Login) {
+    this.#logindata = logindata;
+  }
+
+  get logindata() {
+    return this.#logindata;
+  }
+
+  set username(username: string) {
+    this.#logindata.username = username;
+  }
+
+  set password(password: string) {
+    this.#logindata.password = password;
+  }
+
+  async getHistory() {
+    return await getHistory(this.#logindata);
+  }
+
+  async getHistoryFic(id: number) {
+    let userHistory = await getHistory(this.#logindata);
+    let fanFiction = await getFic(id);
+
+    let matchingElement = userHistory.find((element) => {
+      return element.id == fanFiction.id;
+    });
+
+    if (matchingElement == undefined) {
+      return;
+    } else {
+      return new historyFanfiction(
+        fanFiction.info,
+        fanFiction.content,
+        matchingElement.lastVisit,
+        matchingElement.timesVisited
+      );
+    }
+  }
+
+  //getBookmarks() {}
+  //getHistory + andere user-based functions
+
+  static async getFic(id: number) {
+    return await getFic(id);
+  }
+
+  static async getContent(fic: number | cheerio.CheerioAPI) {
+    return await getContent(fic);
+  }
+
+  static async getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
+    return await getInfo(fic, id);
+  }
+
+  //static get Functions
+}
+
 export class Fanfiction {
-  #title;
-  #id;
-  #author;
-  #fandom;
-  #words;
-  #chapters;
-  #relationships;
-  #characters;
-  #rating;
-  #archiveWarnings;
-  #categories;
-  #tags;
-  #language;
-  #series;
-  #collections;
-  #summary;
-  #preNote;
-  #endNote;
   #content;
-  #adult;
-  constructor(
-    title: string,
-    id: number,
-    author: Author,
-    fandom: Array<Fandom>,
-    words: number,
-    chapters: ChaptersWritten,
-    relationships: Array<Relationship>,
-    characters: Array<Character>,
-    rating: Rating,
-    archiveWarnings: Array<archiveWarning>,
-    categories: Array<Category>,
-    tags: Array<Tag>,
-    language: string,
-    series: Series,
-    collections: Array<Collection>,
-    summary: string,
-    preNote: string,
-    endNote: string,
-    content: Array<Chapter>,
-    adult: boolean
-  ) {
-    this.#title = title;
-    this.#id = id;
-    this.#author = author;
-    this.#fandom = fandom;
-    this.#words = words;
-    this.#chapters = chapters;
-    this.#relationships = relationships;
-    this.#characters = characters;
-    this.#rating = rating;
-    this.#archiveWarnings = archiveWarnings;
-    this.#categories = categories;
-    this.#tags = tags;
-    this.#language = language;
-    this.#series = series;
-    this.#collections = collections;
-    this.#summary = summary;
-    this.#preNote = preNote;
-    this.#endNote = endNote;
+  #info;
+
+  constructor(info: Info, content: Array<Chapter>) {
     this.#content = content;
-    this.#adult = adult;
-  }
-
-  get title() {
-    return this.#title;
-  }
-
-  get id() {
-    return this.#id;
-  }
-
-  get author() {
-    return this.#author;
-  }
-
-  get fandom() {
-    return this.#fandom;
-  }
-
-  get words() {
-    return this.#words;
-  }
-
-  get chapters() {
-    return this.#chapters;
-  }
-
-  get relationships() {
-    return this.#relationships;
-  }
-
-  get characters() {
-    return this.#characters;
-  }
-
-  get rating() {
-    return this.#rating;
-  }
-
-  get warnings() {
-    return this.#archiveWarnings;
-  }
-
-  get categories() {
-    return this.#categories;
-  }
-
-  get tags() {
-    return this.#tags;
-  }
-
-  get language() {
-    return this.#language;
-  }
-
-  get series() {
-    return this.#series;
-  }
-
-  get collections() {
-    return this.#collections;
-  }
-
-  get summary() {
-    return this.#summary;
-  }
-
-  get preNote() {
-    return this.#preNote;
-  }
-
-  get endNote() {
-    return this.#endNote;
+    this.#info = info;
   }
 
   get content() {
     return this.#content;
   }
 
-  get adult() {
-    return this.#adult;
+  get info() {
+    return this.#info;
   }
 
-  /*
-  get ratio() {
-    return this.#chapters / this.#timesVisited;
-  }*/
+  get title() {
+    return this.#info.title;
+  }
+
+  get id() {
+    return this.#info.id;
+  }
+
+  get author() {
+    return this.#info.author;
+  }
+
+  get fandom() {
+    return this.#info.fandom;
+  }
+
+  get words() {
+    return this.#info.stats.words;
+  }
+
+  get chapters() {
+    return this.#info.stats.chapters;
+  }
+
+  get relationships() {
+    return this.#info.relationships;
+  }
+
+  get characters() {
+    return this.#info.characters;
+  }
+
+  get rating() {
+    return this.#info.rating;
+  }
+
+  get warnings() {
+    return this.#info.archiveWarnings;
+  }
+
+  get categories() {
+    return this.#info.categories;
+  }
+
+  get tags() {
+    return this.#info.tags;
+  }
+
+  get language() {
+    return this.#info.language;
+  }
+
+  get series() {
+    return this.#info.series;
+  }
+
+  get collections() {
+    return this.#info.collections;
+  }
+
+  get summary() {
+    return this.#info.summary;
+  }
+
+  get preNote() {
+    return this.#info.preNote;
+  }
+
+  get endNote() {
+    return this.#info.endNote;
+  }
+
+  get adult() {
+    return this.#info.adult;
+  }
 }
 
 export class historyFanfiction extends Fanfiction {
-  #words;
-  #chapters;
+  #info;
   #timesVisited;
   #lastVisit;
   constructor(
-    title: string,
-    id: number,
-    author: Author,
-    fandom: Array<Fandom>,
-    words: number,
-    chapters: ChaptersWritten,
-    relationships: Array<Relationship>,
-    characters: Array<Character>,
-    rating: Rating,
-    archiveWarnings: Array<archiveWarning>,
-    categories: Array<Category>,
-    tags: Array<Tag>,
-    language: string,
-    series: Series,
-    collections: Array<Collection>,
-    summary: string,
-    preNote: string,
-    endNote: string,
+    info: Info,
     content: Array<Chapter>,
-    adult: boolean,
-    lastVisit: string,
+    lastVisit: Date,
     timesVisited: number
   ) {
-    super(
-      title,
-      id,
-      author,
-      fandom,
-      words,
-      chapters,
-      relationships,
-      characters,
-      rating,
-      archiveWarnings,
-      categories,
-      tags,
-      language,
-      series,
-      collections,
-      summary,
-      preNote,
-      endNote,
-      content,
-      adult
-    );
-    this.#words = words;
-    this.#chapters = chapters;
+    super(info, content);
+    this.#info = info;
     this.#lastVisit = lastVisit;
     this.#timesVisited = timesVisited;
   }
@@ -281,11 +273,14 @@ export class historyFanfiction extends Fanfiction {
   }
 
   get ratio() {
-    return this.#timesVisited / this.#chapters.chaptersWritten;
+    return this.#timesVisited / this.#info.stats.chapters.chaptersWritten;
   }
 
   get wordsRead() {
-    return this.#words * (this.#timesVisited / this.#chapters.chaptersWritten);
+    return (
+      this.#info.stats.words *
+      (this.#timesVisited / this.#info.stats.chapters.chaptersWritten)
+    );
   }
 }
 
@@ -295,14 +290,3 @@ async function history(logindata: Login) {
   let userhistory = await getHistory(logindata);
   console.log(userhistory);
 }
-
-/*
-let id: string = "19865440";
-
-download(id);
-
-async function download(id: string) {
-  let fic1 = await getFic(id);
-  console.log(fic1.endNote);
-}
-*/
