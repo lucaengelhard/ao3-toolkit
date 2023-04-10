@@ -1,4 +1,10 @@
-import { Fanfiction, historyFanfiction } from "./ao3-toolkit";
+import {
+  ao3,
+  Fanfiction,
+  historyFanfiction,
+  Info,
+  Chapter,
+} from "./ao3-toolkit";
 import { Login } from "./login";
 
 import axios from "axios";
@@ -16,6 +22,15 @@ export async function getFic(id: string) {
 
   let $ = cheerio.load(initialLoad.data);
 
+  let info: Info = await getInfo($, parseInt(id));
+  let chapters: Array<Chapter> = await getContent($);
+
+  return new Fanfiction(info, chapters);
+}
+
+export async function getContent(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
   let download =
     "https://archiveofourown.org" +
     $(".download").find("li:contains('HTML')").find("a").attr("href");
@@ -24,10 +39,8 @@ export async function getFic(id: string) {
   let adultContent = $(
     "p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')"
   );
-  let adult = false;
+
   if (adultContent.length <= 1) {
-    //console.log("adult content");
-    adult = true;
     let proceedLink =
       "https://archiveofourown.org" +
       adultContent.next().find("a").first().attr("href");
@@ -39,154 +52,17 @@ export async function getFic(id: string) {
     download = await page.$$eval(".download li a", (elements) => {
       return elements[elements.length - 1].href;
     });
+
+    //Download
+    let completeDownload = await axios({
+      method: "get",
+      url: download,
+    });
+
+    //Parse Data
+    $ = cheerio.load(completeDownload.data);
   }
-
-  //Download
-  //console.log("download Link: " + download);
-
-  let completeDownload = await axios({
-    method: "get",
-    url: download,
-  });
-
-  //Parse Data
-  $ = cheerio.load(completeDownload.data);
-  let title = $("#preface").find("b").first().text();
-
-  let author = {
-    authorName: $("[rel=author]").text(),
-    authorLink: $("[rel=author]").attr("href"),
-  };
-
-  let fandom = $(".tags dt:contains('Fandom:')")
-    .next()
-    .filter("dd")
-    .find("a")
-    .get()
-    .map((el) => {
-      return {
-        fandomName: $(el).text(),
-        fandomLink: $(el).attr("href"),
-      };
-    });
-
-  let stats = $("dt:contains('Stats:')").next().text();
-  let words = parseInt(stats.slice(stats.search("Words:") + 7, stats.length));
-  let chaptersWritten = parseInt(
-    stats.slice(stats.search("Chapters:") + 10, stats.search("/"))
-  );
-
-  let chaptersMax = parseInt(
-    stats.slice(stats.search("/") + 1, stats.search("Words:"))
-  );
-
-  let chapterNumber = {
-    chaptersWritten: chaptersWritten,
-    chaptersMax: chaptersMax,
-  };
-
-  let relationships = $(".tags dt:contains('Relationship:')")
-    .next()
-    .filter("dd")
-    .find("a")
-    .get()
-    .map((el) => {
-      return {
-        relationshipName: $(el).text(),
-        relationshipLink: $(el).attr("href"),
-      };
-    });
-
-  let characters = $(".tags dt:contains('Character:')")
-    .next()
-    .filter("dd")
-    .find("a")
-    .get()
-    .map((el) => {
-      return {
-        characterName: $(el).text(),
-        characterLink: $(el).attr("href"),
-      };
-    });
-
-  let rating = {
-    ratingName: $(".tags dt:contains('Rating:')").next().text(),
-    ratingLink: $(".tags dt:contains('Rating:')").next().find("a").attr("href"),
-  };
-
-  let archiveWarnings = $(".tags dt:contains('Archive Warning:')")
-    .next()
-    .filter("dd")
-    .find("a")
-    .get()
-    .map((el) => {
-      return {
-        warningName: $(el).text(),
-        warningLink: $(el).attr("href"),
-      };
-    });
-
-  let categories = $(".tags dt:contains('Category:')")
-    .next()
-    .filter("dd")
-    .find("a")
-    .get()
-    .map((el) => {
-      return {
-        categoryName: $(el).text(),
-        categoryLink: $(el).attr("href"),
-      };
-    });
-
-  let tags = $(".tags dt:contains('Additional Tags:')")
-    .next()
-    .filter("dd")
-    .find("a")
-    .get()
-    .map((el) => {
-      return {
-        tagName: $(el).text(),
-        tagLink: $(el).attr("href"),
-      };
-    });
-
-  let language = $(".tags dt:contains('Language:')").next().text();
-
-  let seriesName = $(".tags dt:contains('Series:')").next().find("a").text();
-
-  let seriesPart = parseInt(
-    $(".tags dt:contains('Series:')")
-      .next()
-      .text()
-      .replace(seriesName, "")
-      .replace(/\D/g, "")
-  );
-
-  let series = {
-    seriesName: seriesName,
-    seriesLink: $(".tags dt:contains('Series:')").next().find("a").attr("href"),
-    seriesPart: seriesPart,
-  };
-
-  let collections = $(".tags dt:contains('Collections:')")
-    .next()
-    .filter("dd")
-    .find("a")
-    .get()
-    .map((el) => {
-      return {
-        collectionName: $(el).text(),
-        collectionLink: $(el).attr("href"),
-      };
-    });
-
-  let summary = $("#preface p:contains('Summary')").next().text();
-
-  let preNote = $("#preface p:contains('Notes')").next().text();
-
-  let endNote = $("#endnotes").find("blockquote").text();
-
-  let chapters = $("#chapters")
+  return $("#chapters")
     .find(".meta")
     .get()
     .map((chapter) => {
@@ -204,30 +80,298 @@ export async function getFic(id: string) {
         chapterContent: $(chapter).next().html(),
       };
     });
+}
 
-  //Create Fic Object
-  return new Fanfiction(
-    title,
-    parseInt(id),
-    author,
-    fandom,
-    words,
-    chapterNumber,
-    relationships,
-    characters,
-    rating,
-    archiveWarnings,
-    categories,
-    tags,
-    language,
-    series,
-    collections,
-    summary,
-    preNote,
-    endNote,
-    chapters,
-    adult
+export async function getInfo(fic: number | cheerio.CheerioAPI, id: number) {
+  fic = await getParsableInfoData(fic);
+
+  let info: Info = {
+    title: await getTitle(fic),
+    id: id,
+    author: await getAuthor(fic),
+    fandom: await getFandom(fic),
+    stats: await getStats(fic),
+    relationships: await getRelationships(fic),
+    characters: await getCharacters(fic),
+    adult: await getAdult(fic),
+    rating: await getRating(fic),
+    archiveWarnings: await getWarnings(fic),
+    categories: await getCategories(fic),
+    tags: await getTags(fic),
+    language: await getLanguage(fic),
+    series: await getSeries(fic),
+    collections: await getCollections(fic),
+    summary: await getSummary(fic),
+    preNote: await getPreNote(fic),
+    endNote: await getEndNote(fic),
+  };
+
+  return info;
+}
+
+export async function getTitle(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $("#preface").find("b").first().text();
+}
+
+export async function getAuthor(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return {
+    authorName: $("[rel=author]").text(),
+    authorLink: $("[rel=author]").attr("href"),
+  };
+}
+
+export async function getFandom(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Fandom:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        fandomName: $(el).text(),
+        fandomLink: $(el).attr("href"),
+      };
+    });
+}
+
+export async function getStats(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  let statsElement = $("dt:contains('Stats:')").next().text();
+
+  return {
+    words: getWords(statsElement),
+    chapters: {
+      chaptersWritten: getChaptersWritten(statsElement),
+      chaptersMax: getChaptersMax(statsElement),
+    },
+    kudos: getKudos(statsElement),
+    hits: getHits(statsElement),
+    bookmarks: getBookmarks(statsElement),
+  };
+
+  function getWords(stats: string) {
+    return parseInt(stats.slice(stats.search("Words:") + 7, stats.length));
+  }
+
+  function getChaptersWritten(stats: string) {
+    return parseInt(
+      stats.slice(stats.search("Chapters:") + 10, stats.search("/"))
+    );
+  }
+
+  function getChaptersMax(stats: string) {
+    return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+  }
+
+  function getKudos(stats: string) {
+    return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+  }
+
+  function getHits(stats: string) {
+    return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+  }
+
+  function getBookmarks(stats: string) {
+    return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+  }
+}
+
+export async function getRelationships(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Relationship:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        relationshipName: $(el).text(),
+        relationshipLink: $(el).attr("href"),
+      };
+    });
+}
+
+export async function getCharacters(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Character:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        characterName: $(el).text(),
+        characterLink: $(el).attr("href"),
+      };
+    });
+}
+
+export async function getAdult(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  let adultContent = $(
+    "p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')"
   );
+
+  let adult = false;
+  if (adultContent.length <= 1) {
+    adult = true;
+  }
+
+  return adult;
+}
+
+export async function getRating(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return {
+    ratingName: $(".tags dt:contains('Rating:')").next().text(),
+    ratingLink: $(".tags dt:contains('Rating:')").next().find("a").attr("href"),
+  };
+}
+
+export async function getWarnings(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Archive Warning:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        warningName: $(el).text(),
+        warningLink: $(el).attr("href"),
+      };
+    });
+}
+
+export async function getCategories(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Category:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        categoryName: $(el).text(),
+        categoryLink: $(el).attr("href"),
+      };
+    });
+}
+
+export async function getTags(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Additional Tags:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        tagName: $(el).text(),
+        tagLink: $(el).attr("href"),
+      };
+    });
+}
+
+export async function getLanguage(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Language:')").next().text();
+}
+
+export async function getSeries(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  let seriesName = $(".tags dt:contains('Series:')").next().find("a").text();
+
+  let seriesPart = parseInt(
+    $(".tags dt:contains('Series:')")
+      .next()
+      .text()
+      .replace(seriesName, "")
+      .replace(/\D/g, "")
+  );
+
+  return {
+    seriesName: seriesName,
+    seriesLink: $(".tags dt:contains('Series:')").next().find("a").attr("href"),
+    seriesPart: seriesPart,
+  };
+}
+
+export async function getCollections(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $(".tags dt:contains('Collections:')")
+    .next()
+    .filter("dd")
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        collectionName: $(el).text(),
+        collectionLink: $(el).attr("href"),
+      };
+    });
+}
+
+export async function getSummary(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $("#preface p:contains('Summary')").next().text();
+}
+
+export async function getPreNote(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $("#preface p:contains('Notes')").next().text();
+}
+
+export async function getEndNote(fic: number | cheerio.CheerioAPI) {
+  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+
+  return $("#endnotes").find("blockquote").text();
+}
+
+async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
+  let inputIsID = getInfoInputTypeID(fic);
+
+  if (inputIsID) {
+    //use Axios to get content -> change content of fic
+    let url: string = "https://archiveofourown.org/works/" + fic;
+
+    //Initial Page Load
+    let initialLoad = await axios({
+      method: "get",
+      url: url,
+    });
+
+    let downloadedFic = cheerio.load(initialLoad.data);
+    return downloadedFic;
+  } else {
+    let downloadedFic: any = fic;
+    return downloadedFic;
+  }
+}
+
+function getInfoInputTypeID(
+  input: number | cheerio.CheerioAPI
+): input is number {
+  return true;
 }
 
 export interface historyFic {
