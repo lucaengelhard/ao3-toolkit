@@ -284,12 +284,9 @@ export class historyFanfiction extends Fanfiction {
   }
 }
 
-/*
-
 history(logindata);
 
 async function history(logindata: Login) {
   let userhistory = await getHistory(logindata);
   console.log(userhistory);
 }
-*/
