@@ -1,5 +1,6 @@
-import { getFic, getHistory } from "./functions";
+import { getContent, getFic, getHistory, getInfo } from "./functions";
 import { logindata, Login } from "./login";
+import * as cheerio from "cheerio";
 
 export interface Author {
   authorName: string;
@@ -111,7 +112,45 @@ export class ao3 {
     this.#logindata.password = password;
   }
 
+  async getHistory() {
+    return await getHistory(this.#logindata);
+  }
+
+  async getHistoryFic(id: number) {
+    let userHistory = await getHistory(this.#logindata);
+    let fanFiction = await getFic(id);
+
+    let matchingElement = userHistory.find((element) => {
+      return element.id == fanFiction.id;
+    });
+
+    if (matchingElement == undefined) {
+      return;
+    } else {
+      return new historyFanfiction(
+        fanFiction.info,
+        fanFiction.content,
+        matchingElement.lastVisit,
+        matchingElement.timesVisited
+      );
+    }
+  }
+
+  //getBookmarks() {}
   //getHistory + andere user-based functions
+
+  static async getFic(id: number) {
+    return await getFic(id);
+  }
+
+  static async getContent(fic: number | cheerio.CheerioAPI) {
+    return await getContent(fic);
+  }
+
+  static async getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
+    return await getInfo(fic, id);
+  }
+
   //static get Functions
 }
 
@@ -126,6 +165,10 @@ export class Fanfiction {
 
   get content() {
     return this.#content;
+  }
+
+  get info() {
+    return this.#info;
   }
 
   get title() {
@@ -212,7 +255,7 @@ export class historyFanfiction extends Fanfiction {
   constructor(
     info: Info,
     content: Array<Chapter>,
-    lastVisit: string,
+    lastVisit: Date,
     timesVisited: number
   ) {
     super(info, content);
@@ -241,20 +284,12 @@ export class historyFanfiction extends Fanfiction {
   }
 }
 
+/*
+
 history(logindata);
 
 async function history(logindata: Login) {
   let userhistory = await getHistory(logindata);
   console.log(userhistory);
-}
-
-/*
-let id: string = "19865440";
-
-download(id);
-
-async function download(id: string) {
-  let fic1 = await getFic(id);
-  console.log(fic1.endNote);
 }
 */

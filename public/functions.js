@@ -39,7 +39,7 @@ async function getFic(id) {
         url: url,
     });
     let $ = cheerio.load(initialLoad.data);
-    let info = await getInfo($, parseInt(id));
+    let info = await getInfo($, id);
     let chapters = await getContent($);
     return new ao3_toolkit_1.Fanfiction(info, chapters);
 }
@@ -87,6 +87,12 @@ async function getContent(fic) {
 }
 exports.getContent = getContent;
 async function getInfo(fic, id) {
+    if (typeof fic == "number") {
+        id = fic;
+    }
+    if (typeof id == "undefined") {
+        throw new Error("If the first argument is a Cheerio Object and not an ID, input an ID with the type number as the second argument");
+    }
     fic = await getParsableInfoData(fic);
     let info = {
         title: await getTitle(fic),

@@ -11,7 +11,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
 
-export async function getFic(id: string) {
+export async function getFic(id: number) {
   let url: string = "https://archiveofourown.org/works/" + id;
 
   //Initial Page Load
@@ -22,7 +22,7 @@ export async function getFic(id: string) {
 
   let $ = cheerio.load(initialLoad.data);
 
-  let info: Info = await getInfo($, parseInt(id));
+  let info: Info = await getInfo($, id);
   let chapters: Array<Chapter> = await getContent($);
 
   return new Fanfiction(info, chapters);
@@ -82,7 +82,17 @@ export async function getContent(fic: number | cheerio.CheerioAPI) {
     });
 }
 
-export async function getInfo(fic: number | cheerio.CheerioAPI, id: number) {
+export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
+  if (typeof fic == "number") {
+    id = fic;
+  }
+
+  if (typeof id == "undefined") {
+    throw new Error(
+      "If the first argument is a Cheerio Object and not an ID, input an ID with the type number as the second argument"
+    );
+  }
+
   fic = await getParsableInfoData(fic);
 
   let info: Info = {

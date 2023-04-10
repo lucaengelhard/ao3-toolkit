@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.historyFanfiction = exports.Fanfiction = exports.ao3 = void 0;
 const functions_1 = require("./functions");
-const login_1 = require("./login");
 class ao3 {
     #logindata;
     constructor(logindata) {
@@ -17,6 +16,33 @@ class ao3 {
     set password(password) {
         this.#logindata.password = password;
     }
+    async getHistory() {
+        return await (0, functions_1.getHistory)(this.#logindata);
+    }
+    async getHistoryFic(id) {
+        let userHistory = await (0, functions_1.getHistory)(this.#logindata);
+        let fanFiction = await (0, functions_1.getFic)(id);
+        let matchingElement = userHistory.find((element) => {
+            return element.id == fanFiction.id;
+        });
+        if (matchingElement == undefined) {
+            return;
+        }
+        else {
+            return new historyFanfiction(fanFiction.info, fanFiction.content, matchingElement.lastVisit, matchingElement.timesVisited);
+        }
+    }
+    //getBookmarks() {}
+    //getHistory + andere user-based functions
+    static async getFic(id) {
+        return await (0, functions_1.getFic)(id);
+    }
+    static async getContent(fic) {
+        return await (0, functions_1.getContent)(fic);
+    }
+    static async getInfo(fic, id) {
+        return await (0, functions_1.getInfo)(fic, id);
+    }
 }
 exports.ao3 = ao3;
 class Fanfiction {
@@ -28,6 +54,9 @@ class Fanfiction {
     }
     get content() {
         return this.#content;
+    }
+    get info() {
+        return this.#info;
     }
     get title() {
         return this.#info.title;
@@ -113,18 +142,12 @@ class historyFanfiction extends Fanfiction {
     }
 }
 exports.historyFanfiction = historyFanfiction;
-history(login_1.logindata);
-async function history(logindata) {
-    let userhistory = await (0, functions_1.getHistory)(logindata);
-    console.log(userhistory);
-}
 /*
-let id: string = "19865440";
 
-download(id);
+history(logindata);
 
-async function download(id: string) {
-  let fic1 = await getFic(id);
-  console.log(fic1.endNote);
+async function history(logindata: Login) {
+  let userhistory = await getHistory(logindata);
+  console.log(userhistory);
 }
 */
