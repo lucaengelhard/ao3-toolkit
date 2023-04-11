@@ -94,26 +94,28 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
   }
 
   fic = await getParsableInfoData(fic);
+  
+  let functions = [getTitle(fic), getAuthor(fic), getFandom(fic), getStats(fic), getRelationships(fic), getCharacters(fic), getAdult(fic), getRating(fic), getWarnings(fic),getCategories(fic), getTags(fic), getLanguage(fic), getSeries(fic), getCollections(fic), getSummary(fic)];
 
+  let resolved = await Promise.allSettled(functions);
+  
   let info: Info = {
-    title: await getTitle(fic),
+    title: resolved[0] ,
     id: id,
-    author: await getAuthor(fic),
-    fandom: await getFandom(fic),
-    stats: await getStats(fic),
-    relationships: await getRelationships(fic),
-    characters: await getCharacters(fic),
-    adult: await getAdult(fic),
-    rating: await getRating(fic),
-    archiveWarnings: await getWarnings(fic),
-    categories: await getCategories(fic),
-    tags: await getTags(fic),
-    language: await getLanguage(fic),
-    series: await getSeries(fic),
-    collections: await getCollections(fic),
-    summary: await getSummary(fic),
-    preNote: await getPreNote(fic),
-    endNote: await getEndNote(fic),
+    author: resolved[1] ,
+    fandom: resolved[2] ,
+    stats: resolved[3] ,
+    relationships: resolved[4] ,
+    characters: resolved[5] ,
+    adult: resolved[6] ,
+    rating: resolved[7] ,
+    archiveWarnings: resolved[7] ,
+    categories: resolved[8] ,
+    tags: resolved[9] ,
+    language: resolved[10] ,
+    series: resolved[11] ,
+    collections: resolved[12] ,
+    summary: resolved[13] ,
   };
 
   return info;
