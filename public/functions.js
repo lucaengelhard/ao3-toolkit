@@ -33,11 +33,7 @@ const cheerio = __importStar(require("cheerio"));
 const puppeteer_1 = __importDefault(require("puppeteer"));
 async function getFic(id) {
     let url = "https://archiveofourown.org/works/" + id;
-    //Initial Page Load
-    let initialLoad = await (0, axios_1.default)({
-        method: "get",
-        url: url,
-    });
+    let initialLoad = await axios_1.default.get(encodeURI(url));
     let $ = cheerio.load(initialLoad.data);
     let info = await getInfo($, id);
     let content = await getContent($);
@@ -101,37 +97,18 @@ async function getContent(fic) {
 }
 exports.getContent = getContent;
 async function getInfo(fic, id) {
+    console.time("test");
     if (typeof fic == "number") {
         id = fic;
     }
     if (typeof id == "undefined") {
         throw new Error("If the first argument is a Cheerio Object and not an ID, input an ID with the type number as the second argument");
     }
-    fic = await getParsableInfoData(fic);
-    let functions = [
-        getTitle(fic),
-        getAuthor(fic),
-        getFandom(fic),
-        getStats(fic),
-        getRelationships(fic),
-        getCharacters(fic),
-        getAdult(fic),
-        getRating(fic),
-        getWarnings(fic),
-        getCategories(fic),
-        getTags(fic),
-        getLanguage(fic),
-        getSeries(fic),
-        getCollections(fic),
-        getSummary(fic),
-    ];
-    let resolved = (await Promise.allSettled(functions)).map((el, i) => {
-        let element = el;
-        return element;
-    });
+
     let info = {
         title: resolved[0].value,
         id: id,
+
         author: resolved[1].value,
         fandom: resolved[2].value,
         stats: resolved[3].value,
@@ -146,7 +123,9 @@ async function getInfo(fic, id) {
         series: resolved[11].value,
         collections: resolved[12].value,
         summary: resolved[13].value,
+
     };
+    console.timeEnd("test");
     return info;
 }
 exports.getInfo = getInfo;

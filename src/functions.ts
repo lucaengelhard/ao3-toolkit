@@ -14,15 +14,12 @@ import puppeteer from "puppeteer";
 export async function getFic(id: number) {
   let url: string = "https://archiveofourown.org/works/" + id;
 
-  //Initial Page Load
-  let initialLoad = await axios({
-    method: "get",
-    url: url,
-  });
+  let initialLoad = await axios.get(encodeURI(url));
 
   let $ = cheerio.load(initialLoad.data);
 
   let info: Info = await getInfo($, id);
+
   let content = await getContent($);
 
   return new Fanfiction(info, content);
@@ -142,6 +139,7 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
   let info: Info = {
     title: resolved[0].value,
     id: id,
+
     author: resolved[1].value,
     fandom: resolved[2].value,
     stats: resolved[3].value,
@@ -156,6 +154,7 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     series: resolved[11].value,
     collections: resolved[12].value,
     summary: resolved[13].value,
+
   };
 
   return info;
