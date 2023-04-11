@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.historyFanfiction = exports.Fanfiction = exports.ao3 = void 0;
 const functions_1 = require("./functions");
-const login_1 = require("./login");
 class ao3 {
     #logindata;
     constructor(logindata) {
@@ -108,10 +107,10 @@ class Fanfiction {
         return this.#info.summary;
     }
     get preNote() {
-        return this.#info.preNote;
+        return this.#content.notes.preNote;
     }
     get endNote() {
-        return this.#info.endNote;
+        return this.#content.notes.endNote;
     }
     get adult() {
         return this.#info.adult;
@@ -143,8 +142,17 @@ class historyFanfiction extends Fanfiction {
     }
 }
 exports.historyFanfiction = historyFanfiction;
-history(login_1.logindata);
-async function history(logindata) {
-    let userhistory = await (0, functions_1.getHistory)(logindata);
-    console.log(userhistory);
+test(19865440);
+async function test(id) {
+    let fic = await (0, functions_1.getInfo)(id);
+    console.log(fic);
 }
+/*
+
+history(logindata);
+
+async function history(logindata: Login) {
+  let userhistory = await getHistory(logindata);
+  console.log(userhistory);
+}
+*/

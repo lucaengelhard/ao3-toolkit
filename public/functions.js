@@ -26,22 +26,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getHistory = exports.getEndNote = exports.getPreNote = exports.getSummary = exports.getCollections = exports.getSeries = exports.getLanguage = exports.getTags = exports.getCategories = exports.getWarnings = exports.getRating = exports.getAdult = exports.getCharacters = exports.getRelationships = exports.getStats = exports.getFandom = exports.getAuthor = exports.getTitle = exports.getInfo = exports.getContent = exports.getFic = void 0;
+exports.getHistory = exports.getSummary = exports.getCollections = exports.getSeries = exports.getLanguage = exports.getTags = exports.getCategories = exports.getWarnings = exports.getRating = exports.getAdult = exports.getCharacters = exports.getRelationships = exports.getStats = exports.getFandom = exports.getAuthor = exports.getTitle = exports.getInfo = exports.getContent = exports.getFic = void 0;
 const ao3_toolkit_1 = require("./ao3-toolkit");
 const axios_1 = __importDefault(require("axios"));
 const cheerio = __importStar(require("cheerio"));
 const puppeteer_1 = __importDefault(require("puppeteer"));
 async function getFic(id) {
     let url = "https://archiveofourown.org/works/" + id;
-    //Initial Page Load
-    let initialLoad = await (0, axios_1.default)({
-        method: "get",
-        url: url,
-    });
+    let initialLoad = await axios_1.default.get(encodeURI(url));
     let $ = cheerio.load(initialLoad.data);
     let info = await getInfo($, id);
-    let chapters = await getContent($);
-    return new ao3_toolkit_1.Fanfiction(info, chapters);
+    let content = await getContent($);
+    return new ao3_toolkit_1.Fanfiction(info, content);
 }
 exports.getFic = getFic;
 async function getContent(fic) {
@@ -66,34 +62,49 @@ async function getContent(fic) {
         });
         //Parse Data
         $ = cheerio.load(completeDownload.data);
+        browser.close();
     }
-    return $("#chapters")
-        .find(".meta")
-        .get()
-        .map((chapter) => {
-        return {
-            chapterTitle: $(chapter).find(".heading").text(),
-            chapterSummary: $(chapter)
-                .find("p:contains('Chapter Summary')")
-                .next()
-                .text(),
-            chapterNotes: $(chapter)
-                .find("p:contains('Chapter Notes')")
-                .next()
-                .text(),
-            chapterContent: $(chapter).next().html(),
-        };
-    });
+    let content = {
+        notes: {
+            preNote: await getPreNote($),
+            endNote: await getEndNote($),
+        },
+        chapters: $("#chapters")
+            .find(".meta")
+            .get()
+            .map((chapter) => {
+            return {
+                chapterTitle: $(chapter).find(".heading").text(),
+                chapterSummary: $(chapter)
+                    .find("p:contains('Chapter Summary')")
+                    .next()
+                    .text(),
+                chapterNotes: $(chapter)
+                    .find("p:contains('Chapter Notes')")
+                    .next()
+                    .text(),
+                chapterContent: $(chapter).next().html(),
+            };
+        }),
+    };
+    return content;
+    async function getPreNote(fic) {
+        return fic("#preface p:contains('Notes')").next().text();
+    }
+    async function getEndNote(fic) {
+        return fic("#endnotes").find("blockquote").text();
+    }
 }
 exports.getContent = getContent;
 async function getInfo(fic, id) {
+    console.time("test");
     if (typeof fic == "number") {
         id = fic;
     }
     if (typeof id == "undefined") {
         throw new Error("If the first argument is a Cheerio Object and not an ID, input an ID with the type number as the second argument");
     }
-    fic = await getParsableInfoData(fic);
+    //fic = await getParsableInfoData(fic);
     let info = {
         title: await getTitle(fic),
         id: id,
@@ -111,15 +122,20 @@ async function getInfo(fic, id) {
         series: await getSeries(fic),
         collections: await getCollections(fic),
         summary: await getSummary(fic),
-        preNote: await getPreNote(fic),
-        endNote: await getEndNote(fic),
     };
+    console.timeEnd("test");
     return info;
 }
 exports.getInfo = getInfo;
 async function getTitle(fic) {
     let $ = await getParsableInfoData(fic);
-    return $("#preface").find("b").first().text();
+    let adult = await getAdult(fic);
+    if (adult) {
+        return $(".header.module").find("a").first().text();
+    }
+    else {
+        return $("#preface").find("title").first().text();
+    }
 }
 exports.getTitle = getTitle;
 async function getAuthor(fic) {
@@ -132,22 +148,32 @@ async function getAuthor(fic) {
 exports.getAuthor = getAuthor;
 async function getFandom(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Fandom:')")
-        .next()
-        .filter("dd")
-        .find("a")
-        .get()
-        .map((el) => {
-        return {
-            fandomName: $(el).text(),
-            fandomLink: $(el).attr("href"),
-        };
-    });
+    let adult = await getAdult(fic);
+    if (adult) {
+        return $(".fandoms a")
+            .get()
+            .map((el) => {
+            return {
+                fandomName: $(el).text(),
+                fandomLink: $(el).attr("href"),
+            };
+        });
+    }
+    else {
+        return $(".fandom a")
+            .get()
+            .map((el) => {
+            return {
+                fandomName: $(el).text(),
+                fandomLink: $(el).attr("href"),
+            };
+        });
+    }
 }
 exports.getFandom = getFandom;
 async function getStats(fic) {
     let $ = await getParsableInfoData(fic);
-    let statsElement = $("dt:contains('Stats:')").next().text();
+    let statsElement = $("dl.stats");
     return {
         words: getWords(statsElement),
         chapters: {
@@ -159,53 +185,77 @@ async function getStats(fic) {
         bookmarks: getBookmarks(statsElement),
     };
     function getWords(stats) {
-        return parseInt(stats.slice(stats.search("Words:") + 7, stats.length));
+        return parseInt(stats.find(".words").next().text().replace(",", ""));
     }
     function getChaptersWritten(stats) {
-        return parseInt(stats.slice(stats.search("Chapters:") + 10, stats.search("/")));
+        return parseInt(stats.find(".chapters").next().text().split("/")[0]);
     }
     function getChaptersMax(stats) {
-        return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+        return parseInt(stats.find(".chapters").next().text().split("/")[1]);
     }
     function getKudos(stats) {
-        return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+        return parseInt(stats.find(".kudos").next().text());
     }
     function getHits(stats) {
-        return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+        return parseInt(stats.find(".hits").next().text());
     }
     function getBookmarks(stats) {
-        return parseInt(stats.slice(stats.search("/") + 1, stats.search("Words:")));
+        return parseInt(stats.find(".bookmarks").next().text());
     }
 }
 exports.getStats = getStats;
 async function getRelationships(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Relationship:')")
-        .next()
-        .filter("dd")
-        .find("a")
-        .get()
-        .map((el) => {
-        return {
-            relationshipName: $(el).text(),
-            relationshipLink: $(el).attr("href"),
-        };
-    });
+    let adult = await getAdult(fic);
+    if (adult) {
+        return $(".relationships a")
+            .get()
+            .map((el) => {
+            return {
+                relationshipName: $(el).text(),
+                relationshipLink: $(el).attr("href"),
+            };
+        });
+    }
+    else {
+        return $(".relationship")
+            .next()
+            .find("a")
+            .get()
+            .map((el) => {
+            return {
+                relationshipName: $(el).text(),
+                relationshipLink: $(el).attr("href"),
+            };
+        });
+    }
 }
 exports.getRelationships = getRelationships;
 async function getCharacters(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Character:')")
-        .next()
-        .filter("dd")
-        .find("a")
-        .get()
-        .map((el) => {
-        return {
-            characterName: $(el).text(),
-            characterLink: $(el).attr("href"),
-        };
-    });
+    let adult = await getAdult(fic);
+    if (adult) {
+        return $(".characters a")
+            .get()
+            .map((el) => {
+            return {
+                characterName: $(el).text(),
+                characterLink: $(el).attr("href"),
+            };
+        });
+    }
+    else {
+        return $(".character")
+            .next()
+            .find("a")
+            .get()
+            .map((el) => {
+            return {
+                characterName: $(el).text(),
+                characterLink: $(el).attr("href"),
+            };
+        });
+    }
 }
 exports.getCharacters = getCharacters;
 async function getAdult(fic) {
@@ -220,110 +270,192 @@ async function getAdult(fic) {
 exports.getAdult = getAdult;
 async function getRating(fic) {
     let $ = await getParsableInfoData(fic);
-    return {
-        ratingName: $(".tags dt:contains('Rating:')").next().text(),
-        ratingLink: $(".tags dt:contains('Rating:')").next().find("a").attr("href"),
-    };
+    let adult = await getAdult(fic);
+    if (adult) {
+        return {
+            ratingName: $(".rating").text(),
+            ratingLink: "https://archiveofourown.org/tags/" + $(".rating").text() + "/works",
+        };
+    }
+    else {
+        return {
+            ratingName: $(".rating a").find("a").text(),
+            ratingLink: $(".rating a").find("a").attr("href"),
+        };
+    }
 }
 exports.getRating = getRating;
 async function getWarnings(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Archive Warning:')")
-        .next()
-        .filter("dd")
-        .find("a")
-        .get()
-        .map((el) => {
+    let adult = await getAdult(fic);
+    if (adult) {
         return {
-            warningName: $(el).text(),
-            warningLink: $(el).attr("href"),
+            warningName: $(".warnings").first().text(),
+            warningLink: "https://archiveofourown.org/tags/" +
+                encodeURIComponent($(".warnings").first().text()) +
+                "/works",
         };
-    });
+    }
+    else {
+        return {
+            warningName: $(".warning a").find("a").text(),
+            warningLink: $(".warning a").find("a").attr("href"),
+        };
+    }
 }
 exports.getWarnings = getWarnings;
 async function getCategories(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Category:')")
-        .next()
-        .filter("dd")
-        .find("a")
-        .get()
-        .map((el) => {
-        return {
-            categoryName: $(el).text(),
-            categoryLink: $(el).attr("href"),
-        };
-    });
+    let adult = await getAdult(fic);
+    if (adult) {
+        return $(".category")
+            .first()
+            .text()
+            .split(",")
+            .map((el) => {
+            return {
+                categoryName: el.trim(),
+                categoryLink: "https://archiveofourown.org/tags/" +
+                    encodeURIComponent(el.trim()) +
+                    "/works",
+            };
+        });
+    }
+    else {
+        return $(".category")
+            .next()
+            .find("a")
+            .get()
+            .map((el) => {
+            return {
+                categoryName: $(el).text(),
+                categoryLink: $(el).attr("href"),
+            };
+        });
+    }
 }
 exports.getCategories = getCategories;
 async function getTags(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Additional Tags:')")
-        .next()
-        .filter("dd")
-        .find("a")
-        .get()
-        .map((el) => {
-        return {
-            tagName: $(el).text(),
-            tagLink: $(el).attr("href"),
-        };
-    });
+    let adult = await getAdult(fic);
+    if (adult) {
+        return $(".freeforms a")
+            .get()
+            .map((el) => {
+            return {
+                tagName: $(el).text(),
+                tagLink: $(el).attr("href"),
+            };
+        });
+    }
+    else {
+        return $(".freeform")
+            .next()
+            .find("a")
+            .get()
+            .map((el) => {
+            return {
+                tagName: $(el).text(),
+                tagLink: $(el).attr("href"),
+            };
+        });
+    }
 }
 exports.getTags = getTags;
 async function getLanguage(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Language:')").next().text();
+    return $(".language").first().next().text();
 }
 exports.getLanguage = getLanguage;
 async function getSeries(fic) {
     let $ = await getParsableInfoData(fic);
-    let seriesName = $(".tags dt:contains('Series:')").next().find("a").text();
-    let seriesPart = parseInt($(".tags dt:contains('Series:')")
-        .next()
-        .text()
-        .replace(seriesName, "")
-        .replace(/\D/g, ""));
-    return {
-        seriesName: seriesName,
-        seriesLink: $(".tags dt:contains('Series:')").next().find("a").attr("href"),
-        seriesPart: seriesPart,
-    };
+    let adult = await getAdult(fic);
+    if (adult) {
+        return $("ul.series")
+            .find("li")
+            .get()
+            .map((el) => {
+            return {
+                seriesName: $(el).find("a").text(),
+                seriesLink: $(el).find("a").attr("href"),
+                seriesPart: parseInt($(el).find("strong").text()),
+            };
+        });
+    }
+    else {
+        return $("dd.series")
+            .find("span.series")
+            .get()
+            .map((el) => {
+            return {
+                seriesName: $(el).find("a").text(),
+                seriesLink: $(el).find("a").attr("href"),
+                seriesPart: parseInt($(el).find(".positon").first().text().replace(/\D/g, "")),
+            };
+        });
+    }
 }
 exports.getSeries = getSeries;
 async function getCollections(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".tags dt:contains('Collections:')")
-        .next()
-        .filter("dd")
-        .find("a")
-        .get()
-        .map((el) => {
-        return {
-            collectionName: $(el).text(),
-            collectionLink: $(el).attr("href"),
-        };
-    });
+    let adult = await getAdult(fic);
+    if (adult) {
+        let collectionsURL = "https://archiveofourown.org" + $("dd.collections a").attr("href");
+        let loadedCollections = await (0, axios_1.default)({
+            method: "get",
+            url: collectionsURL,
+        });
+        let $col = cheerio.load(loadedCollections.data);
+        return $col("ul.collection")
+            .first()
+            .find("li")
+            .get()
+            .map((el) => {
+            return {
+                collectionName: $(el).find("a").first().text(),
+                collectionLink: $(el).find("a").first().attr("href"),
+            };
+        });
+    }
+    else {
+        return $("dd.collections")
+            .first()
+            .find("a")
+            .get()
+            .map((el) => {
+            return {
+                collectionName: $(el).text(),
+                collectionLink: $(el).attr("href"),
+            };
+        });
+    }
 }
 exports.getCollections = getCollections;
 async function getSummary(fic) {
     let $ = await getParsableInfoData(fic);
-    return $("#preface p:contains('Summary')").next().text();
+    let adult = await getAdult(fic);
+    if (adult) {
+        let summaryArray = $("blockquote.summary")
+            .find("p")
+            .get()
+            .map((el) => {
+            return $(el).text();
+        });
+        return summaryArray.join("\n\n");
+    }
+    else {
+        let summaryArray = $(".summary blockquote")
+            .find("p")
+            .get()
+            .map((el) => {
+            return $(el).text();
+        });
+        return summaryArray.join("\n");
+    }
 }
 exports.getSummary = getSummary;
-async function getPreNote(fic) {
-    let $ = await getParsableInfoData(fic);
-    return $("#preface p:contains('Notes')").next().text();
-}
-exports.getPreNote = getPreNote;
-async function getEndNote(fic) {
-    let $ = await getParsableInfoData(fic);
-    return $("#endnotes").find("blockquote").text();
-}
-exports.getEndNote = getEndNote;
 async function getParsableInfoData(fic) {
-    let inputIsID = getInfoInputTypeID(fic);
-    if (inputIsID) {
+    if (typeof fic == "number") {
         //use Axios to get content -> change content of fic
         let url = "https://archiveofourown.org/works/" + fic;
         //Initial Page Load
@@ -338,9 +470,6 @@ async function getParsableInfoData(fic) {
         let downloadedFic = fic;
         return downloadedFic;
     }
-}
-function getInfoInputTypeID(input) {
-    return true;
 }
 async function getHistory(logindata) {
     let historyURLinit = "https://archiveofourown.org/users/" +
