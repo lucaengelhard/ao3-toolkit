@@ -1,4 +1,24 @@
-import { getContent, getFic, getHistory, getInfo } from "./functions";
+import axios from "axios";
+import {
+  getAuthor,
+  getCategories,
+  getCharacters,
+  getCollections,
+  getContent,
+  getFandom,
+  getFic,
+  getHistory,
+  getInfo,
+  getLanguage,
+  getRating,
+  getRelationships,
+  getSeries,
+  getStats,
+  getSummary,
+  getTags,
+  getTitle,
+  getWarnings,
+} from "./functions";
 import { logindata, Login } from "./login";
 import * as cheerio from "cheerio";
 
@@ -66,11 +86,21 @@ export interface Stats {
   bookmarks: number;
 }
 
+export interface Notes {
+  preNote: string;
+  endNote: string;
+}
+
 export interface Chapter {
   chapterTitle: string;
   chapterSummary: string;
   chapterNotes: string;
   chapterContent: string | null;
+}
+
+export interface Content {
+  notes: Notes;
+  chapters: Array<Chapter>;
 }
 
 export interface Info {
@@ -83,15 +113,13 @@ export interface Info {
   characters: Array<Character>;
   adult: boolean;
   rating: Rating;
-  archiveWarnings: Array<archiveWarning>;
+  archiveWarnings: archiveWarning;
   categories: Array<Category>;
   tags: Array<Tag>;
   language: string;
-  series: Series;
+  series: Array<Series>;
   collections: Array<Collection>;
   summary: string;
-  preNote: string;
-  endNote: string;
 }
 
 export class ao3 {
@@ -158,7 +186,7 @@ export class Fanfiction {
   #content;
   #info;
 
-  constructor(info: Info, content: Array<Chapter>) {
+  constructor(info: Info, content: Content) {
     this.#content = content;
     this.#info = info;
   }
@@ -236,11 +264,11 @@ export class Fanfiction {
   }
 
   get preNote() {
-    return this.#info.preNote;
+    return this.#content.notes.preNote;
   }
 
   get endNote() {
-    return this.#info.endNote;
+    return this.#content.notes.endNote;
   }
 
   get adult() {
@@ -254,7 +282,7 @@ export class historyFanfiction extends Fanfiction {
   #lastVisit;
   constructor(
     info: Info,
-    content: Array<Chapter>,
+    content: Content,
     lastVisit: Date,
     timesVisited: number
   ) {
@@ -284,9 +312,21 @@ export class historyFanfiction extends Fanfiction {
   }
 }
 
+test(19865440);
+
+async function test(id: number) {
+  console.time("test");
+  let fic = await getInfo(id);
+  console.log(fic);
+  console.timeEnd("test");
+}
+
+/*
+
 history(logindata);
 
 async function history(logindata: Login) {
   let userhistory = await getHistory(logindata);
   console.log(userhistory);
 }
+*/

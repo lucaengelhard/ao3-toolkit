@@ -23,9 +23,9 @@ export async function getFic(id: number) {
   let $ = cheerio.load(initialLoad.data);
 
   let info: Info = await getInfo($, id);
-  let chapters: Array<Chapter> = await getContent($);
+  let content = await getContent($);
 
-  return new Fanfiction(info, chapters);
+  return new Fanfiction(info, content);
 }
 
 export async function getContent(fic: number | cheerio.CheerioAPI) {
@@ -61,25 +61,45 @@ export async function getContent(fic: number | cheerio.CheerioAPI) {
 
     //Parse Data
     $ = cheerio.load(completeDownload.data);
-  }
-  return $("#chapters")
-    .find(".meta")
-    .get()
-    .map((chapter) => {
-      return {
-        chapterTitle: $(chapter).find(".heading").text(),
-        chapterSummary: $(chapter)
-          .find("p:contains('Chapter Summary')")
-          .next()
-          .text(),
-        chapterNotes: $(chapter)
-          .find("p:contains('Chapter Notes')")
-          .next()
-          .text(),
 
-        chapterContent: $(chapter).next().html(),
-      };
-    });
+    browser.close();
+  }
+
+  let content = {
+    notes: {
+      preNote: await getPreNote($),
+      endNote: await getEndNote($),
+    },
+
+    chapters: $("#chapters")
+      .find(".meta")
+      .get()
+      .map((chapter) => {
+        return {
+          chapterTitle: $(chapter).find(".heading").text(),
+          chapterSummary: $(chapter)
+            .find("p:contains('Chapter Summary')")
+            .next()
+            .text(),
+          chapterNotes: $(chapter)
+            .find("p:contains('Chapter Notes')")
+            .next()
+            .text(),
+
+          chapterContent: $(chapter).next().html(),
+        };
+      }),
+  };
+
+  return content;
+
+  async function getPreNote(fic: cheerio.CheerioAPI) {
+    return fic("#preface p:contains('Notes')").next().text();
+  }
+
+  async function getEndNote(fic: cheerio.CheerioAPI) {
+    return fic("#endnotes").find("blockquote").text();
+  }
 }
 
 export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
@@ -94,28 +114,48 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
   }
 
   fic = await getParsableInfoData(fic);
-  
-  let functions = [getTitle(fic), getAuthor(fic), getFandom(fic), getStats(fic), getRelationships(fic), getCharacters(fic), getAdult(fic), getRating(fic), getWarnings(fic),getCategories(fic), getTags(fic), getLanguage(fic), getSeries(fic), getCollections(fic), getSummary(fic)];
 
-  let resolved = await Promise.allSettled(functions);
-  
+  let functions = [
+    getTitle(fic),
+    getAuthor(fic),
+    getFandom(fic),
+    getStats(fic),
+    getRelationships(fic),
+    getCharacters(fic),
+    getAdult(fic),
+    getRating(fic),
+    getWarnings(fic),
+    getCategories(fic),
+    getTags(fic),
+    getLanguage(fic),
+    getSeries(fic),
+    getCollections(fic),
+    getSummary(fic),
+  ];
+
+  let resolved = (await Promise.all(functions)).map((el, i) => {
+    let element: any = el;
+
+    return element;
+  });
+
   let info: Info = {
-    title: resolved[0] ,
+    title: resolved[0],
     id: id,
-    author: resolved[1] ,
-    fandom: resolved[2] ,
-    stats: resolved[3] ,
-    relationships: resolved[4] ,
-    characters: resolved[5] ,
-    adult: resolved[6] ,
-    rating: resolved[7] ,
-    archiveWarnings: resolved[7] ,
-    categories: resolved[8] ,
-    tags: resolved[9] ,
-    language: resolved[10] ,
-    series: resolved[11] ,
-    collections: resolved[12] ,
-    summary: resolved[13] ,
+    author: resolved[1],
+    fandom: resolved[2],
+    stats: resolved[3],
+    relationships: resolved[4],
+    characters: resolved[5],
+    adult: resolved[6],
+    rating: resolved[7],
+    archiveWarnings: resolved[7],
+    categories: resolved[8],
+    tags: resolved[9],
+    language: resolved[10],
+    series: resolved[11],
+    collections: resolved[12],
+    summary: resolved[13],
   };
 
   return info;
