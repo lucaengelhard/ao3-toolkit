@@ -1,68 +1,13 @@
 import { Login } from "../types/base.js";
 
-import axios, { AxiosInstance } from "axios";
+import { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
-import { historyFic } from "../types/works.js";
+import { historyWork } from "../types/works.js";
 
 export async function getHistory(
   logindata: Login,
   instance: AxiosInstance | undefined
 ) {
-  /*
-  let historyURLinit: string =
-    "https://archiveofourown.org/users/" +
-    logindata.username +
-    "/readings?page=1";
-
-  let browser = await puppeteer.launch({ headless: true });
-  let page = await browser.newPage();
-  await page.goto(historyURLinit);
-
-  //get number of pages
-  //open new page for each number
-  //download ids + visited data
-
-  await page.click("#login-dropdown");
-  await page.click("#user_remember_me_small");
-
-  await page.waitForSelector("#user_session_login_small");
-  await page.type("#user_session_login_small", logindata.username);
-
-  await page.waitForSelector("#user_session_password_small");
-  await page.type("#user_session_password_small", logindata.password);
-
-  await page.keyboard.press("Enter");
-
-  await page.waitForSelector("#footer");
-
-  let navLength = await page.$$eval(".pagination li", (elements) => {
-    let lastNumber: number;
-    if (elements[elements.length - 1].classList.contains("next")) {
-      lastNumber = parseInt(elements[elements.length - 2].innerText);
-      return lastNumber;
-    } else {
-      lastNumber = parseInt(elements[elements.length - 1].innerText);
-      return lastNumber;
-    }
-  });
-
-  
-
-  for (let i = 2; i < navLength; i++) {
-    
-
-    let newPage = await browser.newPage();
-
-    await newPage.goto(
-      "https://archiveofourown.org/users/capmaennle/readings?page=" + i
-    );
-
-    await newPage.waitForSelector("#footer");
-
-    let content = await newPage.content();
-
-    await newPage.close();
-*/
   if (typeof instance == "undefined") {
     throw new Error(
       "instance is undefined. wait for the instance to be resolved and then execute code"
@@ -73,7 +18,7 @@ export async function getHistory(
     `/users/${encodeURIComponent(logindata.username)}/readings`
   );
 
-  let userHistory: Array<historyFic> = [];
+  let userHistory: Array<historyWork> = [];
 
   let firstLoadContent = history.data;
 
@@ -81,9 +26,9 @@ export async function getHistory(
 
   let navLength = parseInt($(".pagination li").not(".next").last().text());
 
-  let historypages = [];
+  let historypages: Promise<AxiosResponse<any, any>>[] = [];
 
-  for (let i = 1; i < navLength; i++) {
+  for (let i = 1; i < 5; i++) {
     console.log("getting Page " + i);
 
     historypages.push(
@@ -135,7 +80,7 @@ export async function getHistory(
         timesVisited = parseInt(visitedsub.match(/(\d+)/)[0]);
       }
 
-      let historyElement: historyFic = {
+      let historyElement: historyWork = {
         id: id,
         lastVisit: lastVisit,
         timesVisited: timesVisited,

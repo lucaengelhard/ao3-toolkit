@@ -31,7 +31,6 @@ export class ao3 {
         withCredentials: true,
         baseURL: "https://archiveofourown.org",
         jar,
-        timeout: 300,
       })
     );
 
