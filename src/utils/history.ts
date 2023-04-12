@@ -2,12 +2,7 @@ import { Login } from "../types/base.js";
 
 import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
-
-export interface historyFic {
-  id: number;
-  lastVisit: Date;
-  timesVisited: number;
-}
+import { historyFic } from "../types/works.js";
 
 export async function getHistory(
   logindata: Login,
@@ -74,7 +69,9 @@ export async function getHistory(
     );
   }
 
-  let history = await instance.get(`/users/${logindata.username}/readings`);
+  let history = await instance.get(
+    `/users/${encodeURIComponent(logindata.username)}/readings`
+  );
 
   let userHistory: Array<historyFic> = [];
 
@@ -90,7 +87,9 @@ export async function getHistory(
     console.log("getting Page " + i);
 
     historypages.push(
-      instance.get(`/users/${logindata.username}/readings?page=${i}`)
+      instance.get(
+        `/users/${encodeURIComponent(logindata.username)}/readings?page=${i}`
+      )
     );
   }
 

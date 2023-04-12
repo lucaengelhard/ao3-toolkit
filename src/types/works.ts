@@ -96,3 +96,9 @@ export interface Info {
   collections: Array<Collection>;
   summary: string;
 }
+
+export interface historyFic {
+  id: number;
+  lastVisit: Date;
+  timesVisited: number;
+}
