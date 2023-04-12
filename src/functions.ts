@@ -12,17 +12,7 @@ import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
 
 export async function getFic(id: number) {
-  let url: string = "https://archiveofourown.org/works/" + id;
-
-  let initialLoad = await axios.get(encodeURI(url));
-
-  let $ = cheerio.load(initialLoad.data);
-
-  let info: Info = await getInfo($, id);
-
-  let content = await getContent($);
-
-  return new Fanfiction(info, content);
+  return new Fanfiction(await getInfo(id), await getContent(id));
 }
 
 export async function getContent(fic: number | cheerio.CheerioAPI) {
