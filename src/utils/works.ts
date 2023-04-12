@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
-import { Fanfiction } from "../classes/works";
-import { Info } from "../types/works";
+import { Fanfiction } from "../classes/works.js";
+import { Info } from "../types/works.js";
 
 export async function getFic(id: number) {
   return new Fanfiction(await getInfo(id), await getContent(id));

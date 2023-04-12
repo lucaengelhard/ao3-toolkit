@@ -1,4 +1,4 @@
-import { Login } from "../config/login";
+import { Login } from "../types/base.js";
 
 import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";

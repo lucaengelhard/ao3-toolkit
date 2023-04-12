@@ -1,12 +1,8 @@
-import { ao3 } from "./classes/base";
+import { ao3 } from "./classes/base.js";
 
-test(19865440);
+console.time("test");
 
-async function test(id: number) {
-  console.time("test");
+let fic = (await ao3.getFic(19865440)).author;
+console.log(fic);
 
-  let fic = (await ao3.getFic(id)).author;
-  console.log(fic);
-
-  console.timeEnd("test");
-}
+console.timeEnd("test");

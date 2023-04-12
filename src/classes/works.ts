@@ -1,4 +1,4 @@
-import { Info, Content } from "../types/works";
+import { Info, Content } from "../types/works.js";
 
 export class Fanfiction {
   #content;

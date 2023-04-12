@@ -1,11 +1,14 @@
+//EXTERNAL MODULES
 import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
-import { Login } from "../types/base";
-import { getHistory } from "../utils/history";
-import { getFic, getContent, getInfo } from "../utils/works";
-import { historyFanfiction } from "./works";
 import * as cheerio from "cheerio";
+
+//INTERNAL MODULES
+import { Login } from "../types/base.js";
+import { getHistory } from "../utils/history.js";
+import { getFic, getContent, getInfo } from "../utils/works.js";
+import { historyFanfiction } from "./works.js";
 
 export class ao3 {
   #logindata;
