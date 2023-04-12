@@ -85,10 +85,13 @@ async function getInfo(fic, id) {
     if (typeof id == "undefined") {
         throw new Error("If the first argument is a Cheerio Object and not an ID, input an ID with the type number as the second argument");
     }
+
     fic = await getParsableInfoData(fic);
+
     let info = {
-        title: await getTitle(fic),
+        title: resolved[0].value,
         id: id,
+
         author: await getAuthor(fic),
         fandom: await getFandom(fic),
         stats: await getStats(fic),
@@ -102,6 +105,7 @@ async function getInfo(fic, id) {
         series: await getSeries(fic),
         collections: await getCollections(fic),
         summary: await getSummary(fic),
+
     };
     return info;
 }

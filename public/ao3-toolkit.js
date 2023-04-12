@@ -141,10 +141,12 @@ class historyFanfiction extends Fanfiction {
 exports.historyFanfiction = historyFanfiction;
 test(19865440);
 async function test(id) {
+
     console.time("test");
     let fic = await ao3.getContent(id);
     console.log(fic);
     console.timeEnd("test");
+
 }
 /*
 

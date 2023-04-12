@@ -86,22 +86,51 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
 
   fic = await getParsableInfoData(fic);
 
+  let functions = [
+    getTitle(fic),
+    getAuthor(fic),
+    getFandom(fic),
+    getStats(fic),
+    getRelationships(fic),
+    getCharacters(fic),
+    getAdult(fic),
+    getRating(fic),
+    getWarnings(fic),
+    getCategories(fic),
+    getTags(fic),
+    getLanguage(fic),
+    getSeries(fic),
+    getCollections(fic),
+    getSummary(fic),
+  ];
+
+  let resolved = (await Promise.allSettled(functions)).map((el, i) => {
+    let element: any = el;
+
+    return element;
+  });
+
   let info: Info = {
-    title: await getTitle(fic),
+    title: resolved[0].value,
     id: id,
-    author: await getAuthor(fic),
-    fandom: await getFandom(fic),
-    stats: await getStats(fic),
-    relationships: await getRelationships(fic),
-    characters: await getCharacters(fic),
-    rating: await getRating(fic),
-    archiveWarnings: await getWarnings(fic),
-    categories: await getCategories(fic),
-    tags: await getTags(fic),
-    language: await getLanguage(fic),
-    series: await getSeries(fic),
-    collections: await getCollections(fic),
-    summary: await getSummary(fic),
+
+
+    author: resolved[1].value,
+    fandom: resolved[2].value,
+    stats: resolved[3].value,
+    relationships: resolved[4].value,
+    characters: resolved[5].value,
+    adult: resolved[6].value,
+    rating: resolved[7].value,
+    archiveWarnings: resolved[7].value,
+    categories: resolved[8].value,
+    tags: resolved[9].value,
+    language: resolved[10].value,
+    series: resolved[11].value,
+    collections: resolved[12].value,
+    summary: resolved[13].value,
+
+
   };
 
   return info;
