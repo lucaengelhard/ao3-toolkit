@@ -111,7 +111,6 @@ export interface Info {
   stats: Stats;
   relationships: Array<Relationship>;
   characters: Array<Character>;
-  adult: boolean;
   rating: Rating;
   archiveWarnings: archiveWarning;
   categories: Array<Category>;
@@ -269,10 +268,6 @@ export class Fanfiction {
 
   get endNote() {
     return this.#content.notes.endNote;
-  }
-
-  get adult() {
-    return this.#info.adult;
   }
 }
 

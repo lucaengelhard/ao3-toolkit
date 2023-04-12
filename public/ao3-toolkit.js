@@ -112,9 +112,6 @@ class Fanfiction {
     get endNote() {
         return this.#content.notes.endNote;
     }
-    get adult() {
-        return this.#info.adult;
-    }
 }
 exports.Fanfiction = Fanfiction;
 class historyFanfiction extends Fanfiction {
@@ -144,8 +141,10 @@ class historyFanfiction extends Fanfiction {
 exports.historyFanfiction = historyFanfiction;
 test(19865440);
 async function test(id) {
+    console.time("test");
     let fic = await (0, functions_1.getInfo)(id);
     console.log(fic);
+    console.timeEnd("test");
 }
 /*
 
