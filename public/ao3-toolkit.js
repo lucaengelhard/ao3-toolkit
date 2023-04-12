@@ -35,8 +35,11 @@ const login_1 = require("./login");
 const cheerio = __importStar(require("cheerio"));
 class ao3 {
     #logindata;
+    #instance;
     constructor(logindata) {
         this.#logindata = logindata;
+        this.#instance = undefined;
+        this.login();
     }
     async login() {
         let loginurl = "/users/login";
@@ -50,11 +53,10 @@ class ao3 {
         let $ = cheerio.load(initialload.data);
         let token = $("#new_user input[name='authenticity_token']")[0].attribs
             .value;
-        console.log(token);
         let payload = `authenticity_token=${encodeURIComponent(token)}&user%5Blogin%5D=${this.#logindata.username}&user%5Bpassword%5D=${this.#logindata.password}&user%5Bremember_me%5D=1&commit=Log+in`;
-        let session = await instance.post(loginurl, payload);
-        let history = await instance.get(`/users/${this.#logindata.username}/readings`);
-        console.log(history.data);
+        await instance.post(loginurl, payload);
+        this.#instance = instance;
+        return instance;
     }
     get logindata() {
         return this.#logindata;
@@ -66,10 +68,10 @@ class ao3 {
         this.#logindata.password = password;
     }
     async getHistory() {
-        return await (0, functions_1.getHistory)(this.#logindata);
+        return await (0, functions_1.getHistory)(this.#logindata, this.#instance);
     }
     async getHistoryFic(id) {
-        let userHistory = await (0, functions_1.getHistory)(this.#logindata);
+        let userHistory = await (0, functions_1.getHistory)(this.#logindata, this.#instance);
         let fanFiction = await (0, functions_1.getFic)(id);
         let matchingElement = userHistory.find((element) => {
             return element.id == fanFiction.id;
@@ -194,7 +196,7 @@ exports.historyFanfiction = historyFanfiction;
 test(19865440);
 async function test(id) {
     console.time("test");
-    let session = new ao3(login_1.logindata).login();
+    let session = new ao3(login_1.logindata);
     console.timeEnd("test");
 }
 /*
