@@ -1,10 +1,10 @@
 import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
-import { Fanfiction } from "../classes/works.js";
+import { Work } from "../classes/works.js";
 import { Info } from "../types/works.js";
 
-export async function getFic(id: number) {
-  return new Fanfiction(await getInfo(id), await getContent(id));
+export async function getWork(id: number) {
+  return new Work(await getInfo(id), await getContent(id));
 }
 
 export async function getContent(fic: number | cheerio.CheerioAPI) {

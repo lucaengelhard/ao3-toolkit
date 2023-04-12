@@ -7,8 +7,8 @@ import * as cheerio from "cheerio";
 //INTERNAL MODULES
 import { Login } from "../types/base.js";
 import { getHistory } from "../utils/history.js";
-import { getFic, getContent, getInfo } from "../utils/works.js";
-import { historyFanfiction } from "./works.js";
+import { getWork, getContent, getInfo } from "../utils/works.js";
+import { historyWork } from "./works.js";
 
 export class ao3 {
   #logindata;
@@ -71,9 +71,9 @@ export class ao3 {
     return await getHistory(this.#logindata, this.#instance);
   }
 
-  async getHistoryFic(id: number) {
+  async getHistoryWork(id: number) {
     let userHistory = await getHistory(this.#logindata, this.#instance);
-    let fanFiction = await getFic(id);
+    let fanFiction = await getWork(id);
 
     let matchingElement = userHistory.find((element) => {
       return element.id == fanFiction.id;
@@ -82,7 +82,7 @@ export class ao3 {
     if (matchingElement == undefined) {
       return;
     } else {
-      return new historyFanfiction(
+      return new historyWork(
         fanFiction.info,
         fanFiction.content,
         matchingElement.lastVisit,
@@ -94,8 +94,8 @@ export class ao3 {
   //getBookmarks() {}
   //getHistory + andere user-based functions
 
-  static async getFic(id: number) {
-    return await getFic(id);
+  static async getWork(id: number) {
+    return await getWork(id);
   }
 
   static async getContent(fic: number | cheerio.CheerioAPI) {
