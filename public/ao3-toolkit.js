@@ -142,7 +142,7 @@ exports.historyFanfiction = historyFanfiction;
 test(19865440);
 async function test(id) {
     console.time("test");
-    let fic = await (0, functions_1.getInfo)(id);
+    let fic = await ao3.getContent(id);
     console.log(fic);
     console.timeEnd("test");
 }

@@ -42,48 +42,30 @@ async function getFic(id) {
 exports.getFic = getFic;
 async function getContent(fic) {
     let $ = await getParsableInfoData(fic);
-    let download = "https://archiveofourown.org" +
+    let downloadURL = "https://archiveofourown.org" +
         $(".download").find("li:contains('HTML')").find("a").attr("href");
-    //Check for adult Content
-    let adultContent = $("p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')");
-    if (adultContent.length <= 1) {
-        let proceedLink = "https://archiveofourown.org" +
-            adultContent.next().find("a").first().attr("href");
-        let browser = await puppeteer_1.default.launch();
-        let page = await browser.newPage();
-        await page.goto(proceedLink);
-        download = await page.$$eval(".download li a", (elements) => {
-            return elements[elements.length - 1].href;
-        });
-        //Download
-        let completeDownload = await (0, axios_1.default)({
-            method: "get",
-            url: download,
-        });
-        //Parse Data
-        $ = cheerio.load(completeDownload.data);
-        browser.close();
-    }
+    let download = (await axios_1.default.get(downloadURL)).data;
+    let $content = cheerio.load(download);
     let content = {
         notes: {
-            preNote: await getPreNote($),
-            endNote: await getEndNote($),
+            preNote: await getPreNote($content),
+            endNote: await getEndNote($content),
         },
-        chapters: $("#chapters")
+        chapters: $content("#chapters")
             .find(".meta")
             .get()
             .map((chapter) => {
             return {
-                chapterTitle: $(chapter).find(".heading").text(),
-                chapterSummary: $(chapter)
+                chapterTitle: $content(chapter).find(".heading").text(),
+                chapterSummary: $content(chapter)
                     .find("p:contains('Chapter Summary')")
                     .next()
                     .text(),
-                chapterNotes: $(chapter)
+                chapterNotes: $content(chapter)
                     .find("p:contains('Chapter Notes')")
                     .next()
                     .text(),
-                chapterContent: $(chapter).next().html(),
+                chapterContent: $content(chapter).next().html(),
             };
         }),
     };
@@ -126,7 +108,7 @@ async function getInfo(fic, id) {
 exports.getInfo = getInfo;
 async function getTitle(fic) {
     let $ = await getParsableInfoData(fic);
-    return $("#preface").find("title").first().text();
+    return $(".preface").find(".title").first().text().trim();
 }
 exports.getTitle = getTitle;
 async function getAuthor(fic) {
@@ -213,16 +195,16 @@ exports.getCharacters = getCharacters;
 async function getRating(fic) {
     let $ = await getParsableInfoData(fic);
     return {
-        ratingName: $(".rating a").find("a").text(),
-        ratingLink: $(".rating a").find("a").attr("href"),
+        ratingName: $("dd.rating").text().trim(),
+        ratingLink: $("dd.rating").find("a").attr("href"),
     };
 }
 exports.getRating = getRating;
 async function getWarnings(fic) {
     let $ = await getParsableInfoData(fic);
     return {
-        warningName: $(".warning a").find("a").text(),
-        warningLink: $(".warning a").find("a").attr("href"),
+        warningName: $("dd.warning").text().trim(),
+        warningLink: $("dd.warning").find("a").attr("href"),
     };
 }
 exports.getWarnings = getWarnings;
@@ -256,19 +238,19 @@ async function getTags(fic) {
 exports.getTags = getTags;
 async function getLanguage(fic) {
     let $ = await getParsableInfoData(fic);
-    return $(".language").first().next().text();
+    return $(".language").first().next().text().replace("\n", "").trim();
 }
 exports.getLanguage = getLanguage;
 async function getSeries(fic) {
     let $ = await getParsableInfoData(fic);
     return $("dd.series")
-        .find("span.series")
+        .find("span.position")
         .get()
         .map((el) => {
         return {
             seriesName: $(el).find("a").text(),
             seriesLink: $(el).find("a").attr("href"),
-            seriesPart: parseInt($(el).find(".positon").first().text().replace(/\D/g, "")),
+            seriesPart: parseInt($(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")),
         };
     });
 }
@@ -302,7 +284,6 @@ async function getParsableInfoData(fic) {
     if (typeof fic == "number") {
         //use Axios to get content -> change content of fic
         let url = "https://archiveofourown.org/works/" + fic;
-        console.log(url);
         //Initial Page Load
         let initialLoad = await (0, axios_1.default)({
             method: "get",
@@ -311,7 +292,6 @@ async function getParsableInfoData(fic) {
                 cookie: "view_adult=true;",
             },
         });
-        console.log(initialLoad.data);
         let downloadedFic = cheerio.load(initialLoad.data);
         return downloadedFic;
     }

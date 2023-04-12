@@ -28,62 +28,36 @@ export async function getFic(id: number) {
 export async function getContent(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let download =
+  let downloadURL =
     "https://archiveofourown.org" +
     $(".download").find("li:contains('HTML')").find("a").attr("href");
 
-  //Check for adult Content
-  let adultContent = $(
-    "p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')"
-  );
+  let download = (await axios.get(downloadURL)).data;
 
-  if (adultContent.length <= 1) {
-    let proceedLink =
-      "https://archiveofourown.org" +
-      adultContent.next().find("a").first().attr("href");
-
-    let browser = await puppeteer.launch();
-    let page = await browser.newPage();
-    await page.goto(proceedLink);
-
-    download = await page.$$eval(".download li a", (elements) => {
-      return elements[elements.length - 1].href;
-    });
-
-    //Download
-    let completeDownload = await axios({
-      method: "get",
-      url: download,
-    });
-
-    //Parse Data
-    $ = cheerio.load(completeDownload.data);
-
-    browser.close();
-  }
+  let $content = cheerio.load(download);
 
   let content = {
     notes: {
-      preNote: await getPreNote($),
-      endNote: await getEndNote($),
+      preNote: await getPreNote($content),
+      endNote: await getEndNote($content),
     },
 
-    chapters: $("#chapters")
+    chapters: $content("#chapters")
       .find(".meta")
       .get()
       .map((chapter) => {
         return {
-          chapterTitle: $(chapter).find(".heading").text(),
-          chapterSummary: $(chapter)
+          chapterTitle: $content(chapter).find(".heading").text(),
+          chapterSummary: $content(chapter)
             .find("p:contains('Chapter Summary')")
             .next()
             .text(),
-          chapterNotes: $(chapter)
+          chapterNotes: $content(chapter)
             .find("p:contains('Chapter Notes')")
             .next()
             .text(),
 
-          chapterContent: $(chapter).next().html(),
+          chapterContent: $content(chapter).next().html(),
         };
       }),
   };
@@ -136,7 +110,7 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
 export async function getTitle(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  return $("#preface").find("title").first().text();
+  return $(".preface").find(".title").first().text().trim();
 }
 
 export async function getAuthor(fic: number | cheerio.CheerioAPI) {
@@ -236,8 +210,8 @@ export async function getRating(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
   return {
-    ratingName: $(".rating a").find("a").text(),
-    ratingLink: $(".rating a").find("a").attr("href"),
+    ratingName: $("dd.rating").text().trim(),
+    ratingLink: $("dd.rating").find("a").attr("href"),
   };
 }
 
@@ -245,8 +219,8 @@ export async function getWarnings(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
   return {
-    warningName: $(".warning a").find("a").text(),
-    warningLink: $(".warning a").find("a").attr("href"),
+    warningName: $("dd.warning").text().trim(),
+    warningLink: $("dd.warning").find("a").attr("href"),
   };
 }
 
@@ -283,21 +257,21 @@ export async function getTags(fic: number | cheerio.CheerioAPI) {
 export async function getLanguage(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  return $(".language").first().next().text();
+  return $(".language").first().next().text().replace("\n", "").trim();
 }
 
 export async function getSeries(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
   return $("dd.series")
-    .find("span.series")
+    .find("span.position")
     .get()
     .map((el) => {
       return {
         seriesName: $(el).find("a").text(),
         seriesLink: $(el).find("a").attr("href"),
         seriesPart: parseInt(
-          $(el).find(".positon").first().text().replace(/\D/g, "")
+          $(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")
         ),
       };
     });
@@ -344,8 +318,6 @@ async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
         cookie: "view_adult=true;",
       },
     });
-
-    console.log(initialLoad.data);
 
     let downloadedFic = cheerio.load(initialLoad.data);
     return downloadedFic;
