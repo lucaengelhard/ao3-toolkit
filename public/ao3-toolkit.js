@@ -1,11 +1,63 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.historyFanfiction = exports.Fanfiction = exports.ao3 = void 0;
+const axios_1 = __importDefault(require("axios"));
+const axios_cookiejar_support_1 = require("axios-cookiejar-support");
+const tough_cookie_1 = require("tough-cookie");
 const functions_1 = require("./functions");
+const login_1 = require("./login");
+const cheerio = __importStar(require("cheerio"));
 class ao3 {
     #logindata;
+    #instance;
     constructor(logindata) {
         this.#logindata = logindata;
+        this.#instance = undefined;
+        this.login();
+    }
+    async login() {
+        let loginurl = "/users/login";
+        let jar = new tough_cookie_1.CookieJar();
+        let instance = (0, axios_cookiejar_support_1.wrapper)(axios_1.default.create({
+            withCredentials: true,
+            baseURL: "https://archiveofourown.org",
+            jar,
+            timeout: 300,
+        }));
+        let initialload = await instance.get(loginurl);
+        let $ = cheerio.load(initialload.data);
+        let token = $("#new_user input[name='authenticity_token']")[0].attribs
+            .value;
+        let payload = `authenticity_token=${encodeURIComponent(token)}&user%5Blogin%5D=${this.#logindata.username}&user%5Bpassword%5D=${this.#logindata.password}&user%5Bremember_me%5D=1&commit=Log+in`;
+        await instance.post(loginurl, payload);
+        this.#instance = instance;
+        return instance;
     }
     get logindata() {
         return this.#logindata;
@@ -17,10 +69,10 @@ class ao3 {
         this.#logindata.password = password;
     }
     async getHistory() {
-        return await (0, functions_1.getHistory)(this.#logindata);
+        return await (0, functions_1.getHistory)(this.#logindata, this.#instance);
     }
     async getHistoryFic(id) {
-        let userHistory = await (0, functions_1.getHistory)(this.#logindata);
+        let userHistory = await (0, functions_1.getHistory)(this.#logindata, this.#instance);
         let fanFiction = await (0, functions_1.getFic)(id);
         let matchingElement = userHistory.find((element) => {
             return element.id == fanFiction.id;
@@ -143,8 +195,10 @@ test(19865440);
 async function test(id) {
 
     console.time("test");
+
     let fic = await ao3.getContent(id);
     console.log(fic);
+
     console.timeEnd("test");
 
 }
