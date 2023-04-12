@@ -30,4 +30,17 @@ Planned Features:
 
 Inspiration and similar Projects:
 -
+
+https://github.com/cyrusae/AO3.js  
+https://github.com/misaalanshori/ao3webapi  
+https://github.com/timing1337/ao3_ts  
+https://github.com/ReyhanArdiya/stories-scrapper  
+https://github.com/dr-off/ao3-api  
+https://github.com/Dramatycznie/AO3_Scraper  
+https://github.com/rsanjabi/narratives  
+https://github.com/syrtis-m/ao3-bookmark-getter  
+https://github.com/niacdoial/AO3-stylish-downloader  
+
+
+more:  
 https://github.com/stars/lucaengelhard/lists/ao3-app
