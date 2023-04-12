@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
-import { Login } from "../config/login";
+import { Login } from "../types/base";
 import { getHistory } from "../utils/history";
 import { getFic, getContent, getInfo } from "../utils/works";
 import { historyFanfiction } from "./works";
