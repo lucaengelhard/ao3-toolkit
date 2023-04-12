@@ -2,9 +2,9 @@
   "name": "ao3-toolkit",
   "version": "0.0.1",
   "description": "A Toolkit for interfacing with the Archive of our Own",
-  "main": "public/ao3-toolkit.js",
+  "main": "dist/ao3-toolkit.js",
   "scripts": {
-    "build": "npx tsc && node public/ao3-toolkit.js"
+    "build": "npx tsc && node dist/ao3-toolkit.js"
   },
   "repository": {
     "type": "git",
