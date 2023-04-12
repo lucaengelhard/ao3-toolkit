@@ -5,6 +5,10 @@ Coded in TypeScript with nodejs
 
 -- in development --
 
+Features:
+-
+
+
 Planned Features:
 - 
 - Fetching single works
@@ -17,7 +21,7 @@ Planned Features:
   - by words
   - by kudos
   - by hits
-  - by Bbookmarks
+  - by bookmarks
   - by comments
   - by chaptercount
   - by times visited
