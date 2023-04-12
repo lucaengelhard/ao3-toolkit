@@ -2,4 +2,6 @@ node_modules/
 
 data/
 
+dist/
+
 login.*
