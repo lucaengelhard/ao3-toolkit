@@ -7,7 +7,7 @@ let session = new ao3(logindata);
 
 await session.login();
 
-let history = await session.getHistory();
+let history = await ao3.getInfo(19865440);
 
 console.log(history);
 

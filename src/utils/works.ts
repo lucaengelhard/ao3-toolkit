@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
 import { Work } from "../classes/works.js";
 import { Info } from "../types/works.js";
+import { linkToAbsolute } from "../utils/helper.js";
 
 export async function getWork(id: number) {
   return new Work(await getInfo(id), await getContent(id));
@@ -124,7 +125,7 @@ export async function getAuthor(fic: number | cheerio.CheerioAPI) {
 
   return {
     authorName: $("[rel=author]").text(),
-    authorLink: $("[rel=author]").attr("href"),
+    authorLink: linkToAbsolute($("[rel=author]").attr("href")),
   };
 }
 
@@ -136,7 +137,7 @@ export async function getFandom(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         fandomName: $(el).text(),
-        fandomLink: $(el).attr("href"),
+        fandomLink: linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -192,7 +193,7 @@ export async function getRelationships(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         relationshipName: $(el).text(),
-        relationshipLink: $(el).attr("href"),
+        relationshipLink: linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -207,7 +208,7 @@ export async function getCharacters(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         characterName: $(el).text(),
-        characterLink: $(el).attr("href"),
+        characterLink: linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -217,7 +218,7 @@ export async function getRating(fic: number | cheerio.CheerioAPI) {
 
   return {
     ratingName: $("dd.rating").text().trim(),
-    ratingLink: $("dd.rating").find("a").attr("href"),
+    ratingLink: linkToAbsolute($("dd.rating").find("a").attr("href")),
   };
 }
 
@@ -226,7 +227,7 @@ export async function getWarnings(fic: number | cheerio.CheerioAPI) {
 
   return {
     warningName: $("dd.warning").text().trim(),
-    warningLink: $("dd.warning").find("a").attr("href"),
+    warningLink: linkToAbsolute($("dd.warning").find("a").attr("href")),
   };
 }
 
@@ -240,7 +241,7 @@ export async function getCategories(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         categoryName: $(el).text(),
-        categoryLink: $(el).attr("href"),
+        categoryLink: linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -255,7 +256,7 @@ export async function getTags(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         tagName: $(el).text(),
-        tagLink: $(el).attr("href"),
+        tagLink: linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -275,7 +276,7 @@ export async function getSeries(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         seriesName: $(el).find("a").text(),
-        seriesLink: $(el).find("a").attr("href"),
+        seriesLink: linkToAbsolute($(el).find("a").attr("href")),
         seriesPart: parseInt(
           $(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")
         ),
@@ -293,7 +294,7 @@ export async function getCollections(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         collectionName: $(el).text(),
-        collectionLink: $(el).attr("href"),
+        collectionLink: linkToAbsolute($(el).attr("href")),
       };
     });
 }
