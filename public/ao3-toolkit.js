@@ -48,6 +48,7 @@ class ao3 {
             withCredentials: true,
             baseURL: "https://archiveofourown.org",
             jar,
+            timeout: 300,
         }));
         let initialload = await instance.get(loginurl);
         let $ = cheerio.load(initialload.data);
@@ -197,6 +198,9 @@ test(19865440);
 async function test(id) {
     console.time("test");
     let session = new ao3(login_1.logindata);
+    await session.login();
+    let history = await session.getHistory();
+    console.log(history);
     console.timeEnd("test");
 }
 /*

@@ -557,10 +557,10 @@ async function getHistory(logindata, instance) {
     let userHistory = [];
     let firstLoadContent = history.data;
     let $ = cheerio.load(firstLoadContent);
-    let navLength = parseInt($(".pagination li").not("next").last().text());
+    let navLength = parseInt($(".pagination li").not(".next").last().text());
     let historypages = [];
-    for (let i = 2; i < navLength; i++) {
-        console.log("Scanning Page " + i);
+    for (let i = 1; i < navLength; i++) {
+        console.log("getting Page " + i);
         historypages.push(instance.get(`/users/${logindata.username}/readings?page=${i}`));
     }
     let resolvedHistoryPages = await Promise.all(historypages);

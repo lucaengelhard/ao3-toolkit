@@ -138,7 +138,7 @@ export class ao3 {
     this.login();
   }
 
-  private async login() {
+  async login() {
     let loginurl = "/users/login";
 
     let jar = new CookieJar();
@@ -147,6 +147,7 @@ export class ao3 {
         withCredentials: true,
         baseURL: "https://archiveofourown.org",
         jar,
+        timeout: 300,
       })
     );
 
@@ -359,6 +360,10 @@ test(19865440);
 async function test(id: number) {
   console.time("test");
   let session = new ao3(logindata);
+  await session.login();
+  let history = await session.getHistory();
+  console.log(history);
+
   console.timeEnd("test");
 }
 
