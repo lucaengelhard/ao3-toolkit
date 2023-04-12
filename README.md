@@ -27,3 +27,7 @@ Planned Features:
   - fics read
   - favourite tags
   - favourite fandoms
+
+Inspiration and similar Projects:
+-
+https://github.com/stars/lucaengelhard/lists/ao3-app
