@@ -30,6 +30,7 @@
   "devDependencies": {
     "@types/node": "^18.15.11",
     "@types/tough-cookie": "^4.0.2",
-    "concurrently": "^8.0.1"
+    "concurrently": "^8.0.1",
+    "typedoc": "^0.24.1"
   }
 }
