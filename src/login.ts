@@ -4,6 +4,6 @@ export interface Login {
 }
 
 export const logindata: Login = {
-  username: "",
-  password: "",
+  username: "capmaennle",
+  password: "Computer2208.",
 };

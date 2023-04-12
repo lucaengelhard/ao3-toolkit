@@ -1,4 +1,7 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
+import { wrapper } from "axios-cookiejar-support";
+import { CookieJar } from "tough-cookie";
+
 import {
   getAuthor,
   getCategories,
@@ -21,6 +24,7 @@ import {
 } from "./functions";
 import { logindata, Login } from "./login";
 import * as cheerio from "cheerio";
+import { attr } from "cheerio/lib/api/attributes";
 
 export interface Author {
   authorName: string;
@@ -124,8 +128,46 @@ export interface Info {
 
 export class ao3 {
   #logindata;
+  #instance: AxiosInstance | undefined;
+
   constructor(logindata: Login) {
     this.#logindata = logindata;
+
+    this.#instance = undefined;
+
+    this.login();
+  }
+
+  private async login() {
+    let loginurl = "/users/login";
+
+    let jar = new CookieJar();
+    let instance = wrapper(
+      axios.create({
+        withCredentials: true,
+        baseURL: "https://archiveofourown.org",
+        jar,
+      })
+    );
+
+    let initialload = await instance.get(loginurl);
+
+    let $ = cheerio.load(initialload.data);
+
+    let token = $("#new_user input[name='authenticity_token']")[0].attribs
+      .value;
+
+    let payload = `authenticity_token=${encodeURIComponent(
+      token
+    )}&user%5Blogin%5D=${this.#logindata.username}&user%5Bpassword%5D=${
+      this.#logindata.password
+    }&user%5Bremember_me%5D=1&commit=Log+in`;
+
+    await instance.post(loginurl, payload);
+
+    this.#instance = instance;
+
+    return instance;
   }
 
   get logindata() {
@@ -141,11 +183,11 @@ export class ao3 {
   }
 
   async getHistory() {
-    return await getHistory(this.#logindata);
+    return await getHistory(this.#logindata, this.#instance);
   }
 
   async getHistoryFic(id: number) {
-    let userHistory = await getHistory(this.#logindata);
+    let userHistory = await getHistory(this.#logindata, this.#instance);
     let fanFiction = await getFic(id);
 
     let matchingElement = userHistory.find((element) => {
@@ -316,8 +358,7 @@ test(19865440);
 
 async function test(id: number) {
   console.time("test");
-  let fic = await getInfo(id);
-  console.log(fic);
+  let session = new ao3(logindata);
   console.timeEnd("test");
 }
 

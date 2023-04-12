@@ -7,7 +7,7 @@ import {
 } from "./ao3-toolkit";
 import { Login } from "./login";
 
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
 
@@ -550,7 +550,11 @@ export interface historyFic {
   timesVisited: number;
 }
 
-export async function getHistory(logindata: Login) {
+export async function getHistory(
+  logindata: Login,
+  instance: AxiosInstance | undefined
+) {
+  /*
   let historyURLinit: string =
     "https://archiveofourown.org/users/" +
     logindata.username +
@@ -588,10 +592,10 @@ export async function getHistory(logindata: Login) {
     }
   });
 
-  let userHistory: Array<historyFic> = [];
+  
 
   for (let i = 2; i < navLength; i++) {
-    console.log("Scanning Page " + i);
+    
 
     let newPage = await browser.newPage();
 
@@ -604,9 +608,38 @@ export async function getHistory(logindata: Login) {
     let content = await newPage.content();
 
     await newPage.close();
+*/
+  if (typeof instance == "undefined") {
+    throw new Error(
+      "instance is undefined. wait for the instance to be resolved and then execute code"
+    );
+  }
 
-    let $ = cheerio.load(content);
+  let history = await instance.get(`/users/${logindata.username}/readings`);
 
+  let userHistory: Array<historyFic> = [];
+
+  let firstLoadContent = history.data;
+
+  let $ = cheerio.load(firstLoadContent);
+
+  let navLength = parseInt($(".pagination li").not("next").last().text());
+
+  let historypages = [];
+
+  for (let i = 2; i < navLength; i++) {
+    console.log("Scanning Page " + i);
+
+    historypages.push(
+      instance.get(`/users/${logindata.username}/readings?page=${i}`)
+    );
+  }
+
+  let resolvedHistoryPages = await Promise.all(historypages);
+
+  resolvedHistoryPages.forEach((res) => {
+    let page = res.data;
+    let $ = cheerio.load(page);
     let works = $("li[role='article']").toArray();
 
     works.forEach((currentWork) => {
@@ -652,6 +685,9 @@ export async function getHistory(logindata: Login) {
 
       userHistory.push(historyElement);
     });
-  }
+  });
+
+  //Load Content
+
   return userHistory;
 }
