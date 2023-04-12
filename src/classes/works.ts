@@ -1,6 +1,6 @@
 import { Info, Content } from "../types/works.js";
 
-export class Fanfiction {
+export class Work {
   #content;
   #info;
 
@@ -90,7 +90,7 @@ export class Fanfiction {
   }
 }
 
-export class historyFanfiction extends Fanfiction {
+export class historyWork extends Work {
   #info;
   #timesVisited;
   #lastVisit;
