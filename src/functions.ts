@@ -93,7 +93,6 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     getStats(fic),
     getRelationships(fic),
     getCharacters(fic),
-    getAdult(fic),
     getRating(fic),
     getWarnings(fic),
     getCategories(fic),
@@ -114,13 +113,11 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     title: resolved[0].value,
     id: id,
 
-
     author: resolved[1].value,
     fandom: resolved[2].value,
     stats: resolved[3].value,
     relationships: resolved[4].value,
     characters: resolved[5].value,
-    adult: resolved[6].value,
     rating: resolved[7].value,
     archiveWarnings: resolved[7].value,
     categories: resolved[8].value,
@@ -129,8 +126,6 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     series: resolved[11].value,
     collections: resolved[12].value,
     summary: resolved[13].value,
-
-
   };
 
   return info;
