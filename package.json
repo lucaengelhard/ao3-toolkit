@@ -1,6 +1,6 @@
 {
   "name": "ao3-toolkit",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A Toolkit for interfacing with the Archive of our Own",
   "main": "public/ao3-toolkit.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/lucaengelhard/ao3-toolkit.git"
   },
   "author": "Luca Engelhard",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/lucaengelhard/ao3-toolkit/issues"
   },

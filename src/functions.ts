@@ -14,15 +14,12 @@ import puppeteer from "puppeteer";
 export async function getFic(id: number) {
   let url: string = "https://archiveofourown.org/works/" + id;
 
-  //Initial Page Load
-  let initialLoad = await axios({
-    method: "get",
-    url: url,
-  });
+  let initialLoad = await axios.get(encodeURI(url));
 
   let $ = cheerio.load(initialLoad.data);
 
   let info: Info = await getInfo($, id);
+
   let content = await getContent($);
 
   return new Fanfiction(info, content);
@@ -31,62 +28,36 @@ export async function getFic(id: number) {
 export async function getContent(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let download =
+  let downloadURL =
     "https://archiveofourown.org" +
     $(".download").find("li:contains('HTML')").find("a").attr("href");
 
-  //Check for adult Content
-  let adultContent = $(
-    "p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')"
-  );
+  let download = (await axios.get(downloadURL)).data;
 
-  if (adultContent.length <= 1) {
-    let proceedLink =
-      "https://archiveofourown.org" +
-      adultContent.next().find("a").first().attr("href");
-
-    let browser = await puppeteer.launch();
-    let page = await browser.newPage();
-    await page.goto(proceedLink);
-
-    download = await page.$$eval(".download li a", (elements) => {
-      return elements[elements.length - 1].href;
-    });
-
-    //Download
-    let completeDownload = await axios({
-      method: "get",
-      url: download,
-    });
-
-    //Parse Data
-    $ = cheerio.load(completeDownload.data);
-
-    browser.close();
-  }
+  let $content = cheerio.load(download);
 
   let content = {
     notes: {
-      preNote: await getPreNote($),
-      endNote: await getEndNote($),
+      preNote: await getPreNote($content),
+      endNote: await getEndNote($content),
     },
 
-    chapters: $("#chapters")
+    chapters: $content("#chapters")
       .find(".meta")
       .get()
       .map((chapter) => {
         return {
-          chapterTitle: $(chapter).find(".heading").text(),
-          chapterSummary: $(chapter)
+          chapterTitle: $content(chapter).find(".heading").text(),
+          chapterSummary: $content(chapter)
             .find("p:contains('Chapter Summary')")
             .next()
             .text(),
-          chapterNotes: $(chapter)
+          chapterNotes: $content(chapter)
             .find("p:contains('Chapter Notes')")
             .next()
             .text(),
 
-          chapterContent: $(chapter).next().html(),
+          chapterContent: $content(chapter).next().html(),
         };
       }),
   };
@@ -122,7 +93,6 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     getStats(fic),
     getRelationships(fic),
     getCharacters(fic),
-    getAdult(fic),
     getRating(fic),
     getWarnings(fic),
     getCategories(fic),
@@ -142,12 +112,12 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
   let info: Info = {
     title: resolved[0].value,
     id: id,
+
     author: resolved[1].value,
     fandom: resolved[2].value,
     stats: resolved[3].value,
     relationships: resolved[4].value,
     characters: resolved[5].value,
-    adult: resolved[6].value,
     rating: resolved[7].value,
     archiveWarnings: resolved[7].value,
     categories: resolved[8].value,
@@ -164,13 +134,7 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
 export async function getTitle(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return $(".header.module").find("a").first().text();
-  } else {
-    return $("#preface").find("title").first().text();
-  }
+  return $(".preface").find(".title").first().text().trim();
 }
 
 export async function getAuthor(fic: number | cheerio.CheerioAPI) {
@@ -185,27 +149,14 @@ export async function getAuthor(fic: number | cheerio.CheerioAPI) {
 export async function getFandom(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return $(".fandoms a")
-      .get()
-      .map((el) => {
-        return {
-          fandomName: $(el).text(),
-          fandomLink: $(el).attr("href"),
-        };
-      });
-  } else {
-    return $(".fandom a")
-      .get()
-      .map((el) => {
-        return {
-          fandomName: $(el).text(),
-          fandomLink: $(el).attr("href"),
-        };
-      });
-  }
+  return $(".fandom a")
+    .get()
+    .map((el) => {
+      return {
+        fandomName: $(el).text(),
+        fandomLink: $(el).attr("href"),
+      };
+    });
 }
 
 export async function getStats(fic: number | cheerio.CheerioAPI) {
@@ -252,277 +203,130 @@ export async function getStats(fic: number | cheerio.CheerioAPI) {
 export async function getRelationships(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return $(".relationships a")
-      .get()
-      .map((el) => {
-        return {
-          relationshipName: $(el).text(),
-          relationshipLink: $(el).attr("href"),
-        };
-      });
-  } else {
-    return $(".relationship")
-      .next()
-      .find("a")
-      .get()
-      .map((el) => {
-        return {
-          relationshipName: $(el).text(),
-          relationshipLink: $(el).attr("href"),
-        };
-      });
-  }
+  return $(".relationship")
+    .next()
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        relationshipName: $(el).text(),
+        relationshipLink: $(el).attr("href"),
+      };
+    });
 }
 
 export async function getCharacters(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return $(".characters a")
-      .get()
-      .map((el) => {
-        return {
-          characterName: $(el).text(),
-          characterLink: $(el).attr("href"),
-        };
-      });
-  } else {
-    return $(".character")
-      .next()
-      .find("a")
-      .get()
-      .map((el) => {
-        return {
-          characterName: $(el).text(),
-          characterLink: $(el).attr("href"),
-        };
-      });
-  }
-}
-
-export async function getAdult(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
-
-  let adultContent = $(
-    "p:contains('This work could have adult content. If you proceed you have agreed that you are willing to see such content.')"
-  );
-
-  let adult = false;
-  if (adultContent.length <= 1) {
-    adult = true;
-  }
-
-  return adult;
+  return $(".character")
+    .next()
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        characterName: $(el).text(),
+        characterLink: $(el).attr("href"),
+      };
+    });
 }
 
 export async function getRating(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return {
-      ratingName: $(".rating").text(),
-      ratingLink:
-        "https://archiveofourown.org/tags/" + $(".rating").text() + "/works",
-    };
-  } else {
-    return {
-      ratingName: $(".rating a").find("a").text(),
-      ratingLink: $(".rating a").find("a").attr("href"),
-    };
-  }
+  return {
+    ratingName: $("dd.rating").text().trim(),
+    ratingLink: $("dd.rating").find("a").attr("href"),
+  };
 }
 
 export async function getWarnings(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return {
-      warningName: $(".warnings").first().text(),
-      warningLink:
-        "https://archiveofourown.org/tags/" +
-        encodeURIComponent($(".warnings").first().text()) +
-        "/works",
-    };
-  } else {
-    return {
-      warningName: $(".warning a").find("a").text(),
-      warningLink: $(".warning a").find("a").attr("href"),
-    };
-  }
+  return {
+    warningName: $("dd.warning").text().trim(),
+    warningLink: $("dd.warning").find("a").attr("href"),
+  };
 }
 
 export async function getCategories(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return $(".category")
-      .first()
-      .text()
-      .split(",")
-      .map((el) => {
-        return {
-          categoryName: el.trim(),
-          categoryLink:
-            "https://archiveofourown.org/tags/" +
-            encodeURIComponent(el.trim()) +
-            "/works",
-        };
-      });
-  } else {
-    return $(".category")
-      .next()
-      .find("a")
-      .get()
-      .map((el) => {
-        return {
-          categoryName: $(el).text(),
-          categoryLink: $(el).attr("href"),
-        };
-      });
-  }
+  return $(".category")
+    .next()
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        categoryName: $(el).text(),
+        categoryLink: $(el).attr("href"),
+      };
+    });
 }
 
 export async function getTags(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return $(".freeforms a")
-      .get()
-      .map((el) => {
-        return {
-          tagName: $(el).text(),
-          tagLink: $(el).attr("href"),
-        };
-      });
-  } else {
-    return $(".freeform")
-      .next()
-      .find("a")
-      .get()
-      .map((el) => {
-        return {
-          tagName: $(el).text(),
-          tagLink: $(el).attr("href"),
-        };
-      });
-  }
+  return $(".freeform")
+    .next()
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        tagName: $(el).text(),
+        tagLink: $(el).attr("href"),
+      };
+    });
 }
 
 export async function getLanguage(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  return $(".language").first().next().text();
+  return $(".language").first().next().text().replace("\n", "").trim();
 }
 
 export async function getSeries(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    return $("ul.series")
-      .find("li")
-      .get()
-      .map((el) => {
-        return {
-          seriesName: $(el).find("a").text(),
-          seriesLink: $(el).find("a").attr("href"),
-          seriesPart: parseInt($(el).find("strong").text()),
-        };
-      });
-  } else {
-    return $("dd.series")
-      .find("span.series")
-      .get()
-      .map((el) => {
-        return {
-          seriesName: $(el).find("a").text(),
-          seriesLink: $(el).find("a").attr("href"),
-          seriesPart: parseInt(
-            $(el).find(".positon").first().text().replace(/\D/g, "")
-          ),
-        };
-      });
-  }
+  return $("dd.series")
+    .find("span.position")
+    .get()
+    .map((el) => {
+      return {
+        seriesName: $(el).find("a").text(),
+        seriesLink: $(el).find("a").attr("href"),
+        seriesPart: parseInt(
+          $(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")
+        ),
+      };
+    });
 }
 
 export async function getCollections(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
-
-  if (adult) {
-    let collectionsURL =
-      "https://archiveofourown.org" + $("dd.collections a").attr("href");
-
-    let loadedCollections = await axios({
-      method: "get",
-      url: collectionsURL,
+  return $("dd.collections")
+    .first()
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        collectionName: $(el).text(),
+        collectionLink: $(el).attr("href"),
+      };
     });
-
-    let $col = cheerio.load(loadedCollections.data);
-
-    return $col("ul.collection")
-      .first()
-      .find("li")
-      .get()
-      .map((el) => {
-        return {
-          collectionName: $(el).find("a").first().text(),
-          collectionLink: $(el).find("a").first().attr("href"),
-        };
-      });
-  } else {
-    return $("dd.collections")
-      .first()
-      .find("a")
-      .get()
-      .map((el) => {
-        return {
-          collectionName: $(el).text(),
-          collectionLink: $(el).attr("href"),
-        };
-      });
-  }
 }
 
 export async function getSummary(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
-  let adult = await getAdult(fic);
+  let summaryArray = $(".summary blockquote")
+    .find("p")
+    .get()
+    .map((el) => {
+      return $(el).text();
+    });
 
-  if (adult) {
-    let summaryArray = $("blockquote.summary")
-      .find("p")
-      .get()
-      .map((el) => {
-        return $(el).text();
-      });
-
-    return summaryArray.join("\n\n");
-  } else {
-    let summaryArray = $(".summary blockquote")
-      .find("p")
-      .get()
-      .map((el) => {
-        return $(el).text();
-      });
-
-    return summaryArray.join("\n");
-  }
+  return summaryArray.join("\n");
 }
 
 async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
@@ -534,6 +338,9 @@ async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
     let initialLoad = await axios({
       method: "get",
       url: url,
+      headers: {
+        cookie: "view_adult=true;",
+      },
     });
 
     let downloadedFic = cheerio.load(initialLoad.data);

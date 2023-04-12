@@ -115,7 +115,6 @@ export interface Info {
   stats: Stats;
   relationships: Array<Relationship>;
   characters: Array<Character>;
-  adult: boolean;
   rating: Rating;
   archiveWarnings: archiveWarning;
   categories: Array<Category>;
@@ -313,10 +312,6 @@ export class Fanfiction {
   get endNote() {
     return this.#content.notes.endNote;
   }
-
-  get adult() {
-    return this.#info.adult;
-  }
 }
 
 export class historyFanfiction extends Fanfiction {
@@ -359,10 +354,9 @@ test(19865440);
 
 async function test(id: number) {
   console.time("test");
-  let session = new ao3(logindata);
-  await session.login();
-  let history = await session.getHistory();
-  console.log(history);
+
+  let fic = await ao3.getContent(id);
+  console.log(fic);
 
   console.timeEnd("test");
 }
