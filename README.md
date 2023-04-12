@@ -40,6 +40,7 @@ https://github.com/Dramatycznie/AO3_Scraper
 https://github.com/rsanjabi/narratives  
 https://github.com/syrtis-m/ao3-bookmark-getter  
 https://github.com/niacdoial/AO3-stylish-downloader  
+https://github.com/gmastergreatee/Fanfiction-Manager  
 
 
 more:  
