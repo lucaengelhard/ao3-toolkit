@@ -91,13 +91,18 @@ export class Work {
   get endNote() {
     return this.#content.notes.endNote;
   }
+
+  set info(info: Info) {
+    this.#info = info;
+  }
 }
 
 /**
  * Extends the work class with information about the reading history of the work
  */
 export class historyWork extends Work {
-  #info;
+  #ratio;
+  #wordsRead;
   #timesVisited;
   #lastVisit;
   constructor(
@@ -107,9 +112,12 @@ export class historyWork extends Work {
     timesVisited: number
   ) {
     super(info, content);
-    this.#info = info;
     this.#lastVisit = lastVisit;
     this.#timesVisited = timesVisited;
+    this.#ratio = this.#timesVisited / info.stats.chapters.chaptersWritten;
+    this.#wordsRead =
+      info.stats.words *
+      (this.#timesVisited / info.stats.chapters.chaptersWritten);
   }
 
   get timesVisited() {
@@ -124,13 +132,10 @@ export class historyWork extends Work {
    * get the ratio - how many times this work was read (times visited / chapters written)
    */
   get ratio() {
-    return this.#timesVisited / this.#info.stats.chapters.chaptersWritten;
+    return this.#ratio;
   }
 
   get wordsRead() {
-    return (
-      this.#info.stats.words *
-      (this.#timesVisited / this.#info.stats.chapters.chaptersWritten)
-    );
+    return this.#wordsRead;
   }
 }

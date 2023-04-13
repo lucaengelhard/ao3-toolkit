@@ -2,7 +2,7 @@ import { Login } from "../types/base.js";
 
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
-import { historyWork } from "../types/works.js";
+import { HistoryElement } from "../types/works.js";
 
 /**
  *
@@ -24,7 +24,7 @@ export async function getHistory(
     `/users/${encodeURIComponent(logindata.username)}/readings`
   );
 
-  let userHistory: Array<historyWork> = [];
+  let userHistory: Array<HistoryElement> = [];
 
   let firstLoadContent = history.data;
 
@@ -86,7 +86,7 @@ export async function getHistory(
         timesVisited = parseInt(visitedsub.match(/(\d+)/)[0]);
       }
 
-      let historyElement: historyWork = {
+      let historyElement: HistoryElement = {
         id: id,
         lastVisit: lastVisit,
         timesVisited: timesVisited,
