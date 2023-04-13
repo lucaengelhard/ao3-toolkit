@@ -2,15 +2,21 @@ import { Login } from "../types/base.js";
 
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
-import { historyWork } from "../types/works.js";
+import { HistoryElement } from "../types/works.js";
 
+/**
+ *
+ * @param logindata a logindata object containing a username
+ * @param instance an axios instance logged in to ao3
+ * @returns a new user userhistory object
+ */
 export async function getHistory(
   logindata: Login,
   instance: AxiosInstance | undefined
 ) {
   if (typeof instance == "undefined") {
     throw new Error(
-      "instance is undefined. wait for the instance to be resolved and then execute code"
+      "instance is undefined. wait for the instance to be resolved (execute ao3.login() on this instance) and then execute code"
     );
   }
 
@@ -18,7 +24,7 @@ export async function getHistory(
     `/users/${encodeURIComponent(logindata.username)}/readings`
   );
 
-  let userHistory: Array<historyWork> = [];
+  let userHistory: Array<HistoryElement> = [];
 
   let firstLoadContent = history.data;
 
@@ -80,7 +86,7 @@ export async function getHistory(
         timesVisited = parseInt(visitedsub.match(/(\d+)/)[0]);
       }
 
-      let historyElement: historyWork = {
+      let historyElement: HistoryElement = {
         id: id,
         lastVisit: lastVisit,
         timesVisited: timesVisited,

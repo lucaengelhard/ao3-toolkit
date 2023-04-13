@@ -22,6 +22,10 @@ export class ao3 {
     this.login();
   }
 
+  /**
+   * Log in to an ao3 account and return a logged in axios instance
+   * @returns a logged in axios instance
+   */
   async login() {
     let loginurl = "/users/login";
 
@@ -54,22 +58,40 @@ export class ao3 {
     return instance;
   }
 
+  /**
+   * get the logindata of the session
+   */
   get logindata() {
     return this.#logindata;
   }
 
+  /**
+   * get the username of the session
+   */
   set username(username: string) {
     this.#logindata.username = username;
   }
 
+  /**
+   * get the password of the session
+   */
   set password(password: string) {
     this.#logindata.password = password;
   }
 
+  /**
+   * Get the reading history of the logged in user
+   * @returns a new user userhistory object
+   */
   async getHistory() {
     return await getHistory(this.#logindata, this.#instance);
   }
 
+  /**
+   *
+   * @param id an ao3 work id
+   * @returns a new work object with additonal information about the reading history
+   */
   async getHistoryWork(id: number) {
     let userHistory = await getHistory(this.#logindata, this.#instance);
     let fanFiction = await getWork(id);
@@ -93,14 +115,29 @@ export class ao3 {
   //getBookmarks() {}
   //getHistory + andere user-based functions
 
+  /**
+   * get a full work, including info and content
+   * @param id an ao3 work id
+   * @returns a new Work Object
+   */
   static async getWork(id: number) {
     return await getWork(id);
   }
 
+  /**
+   * get the content of a work
+   * @param id an ao3 work id
+   * @returns the content of the work
+   */
   static async getContent(fic: number | cheerio.CheerioAPI) {
     return await getContent(fic);
   }
 
+  /**
+   * get the information about a work
+   * @param id an ao3 work id
+   * @returns information about the work
+   */
   static async getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     return await getInfo(fic, id);
   }

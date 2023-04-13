@@ -97,7 +97,7 @@ export interface Info {
   summary: string;
 }
 
-export interface historyWork {
+export interface HistoryElement {
   id: number;
   lastVisit: Date;
   timesVisited: number;

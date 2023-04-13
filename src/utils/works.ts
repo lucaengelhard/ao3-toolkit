@@ -2,12 +2,22 @@ import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
 import { Work } from "../classes/works.js";
 import { Info } from "../types/works.js";
-import { linkToAbsolute } from "../utils/helper.js";
+import { getParsableInfoData, linkToAbsolute } from "../utils/helper.js";
 
+/**
+ *
+ * @param id a work id
+ * @returns a new Work Object
+ */
 export async function getWork(id: number) {
   return new Work(await getInfo(id), await getContent(id));
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an object containing the forword, afterword and each chapter
+ */
 export async function getContent(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -47,15 +57,31 @@ export async function getContent(fic: number | cheerio.CheerioAPI) {
 
   return content;
 
+  /**
+   *
+   * @param fic a cheerio object of the first chapter
+   * @returns the foreword of the work
+   */
   async function getPreNote(fic: cheerio.CheerioAPI) {
     return fic("#preface p:contains('Notes')").next().text();
   }
 
+  /**
+   *
+   * @param fic a cheerio object of the first chapter
+   * @returns the afterword of the work
+   */
   async function getEndNote(fic: cheerio.CheerioAPI) {
     return fic("#endnotes").find("blockquote").text();
   }
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @param id (optional) a work id
+ * @returns a new info Object
+ */
 export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
   if (typeof fic == "number") {
     id = fic;
@@ -114,12 +140,22 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
   return info;
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns the title of the work
+ */
 export async function getTitle(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
   return $(".preface").find(".title").first().text().trim();
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns the author of the work and the link to to the authors profile
+ */
 export async function getAuthor(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -129,6 +165,11 @@ export async function getAuthor(fic: number | cheerio.CheerioAPI) {
   };
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an array of objects containing the name of a fandom and the link to the fandom overview
+ */
 export async function getFandom(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -142,6 +183,11 @@ export async function getFandom(fic: number | cheerio.CheerioAPI) {
     });
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns the stats of the work
+ */
 export async function getStats(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -158,31 +204,66 @@ export async function getStats(fic: number | cheerio.CheerioAPI) {
     bookmarks: getBookmarks(statsElement),
   };
 
+  /**
+   *
+   * @param stats a cheerio element of an ao3 page stat block
+   * @returns the number of words of the work
+   */
   function getWords(stats: cheerio.Cheerio<cheerio.Element>) {
     return parseInt(stats.find(".words").next().text().replace(",", ""));
   }
 
+  /**
+   *
+   * @param stats a cheerio element of an ao3 page stat block
+   * @returns the number of published chapters of the work
+   */
   function getChaptersWritten(stats: cheerio.Cheerio<cheerio.Element>) {
     return parseInt(stats.find(".chapters").next().text().split("/")[0]);
   }
 
+  /**
+   *
+   * @param stats a cheerio element of an ao3 page stat block
+   * @returns the maximum number of chapters of the work (returns NaN if not defined)
+   */
   function getChaptersMax(stats: cheerio.Cheerio<cheerio.Element>) {
     return parseInt(stats.find(".chapters").next().text().split("/")[1]);
   }
 
+  /**
+   *
+   * @param stats a cheerio element of an ao3 page stat block
+   * @returns the number of kudos of the work
+   */
   function getKudos(stats: cheerio.Cheerio<cheerio.Element>) {
     return parseInt(stats.find(".kudos").next().text());
   }
 
+  /**
+   *
+   * @param stats a cheerio element of an ao3 page stat block
+   * @returns the number of hits of the work
+   */
   function getHits(stats: cheerio.Cheerio<cheerio.Element>) {
     return parseInt(stats.find(".hits").next().text());
   }
 
+  /**
+   *
+   * @param stats a cheerio element of an ao3 page stat block
+   * @returns the number of bookmarks of the work
+   */
   function getBookmarks(stats: cheerio.Cheerio<cheerio.Element>) {
     return parseInt(stats.find(".bookmarks").next().text());
   }
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an array of objects containing the name of a relationship and the link to the relationship overview
+ */
 export async function getRelationships(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -198,6 +279,11 @@ export async function getRelationships(fic: number | cheerio.CheerioAPI) {
     });
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an array of objects containing the name of a character and the link to the character overview
+ */
 export async function getCharacters(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -213,6 +299,11 @@ export async function getCharacters(fic: number | cheerio.CheerioAPI) {
     });
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an object containing the rating of the work and a link to the rating overview
+ */
 export async function getRating(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -222,6 +313,11 @@ export async function getRating(fic: number | cheerio.CheerioAPI) {
   };
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an object containing the warnings of the work and a link to the warnings overview
+ */
 export async function getWarnings(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -231,6 +327,11 @@ export async function getWarnings(fic: number | cheerio.CheerioAPI) {
   };
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an array of objects containing the name of a category and the link to the category overview
+ */
 export async function getCategories(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -246,6 +347,11 @@ export async function getCategories(fic: number | cheerio.CheerioAPI) {
     });
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an array of objects containing the name of a freeform tag and the link to the freeform tag overview
+ */
 export async function getTags(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -261,12 +367,22 @@ export async function getTags(fic: number | cheerio.CheerioAPI) {
     });
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns the language of the work
+ */
 export async function getLanguage(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
   return $(".language").first().next().text().replace("\n", "").trim();
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an array of objects containing the name of a series, the link to the series overview and a number of the part in ther series
+ */
 export async function getSeries(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -284,6 +400,11 @@ export async function getSeries(fic: number | cheerio.CheerioAPI) {
     });
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns an array of objects containing the name of a collection and the link to the collection overview
+ */
 export async function getCollections(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -299,6 +420,11 @@ export async function getCollections(fic: number | cheerio.CheerioAPI) {
     });
 }
 
+/**
+ *
+ * @param fic a work id or a cheerio object of the first chapter
+ * @returns the summary of the work
+ */
 export async function getSummary(fic: number | cheerio.CheerioAPI) {
   let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
 
@@ -310,26 +436,4 @@ export async function getSummary(fic: number | cheerio.CheerioAPI) {
     });
 
   return summaryArray.join("\n");
-}
-
-async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
-  if (typeof fic == "number") {
-    //use Axios to get content -> change content of fic
-    let url: string = "https://archiveofourown.org/works/" + fic;
-
-    //Initial Page Load
-    let initialLoad = await axios({
-      method: "get",
-      url: url,
-      headers: {
-        cookie: "view_adult=true;",
-      },
-    });
-
-    let downloadedFic = cheerio.load(initialLoad.data);
-    return downloadedFic;
-  } else {
-    let downloadedFic: any = fic;
-    return downloadedFic;
-  }
 }
