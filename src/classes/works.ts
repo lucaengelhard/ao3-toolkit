@@ -1,5 +1,8 @@
 import { Info, Content } from "../types/works.js";
 
+/**
+ * Base class for works. Stores information about the work as well as the content.
+ */
 export class Work {
   #content;
   #info;
@@ -90,6 +93,9 @@ export class Work {
   }
 }
 
+/**
+ * Extends the work class with information about the reading history of the work
+ */
 export class historyWork extends Work {
   #info;
   #timesVisited;
