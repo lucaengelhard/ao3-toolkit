@@ -114,6 +114,9 @@ export class historyWork extends Work {
     return this.#lastVisit;
   }
 
+  /**
+   * get the ratio - how many times this work was read (times visited / chapters written)
+   */
   get ratio() {
     return this.#timesVisited / this.#info.stats.chapters.chaptersWritten;
   }

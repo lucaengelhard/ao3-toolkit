@@ -6,7 +6,7 @@ import { historyWork } from "../types/works.js";
 
 /**
  *
- * @param logindata a logindata object
+ * @param logindata a logindata object containing a username
  * @param instance an axios instance logged in to ao3
  * @returns a new user userhistory object
  */
