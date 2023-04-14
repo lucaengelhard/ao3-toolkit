@@ -1,19 +1,22 @@
+
 # ao3-toolkit
+
 A Toolkit for interfacing with the Archive of Our Own
 
 Coded in TypeScript with nodejs
 
--- in development --
-
-Features:
--
 
 
-Planned Features:
-- 
+## Features
+
+- Logging in to ao3
 - Fetching single works
   - Fetching work content
   - Fetching work stats
+
+
+## Roadmap
+
 - Fetching user history
 - Fetching user bookmarks
 - Fetching work comments
@@ -32,13 +35,18 @@ Planned Features:
   - favourite tags
   - favourite fandoms
 
-Documentation:
--
-https://lucaengelhard.github.io/ao3-toolkit/
+
+## Documentation
+
+[Documentation](https://lucaengelhard.github.io/ao3-toolkit/)
 
 
-Inspiration and similar Projects:
--
+## Feedback
+
+If you have any feedback, please reach out to me at me@lucaengelhard.com
+
+
+## Inspiration and similar Projects:
 
 https://github.com/cyrusae/AO3.js  
 https://github.com/misaalanshori/ao3webapi  
@@ -49,8 +57,9 @@ https://github.com/Dramatycznie/AO3_Scraper
 https://github.com/rsanjabi/narratives  
 https://github.com/syrtis-m/ao3-bookmark-getter  
 https://github.com/niacdoial/AO3-stylish-downloader  
-https://github.com/gmastergreatee/Fanfiction-Manager  
+https://github.com/gmastergreatee/Fanfiction-Manager
 
+## License
 
-more:  
-https://github.com/stars/lucaengelhard/lists/ao3-app
+[MIT](https://github.com/lucaengelhard/ao3-toolkit/blob/main/LICENSE)
+
