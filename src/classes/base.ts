@@ -10,6 +10,10 @@ import { getHistory } from "../utils/history.js";
 import { getWork, getContent, getInfo } from "../utils/works.js";
 import { historyWork } from "./works.js";
 
+/**
+ * The base class of the module. Contains the methods to log in to an ao3 account and create a logged in session, to get single works and get a users reading history.
+ *
+ */
 export class ao3 {
   #logindata;
   #instance: AxiosInstance | undefined;
@@ -80,7 +84,7 @@ export class ao3 {
   }
 
   /**
-   * Get the reading history of the logged in user
+   * Get the reading history of the logged in user (runs the {@link getHistory} method)
    * @returns a new user userhistory object
    */
   async getHistory() {
