@@ -5,7 +5,8 @@ import { Info } from "../types/works.js";
 import { getParsableInfoData, linkToAbsolute } from "../utils/helper.js";
 
 /**
- *
+ * This function takes a work id, runs the {@link getInfo} and {@link getContent} function and returns a new {@link Work} object.
+ * 
  * @param id a work id
  * @returns a new Work Object
  */
@@ -14,6 +15,7 @@ export async function getWork(id: number) {
 }
 
 /**
+ * This function takes a work id or cheerio object, parses the data and returns an object containing the forword, afterword and each chapter
  *
  * @param fic a work id or a cheerio object of the first chapter
  * @returns an object containing the forword, afterword and each chapter
@@ -77,6 +79,7 @@ export async function getContent(fic: number | cheerio.CheerioAPI) {
 }
 
 /**
+ * This function takes a work id or cheerio object, runs multiple getter functions asynchronously and returns an info object.
  *
  * @param fic a work id or a cheerio object of the first chapter
  * @param id (optional) a work id
