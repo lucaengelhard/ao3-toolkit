@@ -2,13 +2,12 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 
 /**
+ * This helper function takes a link and checks if it is a relative or absolute ao3 link. If the link is relative link, it returns an absolute version of the link.
  *
  * @param link an ao3 link string
  * @returns the link as an absolute link
  */
 export function linkToAbsolute(link: string | undefined) {
-  //Checks if Link is absolute, if not returns absolute link
-
   if (typeof link == "undefined") {
     return link;
   }
@@ -21,16 +20,15 @@ export function linkToAbsolute(link: string | undefined) {
 }
 
 /**
+ * This helper function takes either an ao3 work id or a cheerio object. If the input is an id, it makes a get request and creates a cheerio object.
  *
  * @param fic a work id or a cheerio object of the first chapter
  * @returns a parssable cheerio Object for the other functions to use
  */
 export async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
   if (typeof fic == "number") {
-    //use Axios to get content -> change content of fic
-    let url: string = "https://archiveofourown.org/works/" + fic;
 
-    //Initial Page Load
+    let url: string = "https://archiveofourown.org/works/" + fic;
     let initialLoad = await axios({
       method: "get",
       url: url,
