@@ -5,10 +5,13 @@ import * as cheerio from "cheerio";
 import { HistoryElement } from "../types/works.js";
 
 /**
+ * This function takes a logindata object to use the username and an axios instance that is logged in to ao3. 
+ * It downloads every page of the reading history of the user, parses it and returns an array of objects containing
+ * a work id, the last time the user read it and the number of the times the user read it.
  *
  * @param logindata a logindata object containing a username
  * @param instance an axios instance logged in to ao3
- * @returns a new user userhistory object
+ * @returns a new user userhistory array
  */
 export async function getHistory(
   logindata: Login,
@@ -20,6 +23,8 @@ export async function getHistory(
     );
   }
 
+  //Load the first history page
+  //TODO: don't load the first page twice
   let history = await instance.get(
     `/users/${encodeURIComponent(logindata.username)}/readings`
   );
@@ -30,10 +35,14 @@ export async function getHistory(
 
   let $ = cheerio.load(firstLoadContent);
 
+  //Get the number of history pages
   let navLength = parseInt($(".pagination li").not(".next").last().text());
 
   let historypages: Promise<AxiosResponse<any, any>>[] = [];
 
+  //Load every history page
+  //TODO: change the length of the for loop to navLength
+  //TODO: delay between requests
   for (let i = 1; i < 5; i++) {
     console.log("getting Page " + i);
 
@@ -46,6 +55,8 @@ export async function getHistory(
 
   let resolvedHistoryPages = await Promise.all(historypages);
 
+  //Parse each loaded Page
+  //TODO: async page parsing? -> create timeout callbacks?
   resolvedHistoryPages.forEach((res) => {
     let page = res.data;
     let $ = cheerio.load(page);
@@ -95,8 +106,5 @@ export async function getHistory(
       userHistory.push(historyElement);
     });
   });
-
-  //Load Content
-
   return userHistory;
 }
