@@ -87,7 +87,7 @@ export class ao3 {
     let fanFiction = await getWork(id);
 
     let matchingElement = userHistory.find((element) => {
-      return element.id == fanFiction.id;
+      return element.id == fanFiction.info.id;
     });
 
     if (matchingElement == undefined) {
