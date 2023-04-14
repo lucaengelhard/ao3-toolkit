@@ -32,6 +32,11 @@ Planned Features:
   - favourite tags
   - favourite fandoms
 
+Documentation:
+-
+https://lucaengelhard.github.io/ao3-toolkit/
+
+
 Inspiration and similar Projects:
 -
 
