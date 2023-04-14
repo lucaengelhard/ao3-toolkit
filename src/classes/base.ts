@@ -70,20 +70,6 @@ export class ao3 {
   }
 
   /**
-   * get the username of the session
-   */
-  set username(username: string) {
-    this.#logindata.username = username;
-  }
-
-  /**
-   * get the password of the session
-   */
-  set password(password: string) {
-    this.#logindata.password = password;
-  }
-
-  /**
    * Get the reading history of the logged in user (runs the {@link getHistory} method)
    * @returns a new user userhistory object
    */
@@ -116,8 +102,8 @@ export class ao3 {
     }
   }
 
-  //getBookmarks() {}
-  //getHistory + andere user-based functions
+  //TODO: getBookmarks() {}
+  //TODO: getHistory + andere user-based functions
 
   /**
    * get a full work, including info and content
@@ -145,6 +131,4 @@ export class ao3 {
   static async getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     return await getInfo(fic, id);
   }
-
-  //static get Functions
 }
