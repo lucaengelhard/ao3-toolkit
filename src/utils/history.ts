@@ -29,8 +29,6 @@ export async function getHistory(
     `/users/${encodeURIComponent(logindata.username)}/readings`
   );
 
-  let userHistory: Array<HistoryElement> = [];
-
   let firstLoadContent = history.data;
 
   let $ = cheerio.load(firstLoadContent);
@@ -38,27 +36,26 @@ export async function getHistory(
   //Get the number of history pages
   let navLength = parseInt($(".pagination li").not(".next").last().text());
 
-  let historypages: Promise<AxiosResponse<any, any>>[] = [];
+  let resolvedHistoryPages: AxiosResponse<any, any>[] = [];
 
   //Load every history page
   //TODO: change the length of the for loop to navLength
-  //TODO: delay between requests
-  for (let i = 1; i < 5; i++) {
+  for (let i = 1; i <= 5; i++) {
     console.log("getting Page " + i);
 
-    historypages.push(
-      instance.get(
-        `/users/${encodeURIComponent(logindata.username)}/readings?page=${i}`
-      )
+    let loadedpage = await instance.get(
+      `/users/${encodeURIComponent(logindata.username)}/readings?page=${i}`
     );
+    resolvedHistoryPages.push(loadedpage);
   }
-
-  let resolvedHistoryPages = await Promise.all(historypages);
 
   //Parse each loaded Page
   //TODO: async page parsing? -> create timeout callbacks?
+  let userHistory: Array<HistoryElement> = [];
   resolvedHistoryPages.forEach((res) => {
     let page = res.data;
+    console.log(page);
+
     let $ = cheerio.load(page);
     let works = $("li[role='article']").toArray();
 

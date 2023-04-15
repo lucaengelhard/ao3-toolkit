@@ -1,7 +1,16 @@
 import ao3 from "./";
 
-console.time("test");
+test();
 
-let test = await new ao3.session(ao3.config.logindata).login();
+async function test() {
+  console.time("test");
 
-console.timeEnd("test");
+  let session = new ao3.session(ao3.config.logindata);
+
+  await session.login();
+  let history = await session.getHistory();
+
+  console.log(history);
+
+  console.timeEnd("test");
+}
