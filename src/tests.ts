@@ -1,14 +1,7 @@
-import { ao3 } from "./classes/base.js";
-import { logindata } from "./config/login.js";
+import ao3 from "./";
 
 console.time("test");
 
-let session = new ao3(logindata);
-
-await session.login();
-
-let history = await ao3.getInfo(19865440);
-
-console.log(history);
+let test = await new ao3.session(ao3.config.logindata).login();
 
 console.timeEnd("test");

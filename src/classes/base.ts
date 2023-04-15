@@ -22,8 +22,6 @@ export class ao3 {
     this.#logindata = logindata;
 
     this.#instance = undefined;
-
-    this.login();
   }
 
   /**
