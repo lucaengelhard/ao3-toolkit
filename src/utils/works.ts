@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import ao3 from "..";
 
 /**
- * This function takes a work id, runs the {@link getInfo} and {@link ao3.getContent} function and returns a new {@link ao3.Work} object.
+ * This function takes a work id, runs the {@link ao3.getInfo} and {@link ao3.getContent} function and returns a new {@link ao3.Work} object.
  *
  * @param id a work id
  * @returns a new Work Object

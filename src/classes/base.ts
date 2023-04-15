@@ -80,7 +80,7 @@ export class Session {
   }
 
   /**
-   * Get the reading history of the logged in user (runs the {@link getHistory} method)
+   * Get the reading history of the logged in user (runs the {@link ao3.getHistory} method)
    * @returns a new user userhistory object
    */
   async getHistory(info?: boolean) {
