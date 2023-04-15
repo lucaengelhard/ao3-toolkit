@@ -1,21 +1,15 @@
 import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
-import { Work } from "../classes/works.js";
-import { Info } from "../types/works.js";
-import {
-  getParsableInfoData,
-  getSuccess,
-  linkToAbsolute,
-} from "../utils/helper.js";
+import ao3 from "..";
 
 /**
- * This function takes a work id, runs the {@link getInfo} and {@link getContent} function and returns a new {@link Work} object.
+ * This function takes a work id, runs the {@link getInfo} and {@link ao3.getContent} function and returns a new {@link ao3.Work} object.
  *
  * @param id a work id
  * @returns a new Work Object
  */
 export async function getWork(id: number) {
-  return new Work(await getInfo(id), await getContent(id));
+  return new ao3.Work(await getInfo(id), await getContent(id));
 }
 
 /**
@@ -25,7 +19,7 @@ export async function getWork(id: number) {
  * @returns an object containing the forword, afterword and each chapter
  */
 export async function getContent(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   let downloadURL =
     "https://archiveofourown.org" +
@@ -33,7 +27,7 @@ export async function getContent(fic: number | cheerio.CheerioAPI) {
 
   let initialLoad = await axios.get(downloadURL);
 
-  getSuccess(initialLoad);
+  ao3.getSuccess(initialLoad);
 
   let download = initialLoad.data;
 
@@ -104,7 +98,7 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     );
   }
 
-  fic = await getParsableInfoData(fic);
+  fic = await ao3.getParsableInfoData(fic);
 
   let functions = [
     getTitle(fic),
@@ -129,7 +123,7 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
     return element;
   });
 
-  let info: Info = {
+  let info: ao3.Info = {
     title: resolved[0].value,
     id: id,
 
@@ -157,7 +151,7 @@ export async function getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
  * @returns the title of the work
  */
 export async function getTitle(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $(".preface").find(".title").first().text().trim();
 }
@@ -168,11 +162,11 @@ export async function getTitle(fic: number | cheerio.CheerioAPI) {
  * @returns the author of the work and the link to to the authors profile
  */
 export async function getAuthor(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return {
     authorName: $("[rel=author]").text(),
-    authorLink: linkToAbsolute($("[rel=author]").attr("href")),
+    authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href")),
   };
 }
 
@@ -182,14 +176,14 @@ export async function getAuthor(fic: number | cheerio.CheerioAPI) {
  * @returns an array of objects containing the name of a fandom and the link to the fandom overview
  */
 export async function getFandom(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $(".fandom a")
     .get()
     .map((el) => {
       return {
         fandomName: $(el).text(),
-        fandomLink: linkToAbsolute($(el).attr("href")),
+        fandomLink: ao3.linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -200,7 +194,7 @@ export async function getFandom(fic: number | cheerio.CheerioAPI) {
  * @returns the stats of the work
  */
 export async function getStats(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   let statsElement = $("dl.stats");
 
@@ -276,7 +270,7 @@ export async function getStats(fic: number | cheerio.CheerioAPI) {
  * @returns an array of objects containing the name of a relationship and the link to the relationship overview
  */
 export async function getRelationships(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $(".relationship")
     .next()
@@ -285,7 +279,7 @@ export async function getRelationships(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         relationshipName: $(el).text(),
-        relationshipLink: linkToAbsolute($(el).attr("href")),
+        relationshipLink: ao3.linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -296,7 +290,7 @@ export async function getRelationships(fic: number | cheerio.CheerioAPI) {
  * @returns an array of objects containing the name of a character and the link to the character overview
  */
 export async function getCharacters(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $(".character")
     .next()
@@ -305,7 +299,7 @@ export async function getCharacters(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         characterName: $(el).text(),
-        characterLink: linkToAbsolute($(el).attr("href")),
+        characterLink: ao3.linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -316,11 +310,11 @@ export async function getCharacters(fic: number | cheerio.CheerioAPI) {
  * @returns an object containing the rating of the work and a link to the rating overview
  */
 export async function getRating(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return {
     ratingName: $("dd.rating").text().trim(),
-    ratingLink: linkToAbsolute($("dd.rating").find("a").attr("href")),
+    ratingLink: ao3.linkToAbsolute($("dd.rating").find("a").attr("href")),
   };
 }
 
@@ -330,11 +324,11 @@ export async function getRating(fic: number | cheerio.CheerioAPI) {
  * @returns an object containing the warnings of the work and a link to the warnings overview
  */
 export async function getWarnings(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return {
     warningName: $("dd.warning").text().trim(),
-    warningLink: linkToAbsolute($("dd.warning").find("a").attr("href")),
+    warningLink: ao3.linkToAbsolute($("dd.warning").find("a").attr("href")),
   };
 }
 
@@ -344,7 +338,7 @@ export async function getWarnings(fic: number | cheerio.CheerioAPI) {
  * @returns an array of objects containing the name of a category and the link to the category overview
  */
 export async function getCategories(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $(".category")
     .next()
@@ -353,7 +347,7 @@ export async function getCategories(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         categoryName: $(el).text(),
-        categoryLink: linkToAbsolute($(el).attr("href")),
+        categoryLink: ao3.linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -364,7 +358,7 @@ export async function getCategories(fic: number | cheerio.CheerioAPI) {
  * @returns an array of objects containing the name of a freeform tag and the link to the freeform tag overview
  */
 export async function getTags(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $(".freeform")
     .next()
@@ -373,7 +367,7 @@ export async function getTags(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         tagName: $(el).text(),
-        tagLink: linkToAbsolute($(el).attr("href")),
+        tagLink: ao3.linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -384,7 +378,7 @@ export async function getTags(fic: number | cheerio.CheerioAPI) {
  * @returns the language of the work
  */
 export async function getLanguage(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $(".language").first().next().text().replace("\n", "").trim();
 }
@@ -395,7 +389,7 @@ export async function getLanguage(fic: number | cheerio.CheerioAPI) {
  * @returns an array of objects containing the name of a series, the link to the series overview and a number of the part in ther series
  */
 export async function getSeries(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $("dd.series")
     .find("span.position")
@@ -403,7 +397,7 @@ export async function getSeries(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         seriesName: $(el).find("a").text(),
-        seriesLink: linkToAbsolute($(el).find("a").attr("href")),
+        seriesLink: ao3.linkToAbsolute($(el).find("a").attr("href")),
         seriesPart: parseInt(
           $(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")
         ),
@@ -417,7 +411,7 @@ export async function getSeries(fic: number | cheerio.CheerioAPI) {
  * @returns an array of objects containing the name of a collection and the link to the collection overview
  */
 export async function getCollections(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   return $("dd.collections")
     .first()
@@ -426,7 +420,7 @@ export async function getCollections(fic: number | cheerio.CheerioAPI) {
     .map((el) => {
       return {
         collectionName: $(el).text(),
-        collectionLink: linkToAbsolute($(el).attr("href")),
+        collectionLink: ao3.linkToAbsolute($(el).attr("href")),
       };
     });
 }
@@ -437,7 +431,7 @@ export async function getCollections(fic: number | cheerio.CheerioAPI) {
  * @returns the summary of the work
  */
 export async function getSummary(fic: number | cheerio.CheerioAPI) {
-  let $: cheerio.CheerioAPI = await getParsableInfoData(fic);
+  let $: cheerio.CheerioAPI = await ao3.getParsableInfoData(fic);
 
   let summaryArray = $(".summary blockquote")
     .find("p")
