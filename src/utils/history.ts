@@ -5,7 +5,7 @@ import * as cheerio from "cheerio";
 import { HistoryElement } from "../types/works.js";
 
 /**
- * This function takes a logindata object to use the username and an axios instance that is logged in to ao3. 
+ * Takes a logindata object to use the username and an axios instance that is logged in to ao3.
  * It downloads every page of the reading history of the user, parses it and returns an array of objects containing
  * a work id, the last time the user read it and the number of the times the user read it.
  *
