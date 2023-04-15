@@ -3,6 +3,7 @@ import { Login } from "../types/base.js";
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 import { HistoryElement } from "../types/works.js";
+import { getSuccess } from "./helper.js";
 
 /**
  * Takes a logindata object to use the username and an axios instance that is logged in to ao3.
@@ -29,6 +30,8 @@ export async function getHistory(
     `/users/${encodeURIComponent(logindata.username)}/readings`
   );
 
+  getSuccess(history);
+
   let firstLoadContent = history.data;
 
   let $ = cheerio.load(firstLoadContent);
@@ -40,12 +43,23 @@ export async function getHistory(
 
   //Load every history page
   //TODO: change the length of the for loop to navLength
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= navLength; i++) {
     console.log("getting Page " + i);
 
     let loadedpage = await instance.get(
       `/users/${encodeURIComponent(logindata.username)}/readings?page=${i}`
     );
+
+    try {
+      getSuccess(loadedpage);
+    } catch (error) {
+      console.error(
+        `Problems while loading page ${i} of the reading history of user ${logindata.username}`
+      );
+
+      continue;
+    }
+
     resolvedHistoryPages.push(loadedpage);
   }
 

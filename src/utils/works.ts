@@ -2,11 +2,15 @@ import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
 import { Work } from "../classes/works.js";
 import { Info } from "../types/works.js";
-import { getParsableInfoData, linkToAbsolute } from "../utils/helper.js";
+import {
+  getParsableInfoData,
+  getSuccess,
+  linkToAbsolute,
+} from "../utils/helper.js";
 
 /**
  * This function takes a work id, runs the {@link getInfo} and {@link getContent} function and returns a new {@link Work} object.
- * 
+ *
  * @param id a work id
  * @returns a new Work Object
  */
@@ -27,7 +31,11 @@ export async function getContent(fic: number | cheerio.CheerioAPI) {
     "https://archiveofourown.org" +
     $(".download").find("li:contains('HTML')").find("a").attr("href");
 
-  let download = (await axios.get(downloadURL)).data;
+  let initialLoad = await axios.get(downloadURL);
+
+  getSuccess(initialLoad);
+
+  let download = initialLoad.data;
 
   let $content = cheerio.load(download);
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 
 /**
@@ -9,7 +9,7 @@ import * as cheerio from "cheerio";
  */
 export function linkToAbsolute(link: string | undefined) {
   if (typeof link == "undefined") {
-    return link;
+    throw new Error("link is undefined");
   }
 
   var regex = new RegExp("^(?:[a-z+]+:)?//", "i");
@@ -27,7 +27,6 @@ export function linkToAbsolute(link: string | undefined) {
  */
 export async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
   if (typeof fic == "number") {
-
     let url: string = "https://archiveofourown.org/works/" + fic;
     let initialLoad = await axios({
       method: "get",
@@ -37,10 +36,23 @@ export async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
       },
     });
 
+    getSuccess(initialLoad);
+
     let downloadedFic = cheerio.load(initialLoad.data);
     return downloadedFic;
   } else {
     let downloadedFic: any = fic;
     return downloadedFic;
+  }
+}
+
+/**
+ * Takes a Axios response and throws an error if the request was unsuccessful
+ *
+ * @param res an Axios response
+ */
+export function getSuccess(res: AxiosResponse) {
+  if (res.status !== 200) {
+    throw new Error("error while fetching work");
   }
 }
