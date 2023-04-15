@@ -76,25 +76,32 @@ export interface Chapter {
 
 export interface Content {
   notes: Notes;
-  chapters: Array<Chapter>;
+  chapters: Chapter[];
 }
 
 export interface Info {
   title: string;
   id: number;
   author: Author;
-  fandom: Array<Fandom>;
+  fandom: Fandom[];
   stats: Stats;
-  relationships: Array<Relationship>;
-  characters: Array<Character>;
+  relationships: Relationship[];
+  characters: Character[];
   rating: Rating;
   archiveWarnings: archiveWarning;
-  categories: Array<Category>;
-  tags: Array<Tag>;
+  categories: Category[];
+  tags: Tag[];
   language: string;
-  series: Array<Series>;
-  collections: Array<Collection>;
+  series: Series[];
+  collections: Collection[] | number | undefined;
   summary: string;
+}
+
+export interface WorkHistory {
+  lastVisit: Date;
+  timesVisited: number;
+  ratio: number;
+  wordsRead: number;
 }
 
 export interface HistoryElement {

@@ -9,5 +9,9 @@ async function test() {
 
   await session.login();
 
+  let history: any = await session.getHistory(true);
+
+  console.log(history[0].history);
+
   console.timeEnd("test");
 }

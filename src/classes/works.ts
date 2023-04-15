@@ -6,10 +6,23 @@ import ao3 from "..";
 export class Work {
   #content;
   #info;
+  #history;
 
-  constructor(info: ao3.Info, content: ao3.Content) {
+  constructor(
+    info: ao3.Info,
+    content?: ao3.Content,
+    history?: ao3.WorkHistory
+  ) {
     this.#content = content;
     this.#info = info;
+    this.#history = history;
+
+    if (typeof this.#history !== "undefined") {
+      this.#history.ratio =
+        this.#history.timesVisited / info.stats.chapters.chaptersWritten;
+
+      this.#history.wordsRead = info.stats.words * this.#history.ratio;
+    }
   }
 
   get content() {
@@ -19,47 +32,8 @@ export class Work {
   get info() {
     return this.#info;
   }
-}
 
-/**
- * Extends the work class with information about the reading history of the work
- */
-export class historyWork extends Work {
-  #ratio;
-  #wordsRead;
-  #timesVisited;
-  #lastVisit;
-  constructor(
-    info: ao3.Info,
-    content: ao3.Content,
-    lastVisit: Date,
-    timesVisited: number
-  ) {
-    super(info, content);
-    this.#lastVisit = lastVisit;
-    this.#timesVisited = timesVisited;
-    this.#ratio = this.#timesVisited / info.stats.chapters.chaptersWritten;
-    this.#wordsRead =
-      info.stats.words *
-      (this.#timesVisited / info.stats.chapters.chaptersWritten);
-  }
-
-  get timesVisited() {
-    return this.#timesVisited;
-  }
-
-  get lastVisit() {
-    return this.#lastVisit;
-  }
-
-  /**
-   * get the ratio - how many times this work was read (times visited / chapters written)
-   */
-  get ratio() {
-    return this.#ratio;
-  }
-
-  get wordsRead() {
-    return this.#wordsRead;
+  get history() {
+    return this.#history;
   }
 }

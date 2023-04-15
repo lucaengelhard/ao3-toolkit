@@ -83,62 +83,10 @@ export class Session {
    * Get the reading history of the logged in user (runs the {@link getHistory} method)
    * @returns a new user userhistory object
    */
-  async getHistory() {
-    return await ao3.getHistory(this.#logindata, this.#instance);
-  }
-
-  /**
-   *
-   * @param id an ao3 work id
-   * @returns a new work object with additonal information about the reading history
-   */
-  async getHistoryWork(id: number) {
-    let userHistory = await ao3.getHistory(this.#logindata, this.#instance);
-    let fanFiction = await ao3.getWork(id);
-
-    let matchingElement = userHistory.find((element) => {
-      return element.id == fanFiction.info.id;
-    });
-
-    if (matchingElement == undefined) {
-      return;
-    } else {
-      return new ao3.historyWork(
-        fanFiction.info,
-        fanFiction.content,
-        matchingElement.lastVisit,
-        matchingElement.timesVisited
-      );
-    }
+  async getHistory(info?: boolean) {
+    return await ao3.getHistory(this.#logindata, this.#instance, info);
   }
 
   //TODO: getBookmarks() {}
   //TODO: getHistory + andere user-based functions
-
-  /**
-   * get a full work, including info and content
-   * @param id an ao3 work id
-   * @returns a new Work Object
-   */
-  static async getWork(id: number) {
-    return await ao3.getWork(id);
-  }
-
-  /**
-   * get the content of a work
-   * @param id an ao3 work id
-   * @returns the content of the work
-   */
-  static async getContent(fic: number | cheerio.CheerioAPI) {
-    return await ao3.getContent(fic);
-  }
-
-  /**
-   * get the information about a work
-   * @param id an ao3 work id
-   * @returns information about the work
-   */
-  static async getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
-    return await ao3.getInfo(fic, id);
-  }
 }
