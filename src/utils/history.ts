@@ -179,6 +179,7 @@ function getHistoryInfo($: cheerio.CheerioAPI, id: number) {
             .replace($(".stats dd.chapters a").text(), "")
         ),
       },
+
       kudos: parseInt($(".stats dd.kudos").text()),
       hits: parseInt($(".stats dd.hits").text()),
       bookmarks: parseInt($(".stats dd.bookmarks").text()),

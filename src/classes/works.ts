@@ -6,7 +6,7 @@ import ao3 from "..";
 export class Work {
   #content;
   #info;
-  #history;
+  #history?;
 
   constructor(
     info: ao3.Info,
@@ -15,6 +15,10 @@ export class Work {
   ) {
     this.#content = content;
     this.#info = info;
+    this.#info.finished =
+      this.#info.stats.chapters.chaptersMax ==
+      this.#info.stats.chapters.chaptersWritten;
+
     this.#history = history;
 
     if (typeof this.#history !== "undefined") {
@@ -336,5 +340,12 @@ export class WorkList {
       }
       return 0;
     });
+  }
+
+  save() {
+    //Check if cahce folder exists
+    //JSON.stringify
+    //One file or one file per list?
+    //How do you get the data again? -> wie macht es taffy/lowdb? -> eine datei aber ein Objekt pro list!
   }
 }

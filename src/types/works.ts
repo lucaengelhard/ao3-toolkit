@@ -95,6 +95,7 @@ export interface Info {
   series: Series[];
   collections: Collection[] | number | undefined;
   summary: string;
+  finished?: boolean;
 }
 
 export interface WorkHistory {
