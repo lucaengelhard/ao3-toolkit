@@ -8,9 +8,6 @@ async function test() {
   let session = new ao3.session(ao3.config.logindata);
 
   await session.login();
-  let history = await session.getHistory();
-
-  console.log(history);
 
   console.timeEnd("test");
 }

@@ -29,6 +29,14 @@ export class ao3 {
    * @returns a logged in axios instance
    */
   async login() {
+    if (this.#logindata.username.length == 0) {
+      throw new Error("length of username is 0");
+    }
+
+    if (this.#logindata.password.length == 0) {
+      throw new Error("length of password is 0");
+    }
+
     let loginurl = "/users/login";
 
     let jar = new CookieJar();
@@ -53,7 +61,14 @@ export class ao3 {
       this.#logindata.password
     }&user%5Bremember_me%5D=1&commit=Log+in`;
 
-    await instance.post(loginurl, payload);
+    //Check if Login is successfull
+    let loginres = await instance.post(loginurl, payload);
+
+    if (loginres.request.res.responseUrl.includes(this.#logindata.username)) {
+      console.log(`Login of user ${this.#logindata.username} successfull`);
+    } else {
+      throw new Error(`Login of user ${this.#logindata.username} failed`);
+    }
 
     this.#instance = instance;
 
