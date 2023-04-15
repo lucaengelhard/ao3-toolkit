@@ -56,3 +56,13 @@ export function getSuccess(res: AxiosResponse) {
     throw new Error("error while fetching work");
   }
 }
+
+/**
+ * insert to add a delay in a function
+ *
+ * @param ms number of milliseconds the delay should last
+ * @returns
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

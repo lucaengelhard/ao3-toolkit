@@ -44,21 +44,28 @@ export async function getHistory(
   for (let i = 1; i <= navLength; i++) {
     console.log("getting Page " + i);
 
-    let loadedpage = await instance.get(
-      `/users/${encodeURIComponent(logindata.username)}/readings?page=${i}`
-    );
-
     try {
-      ao3.getSuccess(loadedpage);
-    } catch (error) {
-      console.error(
-        `Problems while loading page ${i} of the reading history of user ${logindata.username}`
+      let loadedpage = await instance.get(
+        `/users/${encodeURIComponent(logindata.username)}/readings?page=${i}`
       );
 
-      continue;
-    }
+      await ao3.delay(50);
 
-    resolvedHistoryPages.push(loadedpage);
+      try {
+        ao3.getSuccess(loadedpage);
+      } catch (error) {
+        console.error(
+          `Problems while loading page ${i} of the reading history of user ${logindata.username}`
+        );
+
+        continue;
+      }
+      resolvedHistoryPages.push(loadedpage);
+    } catch (error) {
+      console.error(
+        `Problems while loading page ${i} of the reading history of user ${logindata.username}. This could be because there were to many requests.`
+      );
+    }
   }
 
   //Parse each loaded Page
