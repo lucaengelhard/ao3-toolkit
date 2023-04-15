@@ -1,6 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/export.ts"],
+  "entryPoints": ["./src/export-collector.ts"],
   "out": "docs",
   "entryPointStrategy": "resolve"
 }

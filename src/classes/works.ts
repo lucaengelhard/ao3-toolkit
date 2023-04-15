@@ -1,4 +1,4 @@
-import { Info, Content } from "../types/works.js";
+import ao3 from "..";
 
 /**
  * Base class for works. Stores information about the work as well as the content.
@@ -7,7 +7,7 @@ export class Work {
   #content;
   #info;
 
-  constructor(info: Info, content: Content) {
+  constructor(info: ao3.Info, content: ao3.Content) {
     this.#content = content;
     this.#info = info;
   }
@@ -30,8 +30,8 @@ export class historyWork extends Work {
   #timesVisited;
   #lastVisit;
   constructor(
-    info: Info,
-    content: Content,
+    info: ao3.Info,
+    content: ao3.Content,
     lastVisit: Date,
     timesVisited: number
   ) {

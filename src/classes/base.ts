@@ -5,20 +5,17 @@ import { CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
 
 //INTERNAL MODULES
-import { Login } from "../types/base.js";
-import { getHistory } from "../utils/history.js";
-import { getWork, getContent, getInfo } from "../utils/works.js";
-import { historyWork } from "./works.js";
+import ao3 from "..";
 
 /**
  * The base class of the module. Contains the methods to log in to an ao3 account and create a logged in session, to get single works and get a users reading history.
  *
  */
-export class ao3 {
+export class Session {
   #logindata;
   #instance: AxiosInstance | undefined;
 
-  constructor(logindata: Login) {
+  constructor(logindata: ao3.Login) {
     this.#logindata = logindata;
 
     this.#instance = undefined;
@@ -87,7 +84,7 @@ export class ao3 {
    * @returns a new user userhistory object
    */
   async getHistory() {
-    return await getHistory(this.#logindata, this.#instance);
+    return await ao3.getHistory(this.#logindata, this.#instance);
   }
 
   /**
@@ -96,8 +93,8 @@ export class ao3 {
    * @returns a new work object with additonal information about the reading history
    */
   async getHistoryWork(id: number) {
-    let userHistory = await getHistory(this.#logindata, this.#instance);
-    let fanFiction = await getWork(id);
+    let userHistory = await ao3.getHistory(this.#logindata, this.#instance);
+    let fanFiction = await ao3.getWork(id);
 
     let matchingElement = userHistory.find((element) => {
       return element.id == fanFiction.info.id;
@@ -106,7 +103,7 @@ export class ao3 {
     if (matchingElement == undefined) {
       return;
     } else {
-      return new historyWork(
+      return new ao3.historyWork(
         fanFiction.info,
         fanFiction.content,
         matchingElement.lastVisit,
@@ -124,7 +121,7 @@ export class ao3 {
    * @returns a new Work Object
    */
   static async getWork(id: number) {
-    return await getWork(id);
+    return await ao3.getWork(id);
   }
 
   /**
@@ -133,7 +130,7 @@ export class ao3 {
    * @returns the content of the work
    */
   static async getContent(fic: number | cheerio.CheerioAPI) {
-    return await getContent(fic);
+    return await ao3.getContent(fic);
   }
 
   /**
@@ -142,6 +139,6 @@ export class ao3 {
    * @returns information about the work
    */
   static async getInfo(fic: number | cheerio.CheerioAPI, id?: number) {
-    return await getInfo(fic, id);
+    return await ao3.getInfo(fic, id);
   }
 }
