@@ -343,7 +343,7 @@ export class WorkList {
   }
 
   save() {
-    //Check if cahce folder exists
+    //Check if cache folder exists
     //JSON.stringify
     //One file or one file per list?
     //How do you get the data again? -> wie macht es taffy/lowdb? -> eine datei aber ein Objekt pro list!
