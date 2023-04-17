@@ -1,4 +1,5 @@
 import ao3 from "..";
+import fs from "fs";
 
 /**
  * Base class for works. Stores information about the work as well as the content.
@@ -7,6 +8,7 @@ export class Work {
   #content;
   #info;
   #history?;
+  #cached?: ao3.Cached;
 
   constructor(
     info: ao3.Info,
@@ -40,17 +42,33 @@ export class Work {
   get history() {
     return this.#history;
   }
+
+  get cached() {
+    return this.#cached;
+  }
+
+  objectify() {
+    return {
+      content: this.#content,
+      info: this.#info,
+      history: this.#history,
+    };
+  }
 }
 
 export class WorkList {
   #works;
-
+  #cached?: ao3.Cached;
   constructor(works: ao3.Work[]) {
     this.#works = works;
   }
 
   get works() {
     return this.#works;
+  }
+
+  get cached() {
+    return this.#cached;
   }
 
   sortByHits() {
@@ -343,9 +361,74 @@ export class WorkList {
   }
 
   save() {
+    let type = "list";
+    let typepath = ao3.defaults.cachePath + `/${type}s`;
+    let index = 0;
+    let username = ao3.defaults.logindata.username;
+
     //Check if cache folder exists
+    if (!fs.existsSync(typepath)) {
+      fs.mkdirSync(typepath, { recursive: true });
+      console.log("created direcotry");
+    }
+
+    //Get File names
+    let files = fs.readdirSync(typepath).map((file) => {
+      let parts = file.split("_");
+      let type = parts[0];
+      let thisIndex = parseInt(parts[1]);
+      if (thisIndex >= index) {
+        index = thisIndex + 1;
+      }
+      let username = parts.slice(2, parts.length).join("").replace(".json", "");
+
+      return { type, index, username };
+    });
+
+    //objectify works
+    let works = this.#works.map((work) => {
+      return work.objectify();
+    });
+
+    let toSave = {
+      works: works,
+    };
+
     //JSON.stringify
-    //One file or one file per list?
-    //How do you get the data again? -> wie macht es taffy/lowdb? -> eine datei aber ein Objekt pro list!
+    let stringyfied = JSON.stringify(toSave);
+
+    //Save file
+    fs.writeFileSync(
+      typepath +
+        `/${type}_${index.toString().padStart(3, "0")}_${username}.json`,
+      stringyfied
+    );
+
+    console.log(
+      `stored ${type}_${index
+        .toString()
+        .padStart(3, "0")}_${username}.json in the cache`
+    );
+
+    this.#cached = { cached: true, index: index };
+
+    //Return type, index, username
+    return { type, index, username };
+  }
+
+  static getCached(index: number) {
+    let type = "list";
+    let username = ao3.defaults.logindata.username;
+    let filepath =
+      ao3.defaults.cachePath +
+      `/${type}s/${type}_${index.toString().padStart(3, "0")}_${username}.json`;
+
+    let parsed = JSON.parse(fs.readFileSync(filepath, { encoding: "utf8" }));
+
+    let list = parsed.works.map((work: any) => {
+      return new ao3.Work(work.info, work.content, work.history);
+    });
+
+    return new WorkList(list);
   }
 }

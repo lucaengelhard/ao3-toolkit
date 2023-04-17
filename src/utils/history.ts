@@ -41,7 +41,7 @@ export async function getHistory(
   let resolvedHistoryPages: AxiosResponse<any, any>[] = [];
 
   //Load every history page
-  for (let i = 1; i <= navLength; i++) {
+  for (let i = 1; i <= 5; i++) {
     console.log("getting Page " + i);
 
     try {

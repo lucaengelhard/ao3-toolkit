@@ -110,3 +110,8 @@ export interface HistoryElement {
   lastVisit: Date;
   timesVisited: number;
 }
+
+export interface Cached {
+  cached: boolean;
+  index: number;
+}
