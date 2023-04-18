@@ -42,9 +42,10 @@ export class Session {
         withCredentials: true,
         baseURL: "https://archiveofourown.org",
         jar,
+        
       })
     );
-
+axios.defaults.headers.common['User-Agent'] = "axios-bot;"
     let initialload = await instance.get(loginurl);
 
     let $ = cheerio.load(initialload.data);
