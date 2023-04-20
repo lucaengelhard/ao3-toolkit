@@ -42,10 +42,9 @@ export class Session {
         withCredentials: true,
         baseURL: "https://archiveofourown.org",
         jar,
-        
       })
     );
-axios.defaults.headers.common['User-Agent'] = "axios-bot;"
+    axios.defaults.headers.common["User-Agent"] = "axios-bot;";
     let initialload = await instance.get(loginurl);
 
     let $ = cheerio.load(initialload.data);
@@ -81,13 +80,28 @@ axios.defaults.headers.common['User-Agent'] = "axios-bot;"
   }
 
   /**
-   * Get the reading history of the logged in user (runs the {@link ao3.getHistory} method)
+   * Get the reading history of the logged in user (runs the {@link ao3.getList} method)
    * @returns a new user userhistory object
    */
-  async getHistory(info?: boolean) {
-    return await ao3.getHistory(this.#logindata, this.#instance, info);
+  async getHistory() {
+    return await ao3.getList(
+      this.#logindata,
+      this.#instance,
+      ao3.Listtype.History
+    );
   }
 
-  //TODO: getBookmarks() {}
+  /**
+   * Get the bookmarks of the logged in user (runs the {@link ao3.getList} method)
+   * @returns a new user bookmarks object
+   */
+  async getBookmarks() {
+    return await ao3.getList(
+      this.#logindata,
+      this.#instance,
+      ao3.Listtype.Bookmarks
+    );
+  }
+
   //TODO: getHistory + andere user-based functions
 }

@@ -98,20 +98,20 @@ export interface Info {
   finished?: boolean;
 }
 
-export interface WorkHistory {
+export interface WorkUserData {
   user: string;
+  history: WorkHistory | undefined;
+  bookmark: WorkBookmark | undefined;
+}
+
+export interface WorkHistory {
   lastVisit: Date;
   timesVisited: number;
   ratio: number;
   wordsRead: number;
 }
 
-export interface HistoryElement {
-  user: string;
-  id: number;
-  lastVisit: Date;
-  timesVisited: number;
-}
+export interface WorkBookmark {}
 
 
 export interface PageSpan {

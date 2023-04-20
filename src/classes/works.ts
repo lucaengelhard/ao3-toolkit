@@ -7,27 +7,34 @@ import fs from "fs";
 export class Work {
   #content;
   #info;
-  #history?;
+
+  #userdata;
+
   #cached?: ao3.Cached;
+
 
   constructor(
     info: ao3.Info,
     content?: ao3.Content,
-    history?: ao3.WorkHistory
+    userdata?: ao3.WorkUserData
   ) {
     this.#content = content;
     this.#info = info;
+
+    this.#userdata = userdata;
+
     this.#info.finished =
       this.#info.stats.chapters.chaptersMax ==
       this.#info.stats.chapters.chaptersWritten;
 
-    this.#history = history;
 
-    if (typeof this.#history !== "undefined") {
-      this.#history.ratio =
-        this.#history.timesVisited / info.stats.chapters.chaptersWritten;
+    if (typeof this.#userdata !== "undefined") {
+      this.#userdata.history.ratio =
+        this.#userdata.history.timesVisited /
+        info.stats.chapters.chaptersWritten;
 
-      this.#history.wordsRead = info.stats.words * this.#history.ratio;
+      this.#userdata.history.wordsRead =
+        info.stats.words * this.#userdata.history.ratio;
     }
   }
 
@@ -39,8 +46,16 @@ export class Work {
     return this.#info;
   }
 
+  get userdata() {
+    return this.#userdata;
+  }
+
   get history() {
-    return this.#history;
+    return this.#userdata.history;
+  }
+
+  get bookmark() {
+    return this.#userdata.bookmark;
   }
 
   get cached() {
