@@ -111,3 +111,8 @@ export interface HistoryElement {
   lastVisit: Date;
   timesVisited: number;
 }
+
+export interface PageSpan {
+  start: number | undefined;
+  end: number | undefined;
+}
