@@ -132,7 +132,7 @@ function parseListWork(
     bookmark = parseBookmarkWork($);
   }
 
-  let userdata = {
+  let userdata: ao3.WorkUserData = {
     user: username,
     history,
     bookmark,
@@ -266,7 +266,6 @@ function parseListWork(
     }
 
     let historyStats: ao3.WorkHistory = {
-      user: username,
       lastVisit: lastVisit,
       timesVisited: timesVisited,
       ratio: 0,

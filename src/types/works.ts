@@ -97,7 +97,7 @@ export interface Info {
   summary: string;
 }
 
-export interface userdata {
+export interface WorkUserData {
   user: string;
   history: WorkHistory;
   bookmark: WorkBookmark;
