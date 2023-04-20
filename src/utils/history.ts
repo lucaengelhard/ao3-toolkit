@@ -52,6 +52,7 @@ export async function getHistory(
   let batchbase = 1;
 
   //Load every history page
+
   for (let i = 1; i <= navLength; i++) {
     if (typeof span !== "undefined") {
       if (instaceOfPageSpan(span)) {
@@ -71,6 +72,9 @@ export async function getHistory(
       await ao3.delay(1500);
       batchbase = 1;
     }
+
+
+  for (let i = 1; i <= 5; i++) {
 
     console.log("getting Page " + i);
 
@@ -207,6 +211,7 @@ function getHistoryInfo($: cheerio.CheerioAPI, id: number) {
         chaptersWritten: parseInt($(".stats dd.chapters").text().split("/")[0]),
         chaptersMax: parseInt($(".stats dd.chapters").text().split("/")[1]),
       },
+
       kudos: parseInt($(".stats dd.kudos").text()),
       hits: parseInt($(".stats dd.hits").text()),
       bookmarks: parseInt($(".stats dd.bookmarks").text()),
