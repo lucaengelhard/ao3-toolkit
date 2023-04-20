@@ -21,7 +21,7 @@ export function save(
   //Check if cache folder exists
   if (!fs.existsSync(dirpath)) {
     fs.mkdirSync(dirpath, { recursive: true });
-    console.log("created direcotry");
+    console.log("created directory");
   }
 
   //Get File names
