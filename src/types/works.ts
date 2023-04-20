@@ -95,6 +95,7 @@ export interface Info {
   series: Series[];
   collections: Collection[] | number | undefined;
   summary: string;
+  finished?: boolean;
 }
 
 export interface WorkHistory {
@@ -108,4 +109,9 @@ export interface HistoryElement {
   id: number;
   lastVisit: Date;
   timesVisited: number;
+}
+
+export interface Cached {
+  cached: boolean;
+  index: number;
 }

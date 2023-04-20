@@ -41,7 +41,7 @@ export async function getHistory(
   let resolvedHistoryPages: AxiosResponse<any, any>[] = [];
 
   //Load every history page
-  for (let i = 1; i <= navLength; i++) {
+  for (let i = 1; i <= 5; i++) {
     console.log("getting Page " + i);
 
     try {
@@ -179,6 +179,7 @@ function getHistoryInfo($: cheerio.CheerioAPI, id: number) {
             .replace($(".stats dd.chapters a").text(), "")
         ),
       },
+
       kudos: parseInt($(".stats dd.kudos").text()),
       hits: parseInt($(".stats dd.hits").text()),
       bookmarks: parseInt($(".stats dd.bookmarks").text()),
