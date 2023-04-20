@@ -159,14 +159,14 @@ function parseListWork(
       id: id,
       author: {
         authorName: $("[rel=author]").text(),
-        authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href")),
+        authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href"), false),
       },
       fandom: $(".fandoms a")
         .get()
         .map((el) => {
           return {
             fandomName: $(el).text(),
-            fandomLink: ao3.linkToAbsolute($(el).attr("href")),
+            fandomLink: ao3.linkToAbsolute($(el).attr("href"), false),
           };
         }),
       stats: {
@@ -186,7 +186,7 @@ function parseListWork(
         .map((el) => {
           return {
             relationshipName: $(el).text(),
-            relationshipLink: ao3.linkToAbsolute($(el).attr("href")),
+            relationshipLink: ao3.linkToAbsolute($(el).attr("href"), false),
           };
         }),
       characters: $("li.characters a")
@@ -194,7 +194,7 @@ function parseListWork(
         .map((el) => {
           return {
             characterName: $(el).text(),
-            characterLink: ao3.linkToAbsolute($(el).attr("href")),
+            characterLink: ao3.linkToAbsolute($(el).attr("href"), false),
           };
         }),
       rating: {
@@ -202,12 +202,13 @@ function parseListWork(
         ratingLink: ao3.linkToAbsolute(
           `https://archiveofourown.org/tags/${$("ul.required-tags rating")
             .text()
-            .trim()}/works`
+            .trim()}/works`,
+          false
         ),
       },
       archiveWarnings: {
         warningName: $(".warnings a").text().trim(),
-        warningLink: ao3.linkToAbsolute($(".warnings a").attr("href")),
+        warningLink: ao3.linkToAbsolute($(".warnings a").attr("href"), false),
       },
       categories: $(".category")
         .text()
@@ -218,7 +219,8 @@ function parseListWork(
             categoryLink: ao3.linkToAbsolute(
               `https://archiveofourown.org/tags/${el
                 .trim()
-                .replace("/", "*s*")}/works`
+                .replace("/", "*s*")}/works`,
+              false
             ),
           };
         }),
@@ -227,7 +229,7 @@ function parseListWork(
         .map((el) => {
           return {
             tagName: $(el).text(),
-            tagLink: ao3.linkToAbsolute($(el).attr("href")),
+            tagLink: ao3.linkToAbsolute($(el).attr("href"), false),
           };
         }),
       language: $("dd.language").text().replace("\n", "").trim(),
@@ -237,7 +239,7 @@ function parseListWork(
         .map((el) => {
           return {
             seriesName: $(el).find("a").text(),
-            seriesLink: ao3.linkToAbsolute($(el).find("a").attr("href")),
+            seriesLink: ao3.linkToAbsolute($(el).find("a").attr("href"), false),
             seriesPart: parseInt($(el).find("strong").text()),
           };
         }),

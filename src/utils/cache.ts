@@ -28,7 +28,8 @@ export function save(
   let files = fs.readdirSync(dirpath).map((file) => {
     let parts = file.split("_");
     let type = parts[0];
-    let thisIndex = parseInt(parts[1]);
+    let thisIndex = parseInt(parts[2]);
+
     if (thisIndex >= index) {
       index = thisIndex + 1;
     }
@@ -40,10 +41,14 @@ export function save(
   let toSave = undefined;
 
   if (object instanceof ao3.WorkList) {
-    //objectify works
-
     let works = object.works.map((work) => {
-      return work.objectify();
+      try {
+        return work.objectify();
+      } catch (error) {
+        console.log(
+          `error saving ${work} work - this could be because it was deleted`
+        );
+      }
     });
 
     toSave = {

@@ -7,9 +7,16 @@ import * as cheerio from "cheerio";
  * @param link an ao3 link string
  * @returns the link as an absolute link
  */
-export function linkToAbsolute(link: string | undefined) {
+export function linkToAbsolute(link: string | undefined, strict?: boolean) {
+  if (typeof strict == "undefined") {
+    strict = true;
+  }
   if (typeof link == "undefined") {
-    throw new Error("link is undefined");
+    if (strict) {
+      throw new Error(`link ${link} is undefined`);
+    } else {
+      link = "";
+    }
   }
 
   var regex = new RegExp("^(?:[a-z+]+:)?//", "i");

@@ -44,7 +44,7 @@ export class Session {
         jar,
       })
     );
-    axios.defaults.headers.common["User-Agent"] = "axios-bot;";
+    axios.defaults.headers.common["User-Agent"] = "Axios/1.3.5 ao3-toolkit bot";
     let initialload = await instance.get(loginurl);
 
     let $ = cheerio.load(initialload.data);
