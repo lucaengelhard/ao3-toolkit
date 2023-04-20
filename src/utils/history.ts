@@ -79,13 +79,14 @@ export async function getHistory(
     let works = $("li[role='article']").toArray();
 
     works.forEach((currentWork) => {
-      parseWork(currentWork, userHistory, info);
+      parseWork(logindata.username, currentWork, userHistory, info);
     });
   });
   return userHistory;
 }
 
 function parseWork(
+  username: string,
   currentWork: cheerio.Element,
   userHistory: (ao3.HistoryElement | ao3.Work)[],
   info: boolean | undefined
@@ -128,6 +129,7 @@ function parseWork(
 
   if (typeof info == "undefined" || info == false) {
     let historyElement: ao3.HistoryElement = {
+      user: username,
       id: id,
       lastVisit: lastVisit,
       timesVisited: timesVisited,
@@ -136,6 +138,7 @@ function parseWork(
     return;
   } else {
     let historyStats: ao3.WorkHistory = {
+      user: username,
       lastVisit: lastVisit,
       timesVisited: timesVisited,
       ratio: 0,
