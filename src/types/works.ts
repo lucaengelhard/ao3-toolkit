@@ -97,20 +97,20 @@ export interface Info {
   summary: string;
 }
 
-export interface WorkHistory {
+export interface userdata {
   user: string;
+  history: WorkHistory;
+  bookmark: WorkBookmark;
+}
+
+export interface WorkHistory {
   lastVisit: Date;
   timesVisited: number;
   ratio: number;
   wordsRead: number;
 }
 
-export interface HistoryElement {
-  user: string;
-  id: number;
-  lastVisit: Date;
-  timesVisited: number;
-}
+export interface WorkBookmark {}
 
 export interface PageSpan {
   start: number | undefined;
