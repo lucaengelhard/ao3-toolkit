@@ -23,5 +23,18 @@ async function test() {
     });
   }
 */
+  /*
+  let res = await ao3.advancedWorkSearch(
+    {
+      fandoms: ["Harry Potter"],
+      languageCode: ao3.LanguageCode.English,
+    },
+    3
+  );
+
+  res.result.works.forEach((element) => {
+    console.log(element.info.title);
+  });
+*/
   console.timeEnd("test");
 }
