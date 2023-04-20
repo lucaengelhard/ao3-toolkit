@@ -99,8 +99,8 @@ export interface Info {
 
 export interface WorkUserData {
   user: string;
-  history: WorkHistory;
-  bookmark: WorkBookmark;
+  history: WorkHistory | undefined;
+  bookmark: WorkBookmark | undefined;
 }
 
 export interface WorkHistory {

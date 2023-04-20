@@ -122,12 +122,12 @@ function parseListWork(
 
   let id: number = parseInt(currentWork.attribs.id.replace("work_", ""));
 
-  let history = undefined;
+  let history: ao3.WorkHistory | undefined = undefined;
   if (listtype == ao3.Listtype.History) {
     history = parseHistoryWork($);
   }
 
-  let bookmark = undefined;
+  let bookmark: ao3.WorkBookmark | undefined = undefined;
   if (listtype == ao3.Listtype.Bookmarks) {
     bookmark = parseBookmarkWork($);
   }
@@ -276,4 +276,12 @@ function parseListWork(
   }
 
   function parseBookmarkWork($: cheerio.CheerioAPI) {}
+}
+
+function instaceOfPageSpan(span: any): span is ao3.PageSpan {
+  return span;
+}
+
+function instaceOfPageArray(span: any): span is number[] {
+  return span;
 }
