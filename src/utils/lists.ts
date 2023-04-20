@@ -45,7 +45,7 @@ export async function getList(
 
   let resolvedListPages: AxiosResponse<any, any>[] = [];
 
-  let batchlength = 10;
+  let batchlength = ao3.defaults.batch;
   let batchbase = 1;
 
   //Load every list page
