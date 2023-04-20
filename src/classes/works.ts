@@ -158,13 +158,21 @@ export class WorkList {
       if (typeof a.info.collections == "number") {
         aNum = a.info.collections;
       } else if (typeof a.info.collections !== "undefined") {
-        aNum = a.info.collections.length;
+        try {
+          aNum = a.info.collections.length;
+        } catch (error) {
+          aNum = 0;
+        }
       }
 
       if (typeof b.info.collections == "number") {
         bNum = b.info.collections;
       } else if (typeof b.info.collections !== "undefined") {
-        bNum = b.info.collections.length;
+        try {
+          bNum = b.info.collections.length;
+        } catch (error) {
+          bNum = 0;
+        }
       }
 
       return aNum - bNum;
@@ -221,8 +229,15 @@ export class WorkList {
 
   sortByFandom() {
     this.#works.sort((a: ao3.Work, b: ao3.Work) => {
-      let fa = a.info.fandom[0].fandomName.toLowerCase(),
+      let fa = "";
+      try {
+        fa = a.info.fandom[0].fandomName.toLowerCase();
+      } catch (error) {}
+
+      let fb = "";
+      try {
         fb = b.info.fandom[0].fandomName.toLowerCase();
+      } catch (error) {}
 
       if (fa < fb) {
         return -1;
@@ -271,106 +286,49 @@ export class WorkList {
 
   sortByTimesVisited() {
     this.#works.sort((a: ao3.Work, b: ao3.Work) => {
-      if (typeof a.history == "undefined" || typeof b.history == "undefined") {
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          return -1;
-        }
-
-        if (
-          typeof b.history == "undefined" &&
-          typeof a.history !== "undefined"
-        ) {
-          return 1;
-        }
-
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history == "undefined"
-        ) {
-          return 0;
-        } else if (
-          typeof a.history !== "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          let da = a.history.timesVisited,
-            db = b.history.timesVisited;
-          return da - db;
-        }
+      let aNum = 0;
+      if (typeof a.history !== "undefined") {
+        aNum = a.history.timesVisited;
       }
-      return 0;
+
+      let bNum = 0;
+      if (typeof b.history !== "undefined") {
+        bNum = b.history.timesVisited;
+      }
+
+      return aNum - bNum;
     });
   }
 
   sortByRatio() {
     this.#works.sort((a: ao3.Work, b: ao3.Work) => {
-      if (typeof a.history == "undefined" || typeof b.history == "undefined") {
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          return -1;
-        }
-
-        if (
-          typeof b.history == "undefined" &&
-          typeof a.history !== "undefined"
-        ) {
-          return 1;
-        }
-
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history == "undefined"
-        ) {
-          return 0;
-        } else if (
-          typeof a.history !== "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          let da = a.history.ratio,
-            db = b.history.ratio;
-          return da - db;
-        }
+      let aNum = 0;
+      if (typeof a.history !== "undefined") {
+        aNum = a.history.ratio;
       }
-      return 0;
+
+      let bNum = 0;
+      if (typeof b.history !== "undefined") {
+        bNum = b.history.ratio;
+      }
+
+      return aNum - bNum;
     });
   }
 
   sortByWordsRead() {
     this.#works.sort((a: ao3.Work, b: ao3.Work) => {
-      if (typeof a.history == "undefined" || typeof b.history == "undefined") {
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          return -1;
-        }
-
-        if (
-          typeof b.history == "undefined" &&
-          typeof a.history !== "undefined"
-        ) {
-          return 1;
-        }
-
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history == "undefined"
-        ) {
-          return 0;
-        } else if (
-          typeof a.history !== "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          let da = a.history.wordsRead,
-            db = b.history.wordsRead;
-          return da - db;
-        }
+      let aNum = 0;
+      if (typeof a.history !== "undefined") {
+        aNum = a.history.wordsRead;
       }
-      return 0;
+
+      let bNum = 0;
+      if (typeof b.history !== "undefined") {
+        bNum = b.history.wordsRead;
+      }
+
+      return aNum - bNum;
     });
   }
 

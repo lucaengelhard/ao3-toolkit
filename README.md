@@ -1,11 +1,8 @@
-
 # ao3-toolkit
 
 A Toolkit for interfacing with the Archive of Our Own
 
 Coded in TypeScript with nodejs
-
-
 
 ## Features
 
@@ -13,11 +10,10 @@ Coded in TypeScript with nodejs
 - Fetching single works
   - Fetching work content
   - Fetching work stats
-
+- Fetching user history
 
 ## Roadmap
 
-- Fetching user history
 - Fetching user bookmarks
 - Fetching work comments
 - Sorting WorkLists
@@ -35,16 +31,13 @@ Coded in TypeScript with nodejs
   - favourite tags
   - favourite fandoms
 
-
 ## Documentation
 
 [Documentation](https://lucaengelhard.github.io/ao3-toolkit/)
 
-
 ## Feedback
 
 If you have any feedback, please reach out to me at me@lucaengelhard.com
-
 
 ## Inspiration and similar Projects:
 
@@ -62,4 +55,3 @@ https://github.com/gmastergreatee/Fanfiction-Manager
 ## License
 
 [MIT](https://github.com/lucaengelhard/ao3-toolkit/blob/main/LICENSE)
-

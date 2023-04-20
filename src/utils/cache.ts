@@ -92,7 +92,13 @@ export function getCached(
 
   if (type == "list") {
     let list = parsed.works.map((work: any) => {
-      return new ao3.Work(work.info, work.content, work.history);
+      if (work == null) {
+        console.log("problems with parsing work -> skipping to next work");
+
+        return;
+      }
+
+      return new ao3.Work(work.info, work.content, work.userdata);
     });
 
     return new ao3.WorkList(list);

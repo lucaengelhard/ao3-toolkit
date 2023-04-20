@@ -5,7 +5,7 @@ test();
 
 async function test() {
   console.time("test");
-
+  /*
   let session = new ao3.Session(ao3.defaults.logindata);
   await session.login();
 
@@ -13,16 +13,21 @@ async function test() {
   let history: any = await session.getHistory();
 
   let saved = history.save();
+*/
 
-  /*
-  let cached = ao3.getCached(ao3.Listtype.History, "capmaennle", "list", 0);
+  let cached = ao3.getCached(ao3.Listtype.History, "capmaennle", "list", 3);
 
   if (cached instanceof ao3.WorkList) {
+    cached.sortByWordsRead();
     cached.works.forEach((element) => {
-      console.log(element.history?.lastVisit);
+      try {
+        console.log(element.history?.wordsRead);
+      } catch (error) {
+        return;
+      }
     });
   }
-*/
+
   /*
   let res = await ao3.advancedWorkSearch(
     {
