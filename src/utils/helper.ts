@@ -75,3 +75,7 @@ export function delay(ms: number): Promise<void> {
 export function getPageNumber($: cheerio.CheerioAPI) {
   return parseInt($(".pagination li").not(".next").last().text());
 }
+
+export function isUndefinend(variable: any) {
+  return typeof variable == "undefined";
+}

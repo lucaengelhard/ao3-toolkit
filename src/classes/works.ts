@@ -7,11 +7,8 @@ import fs from "fs";
 export class Work {
   #content;
   #info;
-
   #userdata;
-
   #cached?: ao3.Cached;
-
 
   constructor(
     info: ao3.Info,
@@ -27,8 +24,7 @@ export class Work {
       this.#info.stats.chapters.chaptersMax ==
       this.#info.stats.chapters.chaptersWritten;
 
-
-    if (typeof this.#userdata !== "undefined") {
+    if (typeof this.#userdata?.history !== "undefined") {
       this.#userdata.history.ratio =
         this.#userdata.history.timesVisited /
         info.stats.chapters.chaptersWritten;
@@ -51,11 +47,11 @@ export class Work {
   }
 
   get history() {
-    return this.#userdata.history;
+    return this.#userdata?.history;
   }
 
   get bookmark() {
-    return this.#userdata.bookmark;
+    return this.#userdata?.bookmark;
   }
 
   get cached() {
@@ -66,7 +62,7 @@ export class Work {
     return {
       content: this.#content,
       info: this.#info,
-      history: this.#history,
+      userdata: this.#userdata,
     };
   }
 }

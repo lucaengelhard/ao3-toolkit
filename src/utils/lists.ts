@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 
 import ao3 from "..";
 
-export function getList(
+export async function getList(
   logindata: ao3.Login,
   instance: AxiosInstance | undefined,
   listtype?: ao3.Listtype,
@@ -17,9 +17,12 @@ export function getList(
 
   //Load the first history page
   //TODO: don't load the first page twice
-
+  let firstUrl = "";
+  if (typeof listtype == "undefined") {
+    return;
+  }
   if (listtype == ao3.Listtype.History) {
-    var firstUrl = `/users/${encodeURIComponent(logindata.username)}/readings`;
+    firstUrl = `/users/${encodeURIComponent(logindata.username)}/readings`;
   }
 
   let firstPage = await instance.get(firstUrl);
@@ -48,18 +51,24 @@ export function getList(
   //Load every list page
   for (let i = 1; i <= navLength; i++) {
     if (typeof span !== "undefined") {
-      if (instaceOfPageSpan(span)) {
+      if (instaceOfPageSpan(span) && span.hasOwnProperty("start")) {
+        if (typeof span.start == "undefined") {
+          span.start = 0;
+        }
+
+        if (typeof span.end == "undefined") {
+          span.end = navLength;
+        }
         if (i < span.start || i > span.end) {
           continue;
         }
       }
-      if (instaceOfPageArray(span)) {
+      if (instaceOfPageArray(span) && !span.hasOwnProperty("start")) {
         if (!span.includes(i)) {
           continue;
         }
       }
     }
-    console.log(batchbase);
 
     if (batchbase == batchlength) {
       await ao3.delay(1500);
@@ -83,26 +92,29 @@ export function getList(
       resolvedListPages.push(loadedpage);
     } catch (error) {
       console.error(
-        `Problems while loading page ${i} of $${listtype} of user ${logindata.username}. This could be because there were to many requests.`
+        `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.`
       );
     }
     batchbase++;
   }
 
   //Parse each loaded Page
-  //TODO: async page parsing? -> create timeout callbacks?
-  let list: ao3.WorkList = [];
+  let parsed: any = [];
 
-  resolvedHistoryPages.forEach((res) => {
+  resolvedListPages.forEach((res) => {
     let page = res.data;
 
     let $ = cheerio.load(page);
     let works = $("li[role='article']").toArray();
 
-    works.map((currentWork) => {
-      return parseListWork(logindata.username, currentWork, listtype);
+    works.forEach((currentWork) => {
+      parsed.push(parseListWork(logindata.username, currentWork, listtype));
     });
+    //.filter(ao3.isUndefinend);
   });
+
+  let list = new ao3.WorkList(parsed, listtype);
+
   return list;
 }
 
@@ -275,7 +287,9 @@ function parseListWork(
     return historyStats;
   }
 
-  function parseBookmarkWork($: cheerio.CheerioAPI) {}
+  function parseBookmarkWork($: cheerio.CheerioAPI) {
+    return undefined;
+  }
 }
 
 function instaceOfPageSpan(span: any): span is ao3.PageSpan {

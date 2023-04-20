@@ -41,6 +41,7 @@ export function save(
 
   if (object instanceof ao3.WorkList) {
     //objectify works
+
     let works = object.works.map((work) => {
       return work.objectify();
     });

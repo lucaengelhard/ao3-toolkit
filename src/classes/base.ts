@@ -83,11 +83,12 @@ export class Session {
    * Get the reading history of the logged in user (runs the {@link ao3.getList} method)
    * @returns a new user userhistory object
    */
-  async getHistory() {
+  async getHistory(span?: number | ao3.PageSpan | number[]) {
     return await ao3.getList(
       this.#logindata,
       this.#instance,
-      ao3.Listtype.History
+      ao3.Listtype.History,
+      span
     );
   }
 
