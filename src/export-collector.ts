@@ -13,3 +13,4 @@ export * from "./types/works.js";
 export * from "./utils/helper.js";
 export * from "./utils/history.js";
 export * from "./utils/works.js";
+export * from "./utils/cache.js";

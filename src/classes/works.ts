@@ -58,9 +58,12 @@ export class Work {
 
 export class WorkList {
   #works;
+  #context;
   #cached?: ao3.Cached;
-  constructor(works: ao3.Work[]) {
+  constructor(works: ao3.Work[], context?: string) {
     this.#works = works;
+
+    this.#context = context;
   }
 
   get works() {
@@ -360,75 +363,20 @@ export class WorkList {
     });
   }
 
-  save() {
-    let type = "list";
-    let typepath = ao3.defaults.cachePath + `/${type}s`;
-    let index = 0;
-    let username = ao3.defaults.logindata.username;
-
-    //Check if cache folder exists
-    if (!fs.existsSync(typepath)) {
-      fs.mkdirSync(typepath, { recursive: true });
-      console.log("created direcotry");
+  save(username?: string) {
+    if (typeof username == "undefined") {
+      username = ao3.defaults.logindata.username;
     }
 
-    //Get File names
-    let files = fs.readdirSync(typepath).map((file) => {
-      let parts = file.split("_");
-      let type = parts[0];
-      let thisIndex = parseInt(parts[1]);
-      if (thisIndex >= index) {
-        index = thisIndex + 1;
-      }
-      let username = parts.slice(2, parts.length).join("").replace(".json", "");
+    let context = "undefined"; //Andere Bezeichnung finden?
 
-      return { type, index, username };
-    });
+    if (typeof this.#context !== "undefined") {
+      context = this.#context;
+    }
 
-    //objectify works
-    let works = this.#works.map((work) => {
-      return work.objectify();
-    });
+    let saved = ao3.save(context, username, this);
+    this.#cached = { cached: true, index: saved.index };
 
-    let toSave = {
-      works: works,
-    };
-
-    //JSON.stringify
-    let stringyfied = JSON.stringify(toSave);
-
-    //Save file
-    fs.writeFileSync(
-      typepath +
-        `/${type}_${index.toString().padStart(3, "0")}_${username}.json`,
-      stringyfied
-    );
-
-    console.log(
-      `stored ${type}_${index
-        .toString()
-        .padStart(3, "0")}_${username}.json in the cache`
-    );
-
-    this.#cached = { cached: true, index: index };
-
-    //Return type, index, username
-    return { type, index, username };
-  }
-
-  static getCached(index: number) {
-    let type = "list";
-    let username = ao3.defaults.logindata.username;
-    let filepath =
-      ao3.defaults.cachePath +
-      `/${type}s/${type}_${index.toString().padStart(3, "0")}_${username}.json`;
-
-    let parsed = JSON.parse(fs.readFileSync(filepath, { encoding: "utf8" }));
-
-    let list = parsed.works.map((work: any) => {
-      return new ao3.Work(work.info, work.content, work.history);
-    });
-
-    return new WorkList(list);
+    return saved;
   }
 }
