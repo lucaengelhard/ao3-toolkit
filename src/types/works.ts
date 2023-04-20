@@ -99,6 +99,7 @@ export interface Info {
 }
 
 export interface WorkHistory {
+  user: string;
   lastVisit: Date;
   timesVisited: number;
   ratio: number;
@@ -106,6 +107,7 @@ export interface WorkHistory {
 }
 
 export interface HistoryElement {
+  user: string;
   id: number;
   lastVisit: Date;
   timesVisited: number;
