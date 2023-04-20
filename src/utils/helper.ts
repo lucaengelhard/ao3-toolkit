@@ -66,3 +66,12 @@ export function getSuccess(res: AxiosResponse) {
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+/**
+ *
+ * @param $ cheerio object of a list of works
+ * @returns the number of pages from the bottom navigation
+ */
+export function getPageNumber($: cheerio.CheerioAPI) {
+  return parseInt($(".pagination li").not(".next").last().text());
+}

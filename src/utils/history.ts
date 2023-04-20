@@ -15,7 +15,8 @@ import ao3 from "..";
 export async function getHistory(
   logindata: ao3.Login,
   instance: AxiosInstance | undefined,
-  info?: boolean
+  info?: boolean,
+  span?: ao3.PageSpan | number[] | number
 ) {
   if (typeof instance == "undefined") {
     throw new Error(
@@ -36,20 +37,51 @@ export async function getHistory(
   let $ = cheerio.load(firstLoadContent);
 
   //Get the number of history pages
-  let navLength = parseInt($(".pagination li").not(".next").last().text());
+  let navLength = ao3.getPageNumber($);
+
+  if (typeof span == "number") {
+    span = {
+      start: 1,
+      end: span,
+    };
+  }
 
   let resolvedHistoryPages: AxiosResponse<any, any>[] = [];
 
+  let batchlength = 10;
+  let batchbase = 1;
+
   //Load every history page
+
+  for (let i = 1; i <= navLength; i++) {
+    if (typeof span !== "undefined") {
+      if (instaceOfPageSpan(span)) {
+        if (i < span.start || i > span.end) {
+          continue;
+        }
+      }
+      if (instaceOfPageArray(span)) {
+        if (!span.includes(i)) {
+          continue;
+        }
+      }
+    }
+    console.log(batchbase);
+
+    if (batchbase == batchlength) {
+      await ao3.delay(1500);
+      batchbase = 1;
+    }
+
+
   for (let i = 1; i <= 5; i++) {
+
     console.log("getting Page " + i);
 
     try {
       let loadedpage = await instance.get(
         `/users/${encodeURIComponent(logindata.username)}/readings?page=${i}`
       );
-
-      await ao3.delay(50);
 
       try {
         ao3.getSuccess(loadedpage);
@@ -66,6 +98,7 @@ export async function getHistory(
         `Problems while loading page ${i} of the reading history of user ${logindata.username}. This could be because there were to many requests.`
       );
     }
+    batchbase++;
   }
 
   //Parse each loaded Page
@@ -175,12 +208,8 @@ function getHistoryInfo($: cheerio.CheerioAPI, id: number) {
     stats: {
       words: parseInt($(".stats dd.words").text().replace(",", "")),
       chapters: {
-        chaptersWritten: parseInt($(".stats dd.chapters a").text()),
-        chaptersMax: parseInt(
-          $(".stats dd.chapters")
-            .text()
-            .replace($(".stats dd.chapters a").text(), "")
-        ),
+        chaptersWritten: parseInt($(".stats dd.chapters").text().split("/")[0]),
+        chaptersMax: parseInt($(".stats dd.chapters").text().split("/")[1]),
       },
 
       kudos: parseInt($(".stats dd.kudos").text()),
@@ -257,4 +286,12 @@ function getHistoryInfo($: cheerio.CheerioAPI, id: number) {
   };
 
   return info;
+}
+
+function instaceOfPageSpan(span: any): span is ao3.PageSpan {
+  return span;
+}
+
+function instaceOfPageArray(span: any): span is number[] {
+  return span;
 }

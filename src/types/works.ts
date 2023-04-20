@@ -113,7 +113,13 @@ export interface HistoryElement {
   timesVisited: number;
 }
 
+
+export interface PageSpan {
+  start: number | undefined;
+  end: number | undefined;
+
 export interface Cached {
   cached: boolean;
   index: number;
+
 }
