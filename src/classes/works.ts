@@ -1,4 +1,5 @@
 import ao3 from "..";
+import fs from "fs";
 
 /**
  * Base class for works. Stores information about the work as well as the content.
@@ -6,7 +7,11 @@ import ao3 from "..";
 export class Work {
   #content;
   #info;
+
   #userdata;
+
+  #cached?: ao3.Cached;
+
 
   constructor(
     info: ao3.Info,
@@ -15,7 +20,13 @@ export class Work {
   ) {
     this.#content = content;
     this.#info = info;
+
     this.#userdata = userdata;
+
+    this.#info.finished =
+      this.#info.stats.chapters.chaptersMax ==
+      this.#info.stats.chapters.chaptersWritten;
+
 
     if (typeof this.#userdata !== "undefined") {
       this.#userdata.history.ratio =
@@ -46,17 +57,36 @@ export class Work {
   get bookmark() {
     return this.#userdata.bookmark;
   }
+
+  get cached() {
+    return this.#cached;
+  }
+
+  objectify() {
+    return {
+      content: this.#content,
+      info: this.#info,
+      history: this.#history,
+    };
+  }
 }
 
 export class WorkList {
   #works;
-
-  constructor(works: ao3.Work[]) {
+  #context;
+  #cached?: ao3.Cached;
+  constructor(works: ao3.Work[], context?: string) {
     this.#works = works;
+
+    this.#context = context;
   }
 
   get works() {
     return this.#works;
+  }
+
+  get cached() {
+    return this.#cached;
   }
 
   sortByHits() {
@@ -346,5 +376,22 @@ export class WorkList {
       }
       return 0;
     });
+  }
+
+  save(username?: string) {
+    if (typeof username == "undefined") {
+      username = ao3.defaults.logindata.username;
+    }
+
+    let context = "undefined"; //Andere Bezeichnung finden?
+
+    if (typeof this.#context !== "undefined") {
+      context = this.#context;
+    }
+
+    let saved = ao3.save(context, username, this);
+    this.#cached = { cached: true, index: saved.index };
+
+    return saved;
   }
 }

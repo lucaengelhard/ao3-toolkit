@@ -95,6 +95,7 @@ export interface Info {
   series: Series[];
   collections: Collection[] | number | undefined;
   summary: string;
+  finished?: boolean;
 }
 
 export interface WorkUserData {
@@ -112,7 +113,13 @@ export interface WorkHistory {
 
 export interface WorkBookmark {}
 
+
 export interface PageSpan {
   start: number | undefined;
   end: number | undefined;
+
+export interface Cached {
+  cached: boolean;
+  index: number;
+
 }
