@@ -1,4 +1,4 @@
-import ao3 from "..";
+import ao3 from "../index.js";
 
 /**
  * Class that stores information about a single series.

@@ -3,7 +3,8 @@
   "version": "0.2.0",
   "description": "A Toolkit for interfacing with the Archive of our Own",
   "main": "dist/index.js",
-  "types": "src/index.js",
+  "types": "src/types.d.ts",
+  "type": "module",
   "scripts": {
     "full": "npx tsc && node dist/index.js",
     "build": "npx tsc",
