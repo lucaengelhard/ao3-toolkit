@@ -58,8 +58,7 @@ async function test() {
 
   // ao3.deleteCache(ao3.Listtype.History, "capmaennle", "list", [1, 3]);
 
-  let work = await ao3.getWork(41869368);
-  work.save();
+  await ao3.getKudos(19865440);
 
   console.timeEnd("test");
 }
