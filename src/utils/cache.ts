@@ -33,7 +33,7 @@ export function save(
     if (thisIndex >= index) {
       index = thisIndex + 1;
     }
-    let username = parts.slice(2, parts.length).join("").replace(".json", "");
+    let username = parts.slice(3, parts.length).join("").replace(".json", "");
 
     return { type, index, username };
   });
@@ -107,4 +107,40 @@ export function getCached(
   if (type == "work") {
     return new ao3.Work(parsed.info, parsed.content, parsed.history);
   }
+}
+
+export function deleteCache(
+  context: string,
+  username: string,
+  type: string,
+  span?: number[]
+) {
+  let dirpath: string = `${ao3.defaults.cachePath}/${username}/${type}s/${context}`;
+
+  //Check if cache folder exists
+  if (!fs.existsSync(dirpath)) {
+    throw new Error("Directory does not exist");
+  }
+
+  //Get File names
+  let files = fs.readdirSync(dirpath).map((file) => {
+    let parts = file.split("_");
+    let type = parts[0];
+    let context = parts[1];
+    let index = parseInt(parts[2]);
+    let username = parts.slice(3, parts.length).join("").replace(".json", "");
+
+    return { type, context, index, username, filename: file };
+  });
+
+  if (typeof span == "undefined") {
+    files.forEach((file) => {
+      fs.unlinkSync(`${dirpath}/${file.filename}`);
+    });
+    return;
+  }
+
+  span.forEach((index) => {
+    fs.unlinkSync(`${dirpath}/${files[index].filename}`);
+  });
 }

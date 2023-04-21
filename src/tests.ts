@@ -6,6 +6,7 @@ test();
 async function test() {
   console.time("test");
 
+  /*
   let session = new ao3.Session(ao3.defaults.logindata);
   await session.login();
 
@@ -16,7 +17,6 @@ async function test() {
     console.log(work.userdata?.bookmark);
   });
 
-  /*
   let saved = history.save();
 */
   /*
@@ -46,5 +46,8 @@ async function test() {
     console.log(element.info.title);
   });
 */
+
+  ao3.deleteCache(ao3.Listtype.History, "capmaennle", "list", [1, 3]);
+
   console.timeEnd("test");
 }
