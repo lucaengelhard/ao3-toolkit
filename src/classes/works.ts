@@ -8,11 +8,13 @@ export class Work {
   #info;
   #userdata;
   #cached?: ao3.Cached;
+  #context?;
 
   constructor(
     info: ao3.Info,
     content?: ao3.Content,
-    userdata?: ao3.WorkUserData
+    userdata?: ao3.WorkUserData,
+    context?: string
   ) {
     this.#content = content;
     this.#info = info;
@@ -31,6 +33,8 @@ export class Work {
       this.#userdata.history.wordsRead =
         info.stats.words * this.#userdata.history.ratio;
     }
+
+    this.#context = context;
   }
 
   get content() {
@@ -66,7 +70,26 @@ export class Work {
       content: this.#content,
       info: this.#info,
       userdata: this.#userdata,
+      context: this.#context,
+      cached: this.#cached,
     };
+  }
+
+  save(username?: string) {
+    if (typeof username == "undefined") {
+      username = ao3.defaults.logindata.username;
+    }
+
+    let context = "undefined"; //Andere Bezeichnung finden?
+
+    if (typeof this.#context !== "undefined") {
+      context = this.#context;
+    }
+
+    let saved = ao3.save(context, username, this);
+    this.#cached = { cached: true, index: saved.index };
+
+    return saved;
   }
 }
 

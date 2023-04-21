@@ -65,7 +65,7 @@ export function save(
   }
   if (object instanceof ao3.Work) {
     toSave = {
-      work: object.objectify,
+      work: object.objectify(),
     };
   }
 

@@ -14,7 +14,7 @@ async function test() {
     console.log(element.link);
   });
 
-  */
+
   let session = new ao3.Session(ao3.defaults.logindata);
   await session.login();
 
@@ -27,6 +27,7 @@ async function test() {
 
   let saved = bookmarks.save();
 
+  */
   /*
   let cached = ao3.getCached(ao3.Listtype.History, "capmaennle", "list", 3);
 
@@ -56,6 +57,9 @@ async function test() {
 */
 
   // ao3.deleteCache(ao3.Listtype.History, "capmaennle", "list", [1, 3]);
+
+  let work = await ao3.getWork(41869368);
+  work.save();
 
   console.timeEnd("test");
 }
