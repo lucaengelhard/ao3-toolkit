@@ -11,11 +11,7 @@ Coded in TypeScript with nodejs
   - Fetching work content
   - Fetching work stats
 - Fetching user history
-
-## Roadmap
-
 - Fetching user bookmarks
-- Fetching work comments
 - Sorting WorkLists
   - by words
   - by kudos
@@ -25,6 +21,10 @@ Coded in TypeScript with nodejs
   - by chaptercount
   - by times visited
   - by last time visited
+
+## Roadmap
+
+- Fetching work comments
 - Fetching user stats
   - words read
   - fics read
