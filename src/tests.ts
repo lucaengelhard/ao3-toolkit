@@ -1,5 +1,5 @@
 import axios from "axios";
-import ao3 from ".";
+import ao3 from "./index.js";
 
 test();
 
@@ -58,7 +58,11 @@ async function test() {
 
   // ao3.deleteCache(ao3.Listtype.History, "capmaennle", "list", [1, 3]);
 
-  await ao3.getKudos(19865440);
+  let work = await ao3.getWork(19865440);
+
+  work.save();
+
+  console.log(work.content);
 
   console.timeEnd("test");
 }

@@ -21,13 +21,14 @@ Coded in TypeScript with nodejs
   - by chaptercount
   - by times visited
   - by last time visited
+- Fetching user stats
+  - words read
+  - fics read
 
 ## Roadmap
 
 - Fetching work comments
 - Fetching user stats
-  - words read
-  - fics read
   - favourite tags
   - favourite fandoms
 
