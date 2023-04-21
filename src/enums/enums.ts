@@ -133,3 +133,9 @@ export enum LanguageCode {
   Cantonese = "yue",
   Mandarin = "zh",
 }
+
+export enum BookmarkTypes {
+  External = "External+Work",
+  Series = "Series",
+  Work = "Work",
+}

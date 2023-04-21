@@ -27,7 +27,10 @@ export async function search(query: string, index?: number) {
   return { index, navLength, result: parseSearchList($) };
 }
 
-export async function advancedWorkSearch(search: ao3.Search, index?: number) {
+export async function advancedWorkSearch(
+  search: ao3.WorkSearch,
+  index?: number
+) {
   let page = "";
   if (!(index == 1 || typeof index == "undefined")) {
     page = `page=${index}&`;
@@ -172,7 +175,6 @@ export async function advancedWorkSearch(search: ao3.Search, index?: number) {
 
   let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
 
-  axios.defaults.headers.common["User-Agent"] = "Axios/1.3.5 ao3-toolkit bot";
   let res = await axios.get(searchurl, ao3.defaults.axios);
 
   ao3.getSuccess(res);
@@ -300,4 +302,427 @@ function parseSearchWork(currentWork: cheerio.Element) {
   };
 
   return new ao3.Work(info);
+}
+
+export async function advancedPeopleSearch(
+  search: ao3.PeopleSearch,
+  index?: number
+) {
+  if (typeof index == "undefined") {
+    index = 1;
+  }
+
+  let page = "";
+  if (!(index == 1 || typeof index == "undefined")) {
+    page = `page=${index}&`;
+  }
+
+  let baseurl = `https://archiveofourown.org/people/search?commit=Search+People&${page}people_search`;
+
+  let query = "";
+  let name = "";
+  let fandoms = "";
+
+  if (typeof search.query !== "undefined") {
+    query = search.query;
+  }
+
+  if (typeof search.name !== "undefined") {
+    name = search.name;
+  }
+
+  if (typeof search.fandoms !== "undefined") {
+    fandoms = search.fandoms
+      .map((name) => {
+        return name.replaceAll(" ", "+");
+      })
+      .join("%2C");
+  }
+
+  let searchstring = `%5Bquery%5D=${query}&people_search%5Bname%5D=${name}&people_search%5Bfandom%5D=${fandoms}&commit=Search+People`;
+
+  let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
+
+  let res = await axios.get(searchurl, ao3.defaults.axios);
+
+  ao3.getSuccess(res);
+
+  let firstLoadContent = res.data;
+
+  let $ = cheerio.load(firstLoadContent);
+
+  //Get the number of history pages
+  let navLength = ao3.getPageNumber($);
+
+  return { index, navLength, result: parsePeopleSearch($) };
+
+  function parsePeopleSearch($: cheerio.CheerioAPI) {
+    let people = $("li[role='article']").toArray();
+
+    let parsed: any = [];
+    people.forEach((person) => {
+      let $ = cheerio.load(person);
+      let user = {
+        userName: $("h4 a").last().text(),
+        userLink: ao3.linkToAbsolute($("h4 a").last().attr("href"), false),
+      };
+
+      let pseud = {
+        pseudName: $("h4 a").first().text(),
+        pseudLink: ao3.linkToAbsolute($("h4 a").first().attr("href"), false),
+      };
+
+      let works = {};
+      try {
+        works = {
+          workNumber: parseInt($("h5 a").first().text().split(" ")[0]),
+          workLink: ao3.linkToAbsolute($("h5 a").first().attr("href")),
+        };
+      } catch (error) {}
+
+      if (($("h4 a").toArray().length = 1)) {
+        user.userLink = `https://archiveofourown.org/users/${user.userName}`;
+      }
+
+      parsed.push({ user, pseud, works });
+    });
+
+    return parsed;
+  }
+}
+
+export async function advancedBookmarkSearch(
+  search: ao3.BookmarkSearch,
+  index?: number
+) {
+  if (typeof index == "undefined") {
+    index = 1;
+  }
+
+  let page = "";
+  if (!(index == 1 || typeof index == "undefined")) {
+    page = `page=${index}&`;
+  }
+
+  let baseurl = `https://archiveofourown.org/bookmarks/search?commit=Search+Bookmarks&${page}`;
+
+  let workQuery = "";
+  let workTags = "";
+  let workType = "";
+  let workLanguage = "";
+  let workDateUpdated = "";
+  let bookmarkQuery = "";
+  let bookmarkTags = "";
+  let bookmarker = "";
+  let bookmarkNotes = "";
+  let rec = "0";
+  let withNotes = "0";
+  let bookmarkDate = "";
+  let sortBy = "";
+
+  if (typeof search.workQuery !== "undefined") {
+    workQuery = search.workQuery;
+  }
+
+  if (typeof search.workTags !== "undefined") {
+    workTags = search.workTags
+      .map((name) => {
+        return name.replaceAll(" ", "+");
+      })
+      .join("%2C");
+  }
+
+  if (typeof search.workType !== "undefined") {
+    workType = search.workType;
+  }
+
+  if (typeof search.workLanguage !== "undefined") {
+    workLanguage = search.workLanguage;
+  }
+
+  if (typeof search.workDateUpdated !== "undefined") {
+    workDateUpdated = search.workDateUpdated;
+  }
+
+  if (typeof search.bookmarkQuery !== "undefined") {
+    bookmarkQuery = search.bookmarkQuery;
+  }
+
+  if (typeof search.bookmarkTags !== "undefined") {
+    bookmarkTags = search.bookmarkTags
+      .map((name) => {
+        return name.replaceAll(" ", "+");
+      })
+      .join("%2C");
+  }
+
+  if (typeof search.bookmarker !== "undefined") {
+    bookmarker = search.bookmarker;
+  }
+
+  if (typeof search.rec !== "undefined") {
+    if (search.rec) {
+      rec = "1";
+    } else {
+      rec = "0";
+    }
+  }
+
+  if (typeof search.withNotes !== "undefined") {
+    if (search.withNotes) {
+      withNotes = "1";
+    } else {
+      withNotes = "0";
+    }
+  }
+
+  if (typeof search.sortBy !== "undefined") {
+    sortBy = search.sortBy;
+  }
+
+  let searchstring = `bookmark_search%5Bbookmarkable_query%5D=${workQuery}&bookmark_search%5Bother_tag_names%5D=${workTags}&bookmark_search%5Bbookmarkable_type%5D=${workType}&bookmark_search%5Blanguage_id%5D=${workLanguage}&bookmark_search%5Bbookmarkable_date%5D=${workDateUpdated}&bookmark_search%5Bbookmark_query%5D=${bookmarkQuery}&bookmark_search%5Bother_bookmark_tag_names%5D=${bookmarkTags}&bookmark_search%5Bbookmarker%5D=${bookmarker}&bookmark_search%5Bbookmark_notes%5D=${bookmarkNotes}&bookmark_search%5Brec%5D=${rec}&bookmark_search%5Bwith_notes%5D=${withNotes}&bookmark_search%5Bdate%5D=${bookmarkDate}&bookmark_search%5Bsort_column%5D=${sortBy}`;
+
+  let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
+
+  let res = await axios.get(searchurl, ao3.defaults.axios);
+
+  ao3.getSuccess(res);
+
+  let firstLoadContent = res.data;
+
+  let $ = cheerio.load(firstLoadContent);
+
+  //Get the number of history pages
+  let navLength = ao3.getPageNumber($);
+
+  return { index, navLength, result: parseBookmarkSearch($) };
+
+  function parseBookmarkSearch($: cheerio.CheerioAPI) {
+    let bookmarks = $("ol li[role='article']").toArray();
+
+    let parsed: any = [];
+    bookmarks.forEach((bookmark) => {
+      let $ = cheerio.load(bookmark);
+      let type = getBookmarkType($);
+
+      if (type == "work") {
+        let work = parseSearchWork(bookmark);
+        let userdata: ao3.WorkUserData = { bookmark: ao3.parseBookmarkWork($) };
+        work.userdata = userdata;
+      }
+
+      if (type == "series") {
+        let bookmarkdata: ao3.WorkBookmark = ao3.parseBookmarkWork($);
+        let id: number = parseInt(
+          bookmark.attribs.class.split(" ")[3].replace("series-", "")
+        );
+
+        let info: ao3.SeriesFullInfo = {
+          title: $(".header h4.heading a").first().text(),
+          id: id,
+          author: {
+            authorName: $("[rel=author]").text(),
+            authorLink: ao3.linkToAbsolute(
+              $("[rel=author]").attr("href"),
+              false
+            ),
+          },
+          fandom: $(".fandoms a")
+            .get()
+            .map((el) => {
+              return {
+                fandomName: $(el).text(),
+                fandomLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+          stats: {
+            words: parseInt(
+              $(".stats dt:contains('Words')").next().text().replace(",", "")
+            ),
+            bookmarks: parseInt(
+              $(".stats dt:contains('Bookmarks')").next().text()
+            ),
+            works: parseInt($(".stats dt:contains('Works')").next().text()),
+          },
+          relationships: $("li.relationships a")
+            .get()
+            .map((el) => {
+              return {
+                relationshipName: $(el).text(),
+                relationshipLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+          characters: $("li.characters a")
+            .get()
+            .map((el) => {
+              return {
+                characterName: $(el).text(),
+                characterLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+          rating: {
+            ratingName: $("ul.required-tags rating").text().trim(),
+            ratingLink: ao3.linkToAbsolute(
+              `https://archiveofourown.org/tags/${$("ul.required-tags rating")
+                .text()
+                .trim()}/works`,
+              false
+            ),
+          },
+          archiveWarnings: {
+            warningName: $(".warnings a").text().trim(),
+            warningLink: ao3.linkToAbsolute(
+              $(".warnings a").attr("href"),
+              false
+            ),
+          },
+          categories: $(".category")
+            .text()
+            .split(",")
+            .map((el) => {
+              return {
+                categoryName: el.trim(),
+                categoryLink: ao3.linkToAbsolute(
+                  `https://archiveofourown.org/tags/${el
+                    .trim()
+                    .replaceAll("/", "*s*")}/works`,
+                  false
+                ),
+              };
+            }),
+          tags: $(".freeforms a")
+            .get()
+            .map((el) => {
+              return {
+                tagName: $(el).text(),
+                tagLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+
+          summary: $(".summary p")
+            .get()
+            .map((el) => {
+              return $(el).text();
+            })
+            .join("\n"),
+        };
+
+        parsed.push(new ao3.Series(info, bookmarkdata));
+      }
+
+      if (type == "external") {
+        let bookmarkdata: ao3.WorkBookmark = ao3.parseBookmarkWork($);
+        let id: number = parseInt(bookmark.attribs.id.replace("bookmark_", ""));
+        let info = {
+          title: $(".heading a").first().text(),
+          id: id,
+          author: {
+            authorName: $("[rel=author]").text(),
+            authorLink: ao3.linkToAbsolute(
+              $("[rel=author]").attr("href"),
+              false
+            ),
+          },
+          fandom: $(".fandoms a")
+            .get()
+            .map((el) => {
+              return {
+                fandomName: $(el).text(),
+                fandomLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+          stats: {
+            bookmarks: parseInt($(".stats dd").first().text()),
+          },
+          relationships: $("li.relationships a")
+            .get()
+            .map((el) => {
+              return {
+                relationshipName: $(el).text(),
+                relationshipLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+          characters: $("li.characters a")
+            .get()
+            .map((el) => {
+              return {
+                characterName: $(el).text(),
+                characterLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+          rating: {
+            ratingName: $("ul.required-tags rating").text().trim(),
+            ratingLink: ao3.linkToAbsolute(
+              `https://archiveofourown.org/tags/${$("ul.required-tags rating")
+                .text()
+                .trim()}/works`,
+              false
+            ),
+          },
+          archiveWarnings: {
+            warningName: $(".warnings a").text().trim(),
+            warningLink: ao3.linkToAbsolute(
+              $(".warnings a").attr("href"),
+              false
+            ),
+          },
+          categories: $(".category")
+            .text()
+            .split(",")
+            .map((el) => {
+              return {
+                categoryName: el.trim(),
+                categoryLink: ao3.linkToAbsolute(
+                  `https://archiveofourown.org/tags/${el
+                    .trim()
+                    .replaceAll("/", "*s*")}/works`,
+                  false
+                ),
+              };
+            }),
+          tags: $(".freeforms a")
+            .get()
+            .map((el) => {
+              return {
+                tagName: $(el).text(),
+                tagLink: ao3.linkToAbsolute($(el).attr("href"), false),
+              };
+            }),
+
+          summary: $(".summary p")
+            .get()
+            .map((el) => {
+              return $(el).text();
+            })
+            .join("\n"),
+        };
+
+        parsed.push(new ao3.ExternalWork(info, bookmarkdata));
+      }
+    });
+
+    return parsed;
+
+    function getBookmarkType($: cheerio.CheerioAPI) {
+      let workbase = "https://archiveofourown.org/works/";
+      let seriesbase = "https://archiveofourown.org/series/";
+      let externalbase = "https://archiveofourown.org/external_works/";
+
+      let bookmarkUrl = ao3.linkToAbsolute(
+        $(".heading a").first().attr("href")
+      );
+
+      if (bookmarkUrl?.includes(workbase)) {
+        return "work";
+      }
+
+      if (bookmarkUrl?.includes(seriesbase)) {
+        return "series";
+      }
+
+      if (bookmarkUrl?.includes(externalbase)) {
+        return "external";
+      }
+    }
+  }
 }

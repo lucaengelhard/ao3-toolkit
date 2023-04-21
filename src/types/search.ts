@@ -1,4 +1,4 @@
-export interface Search {
+export interface WorkSearch {
   bookmarks?: number;
   characterNames?: string[];
   comments?: number;
@@ -19,4 +19,26 @@ export interface Search {
   sortDirection?: string;
   title?: string;
   wordCount?: number;
+}
+
+export interface PeopleSearch {
+  query?: string;
+  name?: string;
+  fandoms?: string[];
+}
+
+export interface BookmarkSearch {
+  workQuery?: string;
+  workTags?: string[];
+  workType?: string;
+  workLanguage?: string;
+  workDateUpdated?: string;
+  bookmarkQuery?: string;
+  bookmarkTags?: string[];
+  bookmarker?: string;
+  bookmarkNotes?: string;
+  rec?: boolean;
+  withNotes?: boolean;
+  bookmarkDate?: string;
+  sortBy?: string;
 }

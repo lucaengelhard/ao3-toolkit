@@ -150,7 +150,7 @@ function parseListWork(
     history = parseHistoryWork($);
   }
 
-  let bookmark: Date | undefined = undefined;
+  let bookmark: ao3.WorkBookmark | undefined = undefined;
   if (listtype == ao3.Listtype.Bookmarks) {
     bookmark = parseBookmarkWork($);
   }
@@ -299,10 +299,6 @@ function parseListWork(
 
     return historyStats;
   }
-
-  function parseBookmarkWork($: cheerio.CheerioAPI) {
-    return new Date($(".own.user .datetime").text());
-  }
 }
 
 function instaceOfPageSpan(span: any): span is ao3.PageSpan {
@@ -311,4 +307,27 @@ function instaceOfPageSpan(span: any): span is ao3.PageSpan {
 
 function instaceOfPageArray(span: any): span is number[] {
   return span;
+}
+
+export function parseBookmarkWork($: cheerio.CheerioAPI) {
+  let bookmark: ao3.WorkBookmark = {
+    dateBookmarked: new Date($(".own.user .datetime").text()),
+    bookmarker: {
+      authorName: $(".own.user a").first().text(),
+      authorLink: ao3.linkToAbsolute(
+        $(".own.user a").first().attr("href"),
+        false
+      ),
+    },
+    bookmarkerTags: $(".own.user tags li")
+      .get()
+      .map((tag) => {
+        return {
+          tagName: $(tag).find("a").text(),
+          tagLink: ao3.linkToAbsolute($(tag).find("a").attr("href")),
+        };
+      }),
+    bookmarkNotes: $(".own.user blockquote").first().text(),
+  };
+  return bookmark;
 }

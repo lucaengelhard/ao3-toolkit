@@ -6,6 +6,15 @@ test();
 async function test() {
   console.time("test");
 
+  let res = await ao3.advancedBookmarkSearch({
+    workQuery: "test",
+    workType: ao3.BookmarkTypes.Series,
+    rec: true,
+  });
+  res.result.forEach((element: ao3.Series) => {
+    console.log(element.info.title);
+  });
+
   /*
   let session = new ao3.Session(ao3.defaults.logindata);
   await session.login();
@@ -47,7 +56,7 @@ async function test() {
   });
 */
 
-  ao3.deleteCache(ao3.Listtype.History, "capmaennle", "list", [1, 3]);
+  // ao3.deleteCache(ao3.Listtype.History, "capmaennle", "list", [1, 3]);
 
   console.timeEnd("test");
 }

@@ -1,5 +1,4 @@
 import ao3 from "..";
-import fs from "fs";
 
 /**
  * Base class for works. Stores information about the work as well as the content.
@@ -56,6 +55,10 @@ export class Work {
 
   get cached() {
     return this.#cached;
+  }
+
+  set userdata(userdata: ao3.WorkUserData | undefined) {
+    this.#userdata = userdata;
   }
 
   objectify() {
@@ -347,5 +350,23 @@ export class WorkList {
     this.#cached = { cached: true, index: saved.index };
 
     return saved;
+  }
+}
+
+export class ExternalWork {
+  #info;
+  #bookmark;
+
+  constructor(info: any, bookmark: ao3.WorkBookmark) {
+    this.#info = info;
+    this.#bookmark = bookmark;
+  }
+
+  get info() {
+    return this.#info;
+  }
+
+  get bookmark() {
+    return this.#bookmark;
   }
 }

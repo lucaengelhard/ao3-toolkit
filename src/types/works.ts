@@ -43,7 +43,7 @@ export interface Tag {
   tagLink: string | undefined;
 }
 
-export interface Series {
+export interface SeriesInfo {
   seriesName: string;
   seriesLink: string | undefined;
   seriesPart: number;
@@ -92,16 +92,16 @@ export interface Info {
   categories: Category[];
   tags: Tag[];
   language: string;
-  series: Series[];
+  series: SeriesInfo[];
   collections: Collection[] | number | undefined;
   summary: string;
   finished?: boolean;
 }
 
 export interface WorkUserData {
-  user: string;
-  history: WorkHistory | undefined;
-  bookmark: Date | undefined;
+  user?: string;
+  history?: WorkHistory;
+  bookmark?: WorkBookmark;
 }
 
 export interface WorkHistory {
@@ -109,6 +109,13 @@ export interface WorkHistory {
   timesVisited: number;
   ratio: number;
   wordsRead: number;
+}
+
+export interface WorkBookmark {
+  dateBookmarked: Date;
+  bookmarker: Author;
+  bookmarkerTags?: Tag[];
+  bookmarkNotes?: string;
 }
 
 export interface PageSpan {

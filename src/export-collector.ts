@@ -1,6 +1,7 @@
 //Classes
 export * from "./classes/base.js";
 export * from "./classes/works.js";
+export * from "./classes/series.js";
 
 //Defaults
 export * as defaults from "./config/export.js";
@@ -9,6 +10,7 @@ export * as defaults from "./config/export.js";
 export * from "./types/base.js";
 export * from "./types/works.js";
 export * from "./types/search.js";
+export * from "./types/series.js";
 
 //Enums
 export * from "./enums/enums.js";
