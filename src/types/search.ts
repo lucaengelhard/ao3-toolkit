@@ -42,3 +42,18 @@ export interface BookmarkSearch {
   bookmarkDate?: string;
   sortBy?: string;
 }
+
+export interface TagSearch {
+  canonical?: boolean;
+  fandoms?: string[];
+  name?: string;
+  sortBy?: string;
+  sortDirection?: string;
+  type?: string;
+}
+
+export interface SearchedTag {
+  type: string;
+  name: string;
+  link: string;
+}

@@ -5,17 +5,16 @@ test();
 
 async function test() {
   console.time("test");
-
-  let res = await ao3.advancedBookmarkSearch({
-    workQuery: "test",
-    workType: ao3.BookmarkTypes.Series,
-    rec: true,
-  });
-  res.result.forEach((element: ao3.Series) => {
-    console.log(element.info.title);
-  });
-
   /*
+  let res = await ao3.advancedTagSearch({
+    canonical: true,
+    name: "test",
+  });
+  res.result.forEach((element: ao3.SearchedTag) => {
+    console.log(element.link);
+  });
+
+  */
   let session = new ao3.Session(ao3.defaults.logindata);
   await session.login();
 
@@ -26,8 +25,8 @@ async function test() {
     console.log(work.userdata?.bookmark);
   });
 
-  let saved = history.save();
-*/
+  let saved = bookmarks.save();
+
   /*
   let cached = ao3.getCached(ao3.Listtype.History, "capmaennle", "list", 3);
 
