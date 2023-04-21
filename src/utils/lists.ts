@@ -25,6 +25,10 @@ export async function getList(
     firstUrl = `/users/${encodeURIComponent(logindata.username)}/readings`;
   }
 
+  if (listtype == ao3.Listtype.Bookmarks) {
+    firstUrl = `/users/${encodeURIComponent(logindata.username)}/bookmarks`;
+  }
+
   let firstPage = await instance.get(firstUrl);
 
   ao3.getSuccess(firstPage);
@@ -76,21 +80,24 @@ export async function getList(
     }
 
     console.log("getting Page " + i);
+    console.log(`${firstUrl}?page=${i}`);
 
     try {
-      let loadedpage = await instance.get(`${firstUrl}?page=${i}`);
+      let loadedpage = await instance.get(
+        `${firstUrl}?page=${i}`,
+        ao3.defaults.axios
+      );
 
       try {
         ao3.getSuccess(loadedpage);
       } catch (error) {
         console.error(
-          `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.`
+          `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.!`
         );
 
         continue;
       }
       resolvedListPages.push(loadedpage);
-      ao3.defaults.listBuffer.push(loadedpage);
     } catch (error) {
       console.error(
         `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.`
@@ -112,7 +119,7 @@ export async function getList(
       try {
         parsed.push(parseListWork(logindata.username, currentWork, listtype));
       } catch (error) {
-        throw ao3.defaults.listBuffer;
+        throw (ao3.defaults.listBuffer = resolvedListPages);
       }
     });
   });
@@ -143,7 +150,7 @@ function parseListWork(
     history = parseHistoryWork($);
   }
 
-  let bookmark: ao3.WorkBookmark | undefined = undefined;
+  let bookmark: Date | undefined = undefined;
   if (listtype == ao3.Listtype.Bookmarks) {
     bookmark = parseBookmarkWork($);
   }
@@ -294,7 +301,7 @@ function parseListWork(
   }
 
   function parseBookmarkWork($: cheerio.CheerioAPI) {
-    return undefined;
+    return new Date($(".own.user .datetime").text());
   }
 }
 

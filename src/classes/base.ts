@@ -44,7 +44,7 @@ export class Session {
         jar,
       })
     );
-    axios.defaults.headers.common["User-Agent"] = "Axios/1.3.5 ao3-toolkit bot";
+
     let initialload = await instance.get(loginurl);
 
     let $ = cheerio.load(initialload.data);
@@ -59,7 +59,7 @@ export class Session {
     }&user%5Bremember_me%5D=1&commit=Log+in`;
 
     //Check if Login is successfull
-    let loginres = await instance.post(loginurl, payload);
+    let loginres = await instance.post(loginurl, payload, ao3.defaults.axios);
 
     if (loginres.request.res.responseUrl.includes(this.#logindata.username)) {
       console.log(`Login of user ${this.#logindata.username} successfull`);
@@ -96,11 +96,12 @@ export class Session {
    * Get the bookmarks of the logged in user (runs the {@link ao3.getList} method)
    * @returns a new user bookmarks object
    */
-  async getBookmarks() {
+  async getBookmarks(span?: number | ao3.PageSpan | number[]) {
     return await ao3.getList(
       this.#logindata,
       this.#instance,
-      ao3.Listtype.Bookmarks
+      ao3.Listtype.Bookmarks,
+      span
     );
   }
 

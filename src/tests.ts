@@ -5,16 +5,21 @@ test();
 
 async function test() {
   console.time("test");
-  /*
+
   let session = new ao3.Session(ao3.defaults.logindata);
   await session.login();
 
   let span: ao3.PageSpan = { start: 125, end: undefined };
-  let history: any = await session.getHistory();
+  let bookmarks: any = await session.getBookmarks();
+  bookmarks.works.forEach((work: ao3.Work) => {
+    console.log(work.info.title);
+    console.log(work.userdata?.bookmark);
+  });
 
+  /*
   let saved = history.save();
 */
-
+  /*
   let cached = ao3.getCached(ao3.Listtype.History, "capmaennle", "list", 3);
 
   if (cached instanceof ao3.WorkList) {
@@ -27,7 +32,7 @@ async function test() {
       }
     });
   }
-
+*/
   /*
   let res = await ao3.advancedWorkSearch(
     {

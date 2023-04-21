@@ -13,7 +13,7 @@ export async function search(query: string, index?: number) {
   let searchurl = `${baseurl}${query}`;
 
   axios.defaults.headers.common["User-Agent"] = "Axios/1.3.5 ao3-toolkit bot";
-  let res = await axios.get(searchurl);
+  let res = await axios.get(searchurl, ao3.defaults.axios);
 
   ao3.getSuccess(res);
 
@@ -173,7 +173,7 @@ export async function advancedWorkSearch(search: ao3.Search, index?: number) {
   let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
 
   axios.defaults.headers.common["User-Agent"] = "Axios/1.3.5 ao3-toolkit bot";
-  let res = await axios.get(searchurl);
+  let res = await axios.get(searchurl, ao3.defaults.axios);
 
   ao3.getSuccess(res);
 

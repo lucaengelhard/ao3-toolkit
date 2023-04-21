@@ -40,6 +40,7 @@ export async function getParsableInfoData(fic: number | cheerio.CheerioAPI) {
       url: url,
       headers: {
         cookie: "view_adult=true;",
+        "User-Agent": "Axios/1.3.5 ao3-toolkit bot",
       },
     });
 

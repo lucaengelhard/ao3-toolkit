@@ -25,7 +25,7 @@ export async function getContent(fic: number | cheerio.CheerioAPI) {
     "https://archiveofourown.org" +
     $(".download").find("li:contains('HTML')").find("a").attr("href");
 
-  let initialLoad = await axios.get(downloadURL);
+  let initialLoad = await axios.get(downloadURL, ao3.defaults.axios);
 
   ao3.getSuccess(initialLoad);
 

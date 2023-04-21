@@ -101,7 +101,7 @@ export interface Info {
 export interface WorkUserData {
   user: string;
   history: WorkHistory | undefined;
-  bookmark: WorkBookmark | undefined;
+  bookmark: Date | undefined;
 }
 
 export interface WorkHistory {
@@ -110,8 +110,6 @@ export interface WorkHistory {
   ratio: number;
   wordsRead: number;
 }
-
-export interface WorkBookmark {}
 
 export interface PageSpan {
   start: number | undefined;
