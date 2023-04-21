@@ -84,12 +84,13 @@ export async function getList(
         ao3.getSuccess(loadedpage);
       } catch (error) {
         console.error(
-          `Problems while loading page ${i} of the reading history of user ${logindata.username}`
+          `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.`
         );
 
         continue;
       }
       resolvedListPages.push(loadedpage);
+      ao3.defaults.listBuffer.push(loadedpage);
     } catch (error) {
       console.error(
         `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.`
@@ -108,9 +109,12 @@ export async function getList(
     let works = $("li[role='article']").toArray();
 
     works.forEach((currentWork) => {
-      parsed.push(parseListWork(logindata.username, currentWork, listtype));
+      try {
+        parsed.push(parseListWork(logindata.username, currentWork, listtype));
+      } catch (error) {
+        throw ao3.defaults.listBuffer;
+      }
     });
-    //.filter(ao3.isUndefinend);
   });
 
   let list = new ao3.WorkList(parsed, listtype);
