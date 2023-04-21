@@ -1,6 +1,6 @@
 {
   "name": "ao3-toolkit",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A Toolkit for interfacing with the Archive of our Own",
   "main": "dist/export.js",
   "scripts": {
