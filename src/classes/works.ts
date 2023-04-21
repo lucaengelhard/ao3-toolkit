@@ -1,4 +1,4 @@
-import ao3 from "..";
+import ao3 from "../index.js";
 
 /**
  * Base class for works. Stores information about the work as well as the content and userdata like history and bookmark information.

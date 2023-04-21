@@ -5,7 +5,7 @@ import { CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
 
 //INTERNAL MODULES
-import ao3 from "..";
+import ao3 from "../index.js";
 
 /**
  * The base class of the module. Contains the methods to log in to an ao3 account and create a logged in session, to perform actions only logged in users can do, like fetching their reading history.

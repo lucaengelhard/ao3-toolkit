@@ -1,4 +1,4 @@
-import ao3 from "..";
+import ao3 from "../index.js";
 import axios, { AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 

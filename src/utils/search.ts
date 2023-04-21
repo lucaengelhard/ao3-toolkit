@@ -1,5 +1,5 @@
 import axios from "axios";
-import ao3 from "..";
+import ao3 from "../index.js";
 import * as cheerio from "cheerio";
 
 /**

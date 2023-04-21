@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 
-import ao3 from "..";
+import ao3 from "../index.js";
 
 /**
  * get a worklist from ao3

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
-import ao3 from "..";
+import ao3 from "../index.js";
 
 /**
  * This function takes a work id, runs the {@link ao3.getInfo} and {@link ao3.getContent} function and returns a new {@link ao3.Work} object.
