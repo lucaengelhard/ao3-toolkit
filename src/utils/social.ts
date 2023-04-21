@@ -47,7 +47,7 @@ export async function getKudos(id: number) {
     }
   }
 
-  let kudos: { username: string; userLink: string }[] = [];
+  let kudos: ao3.UserInfo[] = [];
 
   resolvedKudosPages.forEach((res) => {
     let page = res.data;

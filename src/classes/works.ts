@@ -115,6 +115,10 @@ export class WorkList {
     return this.#cached;
   }
 
+  get context() {
+    return this.#context;
+  }
+
   sortByHits() {
     this.#works.sort((a: ao3.Work, b: ao3.Work) => {
       return a.info.stats.hits - b.info.stats.hits;

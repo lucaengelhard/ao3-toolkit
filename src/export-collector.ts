@@ -2,6 +2,7 @@
 export * from "./classes/base.js";
 export * from "./classes/works.js";
 export * from "./classes/series.js";
+export * from "./classes/user.js";
 
 //Defaults
 export * as defaults from "./config/export.js";
