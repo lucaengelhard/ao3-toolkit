@@ -3,7 +3,14 @@ import ao3 from "..";
 import * as cheerio from "cheerio";
 
 /**
- * Simple search bar search
+ * Simple search bar search -> for more information view:
+ 
+ * 
+[https://archiveofourown.org/admin_posts/10851](https://archiveofourown.org/admin_posts/10851)
+
+[https://archiveofourown.org/admin_posts/10575](https://archiveofourown.org/admin_posts/10575)
+
+[https://archiveofourown.org/admin_posts/329](https://archiveofourown.org/admin_posts/329)
  *
  * @param query
  * @param index
