@@ -8,7 +8,7 @@ import * as cheerio from "cheerio";
 import ao3 from "..";
 
 /**
- * The base class of the module. Contains the methods to log in to an ao3 account and create a logged in session, to get single works and get a users reading history.
+ * The base class of the module. Contains the methods to log in to an ao3 account and create a logged in session, to perform actions only logged in users can do, like fetching their reading history.
  *
  */
 export class Session {

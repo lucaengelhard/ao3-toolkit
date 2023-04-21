@@ -2,6 +2,13 @@ import axios from "axios";
 import ao3 from "..";
 import * as cheerio from "cheerio";
 
+/**
+ * Simple search bar search
+ *
+ * @param query
+ * @param index
+ * @returns an object containing the current page number, maximum pages and search results
+ */
 export async function search(query: string, index?: number) {
   let page = "";
   if (!(index == 1 || typeof index == "undefined")) {
@@ -27,6 +34,13 @@ export async function search(query: string, index?: number) {
   return { index, navLength, result: parseSearchList($) };
 }
 
+/**
+ * More detailed Work search.
+ *
+ * @param search  {@link ao3.WorkSearch} Object to specify the search parameters
+ * @param index
+ * @returns an object containing the current page number, maximum pages and search results
+ */
 export async function advancedWorkSearch(
   search: ao3.WorkSearch,
   index?: number
@@ -304,6 +318,13 @@ function parseSearchWork(currentWork: cheerio.Element) {
   return new ao3.Work(info);
 }
 
+/**
+ * More detailed people search.
+ *
+ * @param search  {@link ao3.PeopleSearch} Object to specify the search parameters
+ * @param index
+ * @returns an object containing the current page number, maximum pages and search results
+ */
 export async function advancedPeopleSearch(
   search: ao3.PeopleSearch,
   index?: number
@@ -391,6 +412,13 @@ export async function advancedPeopleSearch(
   }
 }
 
+/**
+ * More detailed bookmark search.
+ *
+ * @param search  {@link ao3.BookmarkSearch} Object to specify the search parameters
+ * @param index
+ * @returns an object containing the current page number, maximum pages and search results
+ */
 export async function advancedBookmarkSearch(
   search: ao3.BookmarkSearch,
   index?: number
@@ -728,6 +756,13 @@ export async function advancedBookmarkSearch(
   }
 }
 
+/**
+ * More detailed Tag search.
+ *
+ * @param search  {@link ao3.TagSearch} Object to specify the search parameters
+ * @param index
+ * @returns an object containing the current page number, maximum pages and search results
+ */
 export async function advancedTagSearch(search: ao3.TagSearch, index?: number) {
   if (typeof index == "undefined") {
     index = 1;

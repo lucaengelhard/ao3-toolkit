@@ -1,7 +1,7 @@
 import ao3 from "..";
 
 /**
- * Base class for works. Stores information about the work as well as the content.
+ * Base class for works. Stores information about the work as well as the content and userdata like history and bookmark information.
  */
 export class Work {
   #content;
@@ -70,6 +70,10 @@ export class Work {
   }
 }
 
+/**
+ *
+ *
+ */
 export class WorkList {
   #works;
   #context;

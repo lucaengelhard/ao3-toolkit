@@ -1,5 +1,8 @@
 import ao3 from "..";
 
+/**
+ * Class that stores information about a single series.
+ */
 export class Series {
   #info;
   #bookmark?;

@@ -3,6 +3,15 @@ import * as cheerio from "cheerio";
 
 import ao3 from "..";
 
+/**
+ * get a worklist from ao3
+ *
+ * @param logindata
+ * @param instance
+ * @param listtype
+ * @param span
+ * @returns a new  {@link ao3.Worklist} Object
+ */
 export async function getList(
   logindata: ao3.Login,
   instance: AxiosInstance | undefined,

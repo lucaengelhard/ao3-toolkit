@@ -1,6 +1,14 @@
 import ao3 from "..";
 import fs from "fs";
 
+/**
+ * takes a work or worklist and stores it in the cache as a json file
+ *
+ * @param context
+ * @param username
+ * @param object
+ * @returns
+ */
 export function save(
   context: string,
   username: string,
@@ -9,11 +17,11 @@ export function save(
   let index = 0;
   let type = "unknown";
   if (object instanceof ao3.WorkList) {
-    type = "list";
+    type = "List";
   }
 
   if (object instanceof ao3.Work) {
-    type = "work";
+    type = "Work";
   }
 
   let dirpath: string = `${ao3.defaults.cachePath}/${username}/${type}s/${context}`;
@@ -75,6 +83,15 @@ export function save(
   return { type, context, index, username };
 }
 
+/**
+ * retrieve a work or worklist from the cache.
+ *
+ * @param context
+ * @param username
+ * @param type
+ * @param index
+ * @returns
+ */
 export function getCached(
   context: string,
   username: string,
@@ -109,6 +126,15 @@ export function getCached(
   }
 }
 
+/**
+ * delete a complete folder-content or just specified files
+ *
+ * @param context
+ * @param username
+ * @param type
+ * @param span
+ * @returns
+ */
 export function deleteCache(
   context: string,
   username: string,
