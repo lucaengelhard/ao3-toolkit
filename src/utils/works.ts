@@ -6,7 +6,7 @@ import { defaults } from "../config/defaults.js";
 import type { Info } from "../types.d.ts";
 
 /**
- * This function takes a work id, runs the {@link ao3.getInfo} and {@link ao3.getContent} function and returns a new {@link ao3.Work} object.
+ * This function takes a work id, runs the {@link getInfo} and {@link getContent} function and returns a new {@link Work} object.
  *
  * @param id a work id
  * @returns a new Work Object

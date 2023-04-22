@@ -58,14 +58,14 @@ export class Session {
         return this.#logindata;
     }
     /**
-     * Get the reading history of the logged in user (runs the {@link ao3.getList} method)
+     * Get the reading history of the logged in user (runs the {@link getList} method)
      * @returns a new user userhistory object
      */
     async getHistory(span) {
         return await getList(this.#logindata, this.#instance, Listtype.History, span);
     }
     /**
-     * Get the bookmarks of the logged in user (runs the {@link ao3.getList} method)
+     * Get the bookmarks of the logged in user (runs the {@link getList} method)
      * @returns a new user bookmarks object
      */
     async getBookmarks(span) {

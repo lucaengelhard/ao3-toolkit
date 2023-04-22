@@ -38,7 +38,7 @@ export async function search(query, index) {
 /**
  * More detailed Work search.
  *
- * @param search  {@link ao3.WorkSearch} Object to specify the search parameters
+ * @param search  {@link WorkSearch} Object to specify the search parameters
  * @param index
  * @returns an object containing the current page number, maximum pages and search results
  */
@@ -278,7 +278,7 @@ function parseSearchWork(currentWork) {
 /**
  * More detailed people search.
  *
- * @param search  {@link ao3.PeopleSearch} Object to specify the search parameters
+ * @param search  {@link PeopleSearch} Object to specify the search parameters
  * @param index
  * @returns an object containing the current page number, maximum pages and search results
  */
@@ -348,7 +348,7 @@ export async function advancedPeopleSearch(search, index) {
 /**
  * More detailed bookmark search.
  *
- * @param search  {@link ao3.BookmarkSearch} Object to specify the search parameters
+ * @param search  {@link BookmarkSearch} Object to specify the search parameters
  * @param index
  * @returns an object containing the current page number, maximum pages and search results
  */
@@ -619,7 +619,7 @@ export async function advancedBookmarkSearch(search, index) {
 /**
  * More detailed Tag search.
  *
- * @param search  {@link ao3.TagSearch} Object to specify the search parameters
+ * @param search  {@link TagSearch} Object to specify the search parameters
  * @param index
  * @returns an object containing the current page number, maximum pages and search results
  */

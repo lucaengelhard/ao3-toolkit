@@ -81,7 +81,7 @@ export class Session {
   }
 
   /**
-   * Get the reading history of the logged in user (runs the {@link ao3.getList} method)
+   * Get the reading history of the logged in user (runs the {@link getList} method)
    * @returns a new user userhistory object
    */
   async getHistory(span?: number | PageSpan | number[]) {
@@ -94,7 +94,7 @@ export class Session {
   }
 
   /**
-   * Get the bookmarks of the logged in user (runs the {@link ao3.getList} method)
+   * Get the bookmarks of the logged in user (runs the {@link getList} method)
    * @returns a new user bookmarks object
    */
   async getBookmarks(span?: number | PageSpan | number[]) {

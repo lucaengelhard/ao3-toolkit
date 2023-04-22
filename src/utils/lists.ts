@@ -21,7 +21,7 @@ import { Listtype } from "../enums.js";
  * @param instance
  * @param listtype
  * @param span
- * @returns a new  {@link ao3.Worklist} Object
+ * @returns a new  {@link WorkList} Object
  */
 export async function getList(
   logindata: Login,
