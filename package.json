@@ -9,7 +9,7 @@
     "/dist"
   ],
   "scripts": {
-    "build": "npx tsc && echo 'dont forget to change the file-links in index.d.ts to .d.ts links'",
+    "build": "npx tsc && echo dont forget to change the file-links in index.d.ts to .d.ts links",
     "full": "mpm run build && node dist/index.js",
     "test": "npm run build && node dist/tests.js"
   },
