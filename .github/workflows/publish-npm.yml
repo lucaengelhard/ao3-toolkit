@@ -10,8 +10,6 @@ jobs:
     name: 🚀 publish-npm
     runs-on: ubuntu-latest
     steps:
-      - name: 📚 checkout
-        uses: actions/checkout@v2.1.1
       - name: 🚀 publish
         run: npm publish --access private
         env:
