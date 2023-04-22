@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "A Toolkit for interfacing with the Archive of our Own",
   "main": "dist/index.js",
-  "types": "dist/types.d.ts",
+  "types": "dist/types/index.d.ts",
   "type": "module",
   "files": [
     "/dist"
