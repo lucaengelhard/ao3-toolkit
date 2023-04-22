@@ -9,9 +9,9 @@
     "/dist"
   ],
   "scripts": {
-    "full": "npx tsc && node dist/index.js",
-    "build": "npx tsc",
-    "test": "npx tsc && node dist/tests.js"
+    "build": "npx tsc && echo 'dont forget to change the file-links in index.d.ts to .d.ts links'",
+    "full": "mpm run build && node dist/index.js",
+    "test": "npm run build && node dist/tests.js"
   },
   "repository": {
     "type": "git",
