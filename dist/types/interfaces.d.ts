@@ -1,4 +1,3 @@
-export type * from "./index.js";
 export interface Login {
     username: string;
     password: string;
@@ -193,4 +192,4 @@ export interface Cached {
     cached: boolean;
     index: number;
 }
-//# sourceMappingURL=types.d.ts.map
+//# sourceMappingURL=interfaces.d.ts.map

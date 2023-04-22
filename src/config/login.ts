@@ -1,4 +1,4 @@
-import type { Login } from "../types.d.ts";
+import type { Login } from "../interfaces.js";
 
 export let logindata: Login = {
   username: "",

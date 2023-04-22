@@ -1,4 +1,4 @@
-import type { UserInfo } from "../types.d.ts";
+import type { UserInfo } from "../interfaces.js";
 /**
  * get all the users that kudosed a work
  *

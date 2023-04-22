@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import type { BookmarkSearch, PeopleSearch, SearchedTag, TagSearch, WorkSearch } from "../types.d.ts";
+import type { BookmarkSearch, PeopleSearch, SearchedTag, TagSearch, WorkSearch } from "../interfaces.js";
 import { WorkList } from "../classes/works.js";
 /**
  * Simple search bar search -> for more information view:

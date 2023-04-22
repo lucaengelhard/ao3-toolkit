@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { Work } from "../classes/works.js";
 import { getParsableInfoData, getSuccess, linkToAbsolute } from "./helper.js";
 import { defaults } from "../config/defaults.js";
-import type { Info } from "../types.d.ts";
+import type { Info } from "../interfaces.js";
 
 /**
  * This function takes a work id, runs the {@link getInfo} and {@link getContent} function and returns a new {@link Work} object.

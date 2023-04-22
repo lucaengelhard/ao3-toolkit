@@ -1,4 +1,4 @@
-import type { SeriesFullInfo, WorkBookmark } from "../types.d.ts";
+import type { SeriesFullInfo, WorkBookmark } from "../interfaces.js";
 import { WorkList } from "./works.js";
 /**
  * Class that stores information about a single series.

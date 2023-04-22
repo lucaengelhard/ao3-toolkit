@@ -1,5 +1,3 @@
-export type * from "./index.js";
-
 export interface Login {
   username: string;
   password: string;

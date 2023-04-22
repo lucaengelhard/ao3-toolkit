@@ -1,4 +1,4 @@
-import type { Cached, Content, Info, WorkBookmark, WorkUserData } from "../types.d.ts";
+import type { Cached, Content, Info, WorkBookmark, WorkUserData } from "../interfaces.js";
 /**
  * Base class for works. Stores information about the work as well as the content and userdata like history and bookmark information.
  */
@@ -8,7 +8,7 @@ export declare class Work {
     get content(): Content | undefined;
     get info(): Info;
     get userdata(): WorkUserData | undefined;
-    get history(): import("../types.d.ts").WorkHistory | undefined;
+    get history(): import("../interfaces.js").WorkHistory | undefined;
     get bookmark(): WorkBookmark | undefined;
     get cached(): Cached | undefined;
     set userdata(userdata: WorkUserData | undefined);

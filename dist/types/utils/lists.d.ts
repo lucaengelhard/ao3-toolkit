@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import * as cheerio from "cheerio";
-import type { Login, PageSpan, WorkBookmark } from "../types.d.ts";
+import type { Login, PageSpan, WorkBookmark } from "../interfaces.js";
 import { WorkList } from "../classes/works.js";
 import { Listtype } from "../enums.js";
 /**

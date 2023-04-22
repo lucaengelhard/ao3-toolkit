@@ -8,7 +8,7 @@ import {
   linkToAbsolute,
 } from "./helper.js";
 import { defaults } from "../config/defaults.js";
-import type { UserInfo } from "../types.d.ts";
+import type { UserInfo } from "../interfaces.js";
 
 /**
  * get all the users that kudosed a work

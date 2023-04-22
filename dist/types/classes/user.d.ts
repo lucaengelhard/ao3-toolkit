@@ -1,4 +1,4 @@
-import type { UserInfo } from "../types.d.ts";
+import type { UserInfo } from "../interfaces.js";
 import { WorkList } from "./works.js";
 export declare class User {
     #private;

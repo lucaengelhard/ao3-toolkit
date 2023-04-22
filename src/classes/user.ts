@@ -1,5 +1,5 @@
 import { Listtype } from "../enums.js";
-import type { UserInfo } from "../types.d.ts";
+import type { UserInfo } from "../interfaces.js";
 import { WorkList } from "./works.js";
 
 export class User {

@@ -8,7 +8,7 @@ import type {
   WorkBookmark,
   WorkHistory,
   WorkUserData,
-} from "../types.d.ts";
+} from "../interfaces.js";
 import { delay, getPageNumber, getSuccess, linkToAbsolute } from "./helper.js";
 import { defaults } from "../config/defaults.js";
 import { Work, WorkList } from "../classes/works.js";

@@ -13,7 +13,7 @@ import type {
   WorkBookmark,
   WorkSearch,
   WorkUserData,
-} from "../types.d.ts";
+} from "../interfaces.js";
 import { ExternalWork, Work, WorkList } from "../classes/works.js";
 import { parseBookmarkWork } from "./lists.js";
 import { Series } from "../classes/series.js";

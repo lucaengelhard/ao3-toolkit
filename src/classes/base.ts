@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
-import type { Login, PageSpan } from "../types.d.ts";
+import type { Login, PageSpan } from "../interfaces.js";
 import { Listtype } from "../enums.js";
 import { getList } from "../utils/lists.js";
 import { defaults } from "../config/defaults.js";

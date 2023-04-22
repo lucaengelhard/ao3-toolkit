@@ -6,7 +6,7 @@ import type {
   Info,
   WorkBookmark,
   WorkUserData,
-} from "../types.d.ts";
+} from "../interfaces.js";
 import { save } from "../utils/cache.js";
 
 /**
