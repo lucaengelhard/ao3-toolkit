@@ -1,4 +1,6 @@
-export * from "./index.js";
+declare module "ao3-toolkit";
+
+export type * from "./index.js";
 
 export interface Login {
   username: string;
