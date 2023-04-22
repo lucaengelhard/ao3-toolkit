@@ -7,7 +7,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "declarationMap": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended",
