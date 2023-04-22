@@ -1,4 +1,13 @@
-import ao3 from "../index.js";
+import { logindata } from "../config/login.js";
+
+import type {
+  Cached,
+  Content,
+  Info,
+  WorkBookmark,
+  WorkUserData,
+} from "../types.d.ts";
+import { save } from "../utils/cache.js";
 
 /**
  * Base class for works. Stores information about the work as well as the content and userdata like history and bookmark information.
@@ -7,13 +16,13 @@ export class Work {
   #content;
   #info;
   #userdata;
-  #cached?: ao3.Cached;
+  #cached?: Cached;
   #context?;
 
   constructor(
-    info: ao3.Info,
-    content?: ao3.Content,
-    userdata?: ao3.WorkUserData,
+    info: Info,
+    content?: Content,
+    userdata?: WorkUserData,
     context?: string
   ) {
     this.#content = content;
@@ -61,7 +70,7 @@ export class Work {
     return this.#cached;
   }
 
-  set userdata(userdata: ao3.WorkUserData | undefined) {
+  set userdata(userdata: WorkUserData | undefined) {
     this.#userdata = userdata;
   }
 
@@ -77,7 +86,7 @@ export class Work {
 
   save(username?: string) {
     if (typeof username == "undefined") {
-      username = ao3.defaults.logindata.username;
+      username = logindata.username;
     }
 
     let context = "undefined"; //Andere Bezeichnung finden?
@@ -86,7 +95,7 @@ export class Work {
       context = this.#context;
     }
 
-    let saved = ao3.save(context, username, this);
+    let saved = save(context, username, this);
     this.#cached = { cached: true, index: saved.index };
 
     return saved;
@@ -100,8 +109,8 @@ export class Work {
 export class WorkList {
   #works;
   #context;
-  #cached?: ao3.Cached;
-  constructor(works: ao3.Work[], context?: string) {
+  #cached?: Cached;
+  constructor(works: Work[], context?: string) {
     this.#works = works;
 
     this.#context = context;
@@ -120,31 +129,31 @@ export class WorkList {
   }
 
   sortByHits() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return a.info.stats.hits - b.info.stats.hits;
     });
   }
 
   sortByWords() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return a.info.stats.words - b.info.stats.words;
     });
   }
 
   sortByKudos() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return a.info.stats.kudos - b.info.stats.kudos;
     });
   }
 
   sortByBookmarks() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return a.info.stats.bookmarks - b.info.stats.bookmarks;
     });
   }
 
   sortByChaptersWritten() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return (
         a.info.stats.chapters.chaptersWritten -
         b.info.stats.chapters.chaptersWritten
@@ -153,7 +162,7 @@ export class WorkList {
   }
 
   sortByChaptersMax() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return (
         a.info.stats.chapters.chaptersMax - b.info.stats.chapters.chaptersMax
       );
@@ -161,7 +170,7 @@ export class WorkList {
   }
 
   sortByCollectionNumber() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       let aNum: number = 0;
       let bNum: number = 0;
       if (
@@ -214,25 +223,25 @@ export class WorkList {
   }
 
   sortByChaptersTagNumber() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return a.info.tags.length - b.info.tags.length;
     });
   }
 
   sortByRelationshipNumber() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return a.info.relationships.length - b.info.relationships.length;
     });
   }
 
   sortByCharacterNumber() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       return a.info.characters.length - b.info.characters.length;
     });
   }
 
   sortByTitle() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       let fa = a.info.title.toLowerCase(),
         fb = b.info.title.toLowerCase();
 
@@ -247,7 +256,7 @@ export class WorkList {
   }
 
   sortByAuthor() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       let fa = a.info.author.authorName.toLowerCase(),
         fb = b.info.author.authorName.toLowerCase();
 
@@ -262,7 +271,7 @@ export class WorkList {
   }
 
   sortByFandom() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       let fa = "";
       try {
         fa = a.info.fandom[0].fandomName.toLowerCase();
@@ -284,7 +293,7 @@ export class WorkList {
   }
 
   sortByLastRead() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       if (typeof a.history == "undefined" || typeof b.history == "undefined") {
         if (
           typeof a.history == "undefined" &&
@@ -319,7 +328,7 @@ export class WorkList {
   }
 
   sortByTimesVisited() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       let aNum = 0;
       if (typeof a.history !== "undefined") {
         aNum = a.history.timesVisited;
@@ -335,7 +344,7 @@ export class WorkList {
   }
 
   sortByRatio() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       let aNum = 0;
       if (typeof a.history !== "undefined") {
         aNum = a.history.ratio;
@@ -351,7 +360,7 @@ export class WorkList {
   }
 
   sortByWordsRead() {
-    this.#works.sort((a: ao3.Work, b: ao3.Work) => {
+    this.#works.sort((a: Work, b: Work) => {
       let aNum = 0;
       if (typeof a.history !== "undefined") {
         aNum = a.history.wordsRead;
@@ -368,7 +377,7 @@ export class WorkList {
 
   save(username?: string) {
     if (typeof username == "undefined") {
-      username = ao3.defaults.logindata.username;
+      username = logindata.username;
     }
 
     let context = "undefined"; //Andere Bezeichnung finden?
@@ -377,7 +386,7 @@ export class WorkList {
       context = this.#context;
     }
 
-    let saved = ao3.save(context, username, this);
+    let saved = save(context, username, this);
     this.#cached = { cached: true, index: saved.index };
 
     return saved;
@@ -388,7 +397,7 @@ export class ExternalWork {
   #info;
   #bookmark;
 
-  constructor(info: any, bookmark: ao3.WorkBookmark) {
+  constructor(info: any, bookmark: WorkBookmark) {
     this.#info = info;
     this.#bookmark = bookmark;
   }

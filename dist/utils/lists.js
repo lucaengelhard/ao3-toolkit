@@ -1,5 +1,8 @@
 import * as cheerio from "cheerio";
-import ao3 from "../index.js";
+import { delay, getPageNumber, getSuccess, linkToAbsolute } from "./helper.js";
+import { defaults } from "../config/defaults.js";
+import { Work, WorkList } from "../classes/works.js";
+import { Listtype } from "../enums.js";
 /**
  * get a worklist from ao3
  *
@@ -19,18 +22,18 @@ export async function getList(logindata, instance, listtype, span) {
     if (typeof listtype == "undefined") {
         return;
     }
-    if (listtype == ao3.Listtype.History) {
+    if (listtype == Listtype.History) {
         firstUrl = `/users/${encodeURIComponent(logindata.username)}/readings`;
     }
-    if (listtype == ao3.Listtype.Bookmarks) {
+    if (listtype == Listtype.Bookmarks) {
         firstUrl = `/users/${encodeURIComponent(logindata.username)}/bookmarks`;
     }
     let firstPage = await instance.get(firstUrl);
-    ao3.getSuccess(firstPage);
+    getSuccess(firstPage);
     let firstLoadContent = firstPage.data;
     let $ = cheerio.load(firstLoadContent);
     //Get the number of history pages
-    let navLength = ao3.getPageNumber($);
+    let navLength = getPageNumber($);
     if (typeof span == "number") {
         span = {
             start: 1,
@@ -38,7 +41,7 @@ export async function getList(logindata, instance, listtype, span) {
         };
     }
     let resolvedListPages = [];
-    let batchlength = ao3.defaults.batch;
+    let batchlength = defaults.batch;
     let batchbase = 1;
     //Load every list page
     for (let i = 1; i <= navLength; i++) {
@@ -61,15 +64,15 @@ export async function getList(logindata, instance, listtype, span) {
             }
         }
         if (batchbase == batchlength) {
-            await ao3.delay(1500);
+            await delay(1500);
             batchbase = 1;
         }
         console.log("getting Page " + i);
         console.log(`${firstUrl}?page=${i}`);
         try {
-            let loadedpage = await instance.get(`${firstUrl}?page=${i}`, ao3.defaults.axios);
+            let loadedpage = await instance.get(`${firstUrl}?page=${i}`, defaults.axios);
             try {
-                ao3.getSuccess(loadedpage);
+                getSuccess(loadedpage);
             }
             catch (error) {
                 console.error(`Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.!`);
@@ -93,11 +96,11 @@ export async function getList(logindata, instance, listtype, span) {
                 parsed.push(parseListWork(logindata.username, currentWork, listtype));
             }
             catch (error) {
-                throw (ao3.defaults.listBuffer = resolvedListPages);
+                throw (defaults.listBuffer = resolvedListPages);
             }
         });
     });
-    let list = new ao3.WorkList(parsed, listtype);
+    let list = new WorkList(parsed, listtype);
     return list;
 }
 function parseListWork(username, currentWork, listtype) {
@@ -109,11 +112,11 @@ function parseListWork(username, currentWork, listtype) {
     }
     let id = parseInt(currentWork.attribs.id.replace("work_", ""));
     let history = undefined;
-    if (listtype == ao3.Listtype.History) {
+    if (listtype == Listtype.History) {
         history = parseHistoryWork($);
     }
     let bookmark = undefined;
-    if (listtype == ao3.Listtype.Bookmarks) {
+    if (listtype == Listtype.Bookmarks) {
         bookmark = parseBookmarkWork($);
     }
     let userdata = {
@@ -122,21 +125,21 @@ function parseListWork(username, currentWork, listtype) {
         bookmark,
     };
     let info = parseListWorkInfo($);
-    return new ao3.Work(info, undefined, userdata);
+    return new Work(info, undefined, userdata);
     function parseListWorkInfo($) {
         let info = {
             title: $(".heading a").first().text(),
             id: id,
             author: {
                 authorName: $("[rel=author]").text(),
-                authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href"), false),
+                authorLink: linkToAbsolute($("[rel=author]").attr("href"), false),
             },
             fandom: $(".fandoms a")
                 .get()
                 .map((el) => {
                 return {
                     fandomName: $(el).text(),
-                    fandomLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                    fandomLink: linkToAbsolute($(el).attr("href"), false),
                 };
             }),
             stats: {
@@ -154,7 +157,7 @@ function parseListWork(username, currentWork, listtype) {
                 .map((el) => {
                 return {
                     relationshipName: $(el).text(),
-                    relationshipLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                    relationshipLink: linkToAbsolute($(el).attr("href"), false),
                 };
             }),
             characters: $("li.characters a")
@@ -162,18 +165,18 @@ function parseListWork(username, currentWork, listtype) {
                 .map((el) => {
                 return {
                     characterName: $(el).text(),
-                    characterLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                    characterLink: linkToAbsolute($(el).attr("href"), false),
                 };
             }),
             rating: {
                 ratingName: $("ul.required-tags rating").text().trim(),
-                ratingLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
+                ratingLink: linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
                     .text()
                     .trim()}/works`, false),
             },
             archiveWarnings: {
                 warningName: $(".warnings a").text().trim(),
-                warningLink: ao3.linkToAbsolute($(".warnings a").attr("href"), false),
+                warningLink: linkToAbsolute($(".warnings a").attr("href"), false),
             },
             categories: $(".category")
                 .text()
@@ -181,7 +184,7 @@ function parseListWork(username, currentWork, listtype) {
                 .map((el) => {
                 return {
                     categoryName: el.trim(),
-                    categoryLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${el
+                    categoryLink: linkToAbsolute(`https://archiveofourown.org/tags/${el
                         .trim()
                         .replace("/", "*s*")}/works`, false),
                 };
@@ -191,7 +194,7 @@ function parseListWork(username, currentWork, listtype) {
                 .map((el) => {
                 return {
                     tagName: $(el).text(),
-                    tagLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                    tagLink: linkToAbsolute($(el).attr("href"), false),
                 };
             }),
             language: $("dd.language").text().replace("\n", "").trim(),
@@ -201,7 +204,7 @@ function parseListWork(username, currentWork, listtype) {
                 .map((el) => {
                 return {
                     seriesName: $(el).find("a").text(),
-                    seriesLink: ao3.linkToAbsolute($(el).find("a").attr("href"), false),
+                    seriesLink: linkToAbsolute($(el).find("a").attr("href"), false),
                     seriesPart: parseInt($(el).find("strong").text()),
                 };
             }),
@@ -252,14 +255,14 @@ export function parseBookmarkWork($) {
         dateBookmarked: new Date($(".own.user .datetime").text()),
         bookmarker: {
             authorName: $(".own.user a").first().text(),
-            authorLink: ao3.linkToAbsolute($(".own.user a").first().attr("href"), false),
+            authorLink: linkToAbsolute($(".own.user a").first().attr("href"), false),
         },
         bookmarkerTags: $(".own.user tags li")
             .get()
             .map((tag) => {
             return {
                 tagName: $(tag).find("a").text(),
-                tagLink: ao3.linkToAbsolute($(tag).find("a").attr("href")),
+                tagLink: linkToAbsolute($(tag).find("a").attr("href")),
             };
         }),
         bookmarkNotes: $(".own.user blockquote").first().text(),

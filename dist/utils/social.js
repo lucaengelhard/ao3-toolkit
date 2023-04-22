@@ -1,6 +1,7 @@
-import ao3 from "../index.js";
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { delay, getPageNumber, getParsableInfoData, getSuccess, linkToAbsolute, } from "./helper.js";
+import { defaults } from "../config/defaults.js";
 /**
  * get all the users that kudosed a work
  *
@@ -8,25 +9,25 @@ import * as cheerio from "cheerio";
  * @returns
  */
 export async function getKudos(id) {
-    let $ = await ao3.getParsableInfoData(id);
-    let moreLink = ao3.linkToAbsolute($("#kudos_more_link").attr("href"));
+    let $ = await getParsableInfoData(id);
+    let moreLink = linkToAbsolute($("#kudos_more_link").attr("href"));
     console.log(moreLink);
-    let initialLoad = await axios.get(moreLink, ao3.defaults.axios);
-    const navLength = ao3.getPageNumber(cheerio.load(initialLoad.data));
+    let initialLoad = await axios.get(moreLink, defaults.axios);
+    const navLength = getPageNumber(cheerio.load(initialLoad.data));
     console.log(navLength);
     let resolvedKudosPages = [];
-    let batchlength = ao3.defaults.batch;
+    let batchlength = defaults.batch;
     let batchbase = 1;
     for (let i = 0; i <= navLength; i++) {
         const pageUrl = `https://archiveofourown.org/works/19865440/kudos?before=4967066680&page=${i}`;
         if (batchbase == batchlength) {
-            await ao3.delay(1500);
+            await delay(1500);
             batchbase = 1;
         }
         console.log("getting Page " + i);
         try {
-            let loadedpage = await axios.get(pageUrl, ao3.defaults.axios);
-            ao3.getSuccess(loadedpage);
+            let loadedpage = await axios.get(pageUrl, defaults.axios);
+            getSuccess(loadedpage);
             resolvedKudosPages.push(loadedpage);
             batchbase++;
         }
@@ -43,7 +44,7 @@ export async function getKudos(id) {
             let $ = cheerio.load(user);
             kudos.push({
                 username: $("a").text(),
-                userLink: ao3.linkToAbsolute($("a").attr("href")),
+                userLink: linkToAbsolute($("a").attr("href")),
             });
         });
     });

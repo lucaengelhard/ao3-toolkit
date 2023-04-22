@@ -1,6 +1,10 @@
 import axios from "axios";
-import ao3 from "../index.js";
 import * as cheerio from "cheerio";
+import { defaults } from "../config/defaults.js";
+import { getPageNumber, getSuccess, linkToAbsolute } from "./helper.js";
+import { ExternalWork, Work, WorkList } from "../classes/works.js";
+import { parseBookmarkWork } from "./lists.js";
+import { Series } from "../classes/series.js";
 /**
  * Simple search bar search -> for more information view:
  
@@ -23,12 +27,12 @@ export async function search(query, index) {
     let baseurl = `https://archiveofourown.org/works/search?${page}work_search%5Bquery%5D=`;
     let searchurl = `${baseurl}${query}`;
     axios.defaults.headers.common["User-Agent"] = "Axios/1.3.5 ao3-toolkit bot";
-    let res = await axios.get(searchurl, ao3.defaults.axios);
-    ao3.getSuccess(res);
+    let res = await axios.get(searchurl, defaults.axios);
+    getSuccess(res);
     let firstLoadContent = res.data;
     let $ = cheerio.load(firstLoadContent);
     //Get the number of history pages
-    let navLength = ao3.getPageNumber($);
+    let navLength = getPageNumber($);
     return { index, navLength, result: parseSearchList($) };
 }
 /**
@@ -161,12 +165,12 @@ export async function advancedWorkSearch(search, index) {
     }
     let searchstring = `%5Bbookmarks_count%5D=${bookmarks}&work_search%5Bcharacter_names%5D=${characterNames}&work_search%5Bcomments_count%5D=${comments}&work_search%5Bcomplete%5D=${complete}&work_search%5Bcreators%5D=${creators}&work_search%5Bcrossover%5D=${crossover}&work_search%5Bfandom_names%5D=${fandoms}&work_search%5Bfreeform_names%5D=${freeforms}&work_search%5Bhits%5D=${hits}&work_search%5Bkudos_count%5D=${kudos}&work_search%5Blanguage_id%5D=${language}&work_search%5Bquery%5D=${query}&work_search%5Brating_ids%5D=${rating}&work_search%5Brelationship_names%5D=${relationships}&work_search%5Brevised_at%5D=${revisedAt}&work_search%5Bsingle_chapter%5D=${singleChapter}&work_search%5Bsort_column%5D=${sortBy}&work_search%5Bsort_direction%5D=${sortDirection}&work_search%5Btitle%5D=${title}&work_search%5Bword_count%5D=${wordCount}`;
     let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
-    let res = await axios.get(searchurl, ao3.defaults.axios);
-    ao3.getSuccess(res);
+    let res = await axios.get(searchurl, defaults.axios);
+    getSuccess(res);
     let firstLoadContent = res.data;
     let $ = cheerio.load(firstLoadContent);
     //Get the number of history pages
-    let navLength = ao3.getPageNumber($);
+    let navLength = getPageNumber($);
     return { index, navLength, result: parseSearchList($) };
 }
 export function parseSearchList($) {
@@ -175,7 +179,7 @@ export function parseSearchList($) {
     works.forEach((currentWork) => {
         parsed.push(parseSearchWork(currentWork));
     });
-    return new ao3.WorkList(parsed);
+    return new WorkList(parsed);
 }
 function parseSearchWork(currentWork) {
     let $ = cheerio.load(currentWork);
@@ -185,14 +189,14 @@ function parseSearchWork(currentWork) {
         id: id,
         author: {
             authorName: $("[rel=author]").text(),
-            authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href"), false),
+            authorLink: linkToAbsolute($("[rel=author]").attr("href"), false),
         },
         fandom: $(".fandoms a")
             .get()
             .map((el) => {
             return {
                 fandomName: $(el).text(),
-                fandomLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                fandomLink: linkToAbsolute($(el).attr("href"), false),
             };
         }),
         stats: {
@@ -210,7 +214,7 @@ function parseSearchWork(currentWork) {
             .map((el) => {
             return {
                 relationshipName: $(el).text(),
-                relationshipLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                relationshipLink: linkToAbsolute($(el).attr("href"), false),
             };
         }),
         characters: $("li.characters a")
@@ -218,18 +222,18 @@ function parseSearchWork(currentWork) {
             .map((el) => {
             return {
                 characterName: $(el).text(),
-                characterLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                characterLink: linkToAbsolute($(el).attr("href"), false),
             };
         }),
         rating: {
             ratingName: $("ul.required-tags rating").text().trim(),
-            ratingLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
+            ratingLink: linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
                 .text()
                 .trim()}/works`, false),
         },
         archiveWarnings: {
             warningName: $(".warnings a").text().trim(),
-            warningLink: ao3.linkToAbsolute($(".warnings a").attr("href"), false),
+            warningLink: linkToAbsolute($(".warnings a").attr("href"), false),
         },
         categories: $(".category")
             .text()
@@ -237,7 +241,7 @@ function parseSearchWork(currentWork) {
             .map((el) => {
             return {
                 categoryName: el.trim(),
-                categoryLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${el
+                categoryLink: linkToAbsolute(`https://archiveofourown.org/tags/${el
                     .trim()
                     .replaceAll("/", "*s*")}/works`, false),
             };
@@ -247,7 +251,7 @@ function parseSearchWork(currentWork) {
             .map((el) => {
             return {
                 tagName: $(el).text(),
-                tagLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                tagLink: linkToAbsolute($(el).attr("href"), false),
             };
         }),
         language: $("dd.language").text().replaceAll("\n", "").trim(),
@@ -257,7 +261,7 @@ function parseSearchWork(currentWork) {
             .map((el) => {
             return {
                 seriesName: $(el).find("a").text(),
-                seriesLink: ao3.linkToAbsolute($(el).find("a").attr("href"), false),
+                seriesLink: linkToAbsolute($(el).find("a").attr("href"), false),
                 seriesPart: parseInt($(el).find("strong").text()),
             };
         }),
@@ -269,7 +273,7 @@ function parseSearchWork(currentWork) {
         })
             .join("\n"),
     };
-    return new ao3.Work(info);
+    return new Work(info);
 }
 /**
  * More detailed people search.
@@ -305,12 +309,12 @@ export async function advancedPeopleSearch(search, index) {
     }
     let searchstring = `%5Bquery%5D=${query}&people_search%5Bname%5D=${name}&people_search%5Bfandom%5D=${fandoms}&commit=Search+People`;
     let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
-    let res = await axios.get(searchurl, ao3.defaults.axios);
-    ao3.getSuccess(res);
+    let res = await axios.get(searchurl, defaults.axios);
+    getSuccess(res);
     let firstLoadContent = res.data;
     let $ = cheerio.load(firstLoadContent);
     //Get the number of history pages
-    let navLength = ao3.getPageNumber($);
+    let navLength = getPageNumber($);
     return { index, navLength, result: parsePeopleSearch($) };
     function parsePeopleSearch($) {
         let people = $("li[role='article']").toArray();
@@ -319,17 +323,17 @@ export async function advancedPeopleSearch(search, index) {
             let $ = cheerio.load(person);
             let user = {
                 userName: $("h4 a").last().text(),
-                userLink: ao3.linkToAbsolute($("h4 a").last().attr("href"), false),
+                userLink: linkToAbsolute($("h4 a").last().attr("href"), false),
             };
             let pseud = {
                 pseudName: $("h4 a").first().text(),
-                pseudLink: ao3.linkToAbsolute($("h4 a").first().attr("href"), false),
+                pseudLink: linkToAbsolute($("h4 a").first().attr("href"), false),
             };
             let works = {};
             try {
                 works = {
                     workNumber: parseInt($("h5 a").first().text().split(" ")[0]),
-                    workLink: ao3.linkToAbsolute($("h5 a").first().attr("href"), false),
+                    workLink: linkToAbsolute($("h5 a").first().attr("href"), false),
                 };
             }
             catch (error) { }
@@ -423,12 +427,12 @@ export async function advancedBookmarkSearch(search, index) {
     }
     let searchstring = `bookmark_search%5Bbookmarkable_query%5D=${workQuery}&bookmark_search%5Bother_tag_names%5D=${workTags}&bookmark_search%5Bbookmarkable_type%5D=${workType}&bookmark_search%5Blanguage_id%5D=${workLanguage}&bookmark_search%5Bbookmarkable_date%5D=${workDateUpdated}&bookmark_search%5Bbookmark_query%5D=${bookmarkQuery}&bookmark_search%5Bother_bookmark_tag_names%5D=${bookmarkTags}&bookmark_search%5Bbookmarker%5D=${bookmarker}&bookmark_search%5Bbookmark_notes%5D=${bookmarkNotes}&bookmark_search%5Brec%5D=${rec}&bookmark_search%5Bwith_notes%5D=${withNotes}&bookmark_search%5Bdate%5D=${bookmarkDate}&bookmark_search%5Bsort_column%5D=${sortBy}`;
     let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
-    let res = await axios.get(searchurl, ao3.defaults.axios);
-    ao3.getSuccess(res);
+    let res = await axios.get(searchurl, defaults.axios);
+    getSuccess(res);
     let firstLoadContent = res.data;
     let $ = cheerio.load(firstLoadContent);
     //Get the number of history pages
-    let navLength = ao3.getPageNumber($);
+    let navLength = getPageNumber($);
     return { index, navLength, result: parseBookmarkSearch($) };
     function parseBookmarkSearch($) {
         let bookmarks = $("ol li[role='article']").toArray();
@@ -438,25 +442,25 @@ export async function advancedBookmarkSearch(search, index) {
             let type = getBookmarkType($);
             if (type == "work") {
                 let work = parseSearchWork(bookmark);
-                let userdata = { bookmark: ao3.parseBookmarkWork($) };
+                let userdata = { bookmark: parseBookmarkWork($) };
                 work.userdata = userdata;
             }
             if (type == "series") {
-                let bookmarkdata = ao3.parseBookmarkWork($);
+                let bookmarkdata = parseBookmarkWork($);
                 let id = parseInt(bookmark.attribs.class.split(" ")[3].replace("series-", ""));
                 let info = {
                     title: $(".header h4.heading a").first().text(),
                     id: id,
                     author: {
                         authorName: $("[rel=author]").text(),
-                        authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href"), false),
+                        authorLink: linkToAbsolute($("[rel=author]").attr("href"), false),
                     },
                     fandom: $(".fandoms a")
                         .get()
                         .map((el) => {
                         return {
                             fandomName: $(el).text(),
-                            fandomLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            fandomLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     stats: {
@@ -469,7 +473,7 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             relationshipName: $(el).text(),
-                            relationshipLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            relationshipLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     characters: $("li.characters a")
@@ -477,18 +481,18 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             characterName: $(el).text(),
-                            characterLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            characterLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     rating: {
                         ratingName: $("ul.required-tags rating").text().trim(),
-                        ratingLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
+                        ratingLink: linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
                             .text()
                             .trim()}/works`, false),
                     },
                     archiveWarnings: {
                         warningName: $(".warnings a").text().trim(),
-                        warningLink: ao3.linkToAbsolute($(".warnings a").attr("href"), false),
+                        warningLink: linkToAbsolute($(".warnings a").attr("href"), false),
                     },
                     categories: $(".category")
                         .text()
@@ -496,7 +500,7 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             categoryName: el.trim(),
-                            categoryLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${el
+                            categoryLink: linkToAbsolute(`https://archiveofourown.org/tags/${el
                                 .trim()
                                 .replaceAll("/", "*s*")}/works`, false),
                         };
@@ -506,7 +510,7 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             tagName: $(el).text(),
-                            tagLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            tagLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     summary: $(".summary p")
@@ -516,24 +520,24 @@ export async function advancedBookmarkSearch(search, index) {
                     })
                         .join("\n"),
                 };
-                parsed.push(new ao3.Series(info, bookmarkdata));
+                parsed.push(new Series(info, bookmarkdata));
             }
             if (type == "external") {
-                let bookmarkdata = ao3.parseBookmarkWork($);
+                let bookmarkdata = parseBookmarkWork($);
                 let id = parseInt(bookmark.attribs.id.replace("bookmark_", ""));
                 let info = {
                     title: $(".heading a").first().text(),
                     id: id,
                     author: {
                         authorName: $("[rel=author]").text(),
-                        authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href"), false),
+                        authorLink: linkToAbsolute($("[rel=author]").attr("href"), false),
                     },
                     fandom: $(".fandoms a")
                         .get()
                         .map((el) => {
                         return {
                             fandomName: $(el).text(),
-                            fandomLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            fandomLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     stats: {
@@ -544,7 +548,7 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             relationshipName: $(el).text(),
-                            relationshipLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            relationshipLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     characters: $("li.characters a")
@@ -552,18 +556,18 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             characterName: $(el).text(),
-                            characterLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            characterLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     rating: {
                         ratingName: $("ul.required-tags rating").text().trim(),
-                        ratingLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
+                        ratingLink: linkToAbsolute(`https://archiveofourown.org/tags/${$("ul.required-tags rating")
                             .text()
                             .trim()}/works`, false),
                     },
                     archiveWarnings: {
                         warningName: $(".warnings a").text().trim(),
-                        warningLink: ao3.linkToAbsolute($(".warnings a").attr("href"), false),
+                        warningLink: linkToAbsolute($(".warnings a").attr("href"), false),
                     },
                     categories: $(".category")
                         .text()
@@ -571,7 +575,7 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             categoryName: el.trim(),
-                            categoryLink: ao3.linkToAbsolute(`https://archiveofourown.org/tags/${el
+                            categoryLink: linkToAbsolute(`https://archiveofourown.org/tags/${el
                                 .trim()
                                 .replaceAll("/", "*s*")}/works`, false),
                         };
@@ -581,7 +585,7 @@ export async function advancedBookmarkSearch(search, index) {
                         .map((el) => {
                         return {
                             tagName: $(el).text(),
-                            tagLink: ao3.linkToAbsolute($(el).attr("href"), false),
+                            tagLink: linkToAbsolute($(el).attr("href"), false),
                         };
                     }),
                     summary: $(".summary p")
@@ -591,7 +595,7 @@ export async function advancedBookmarkSearch(search, index) {
                     })
                         .join("\n"),
                 };
-                parsed.push(new ao3.ExternalWork(info, bookmarkdata));
+                parsed.push(new ExternalWork(info, bookmarkdata));
             }
         });
         return parsed;
@@ -599,7 +603,7 @@ export async function advancedBookmarkSearch(search, index) {
             let workbase = "https://archiveofourown.org/works/";
             let seriesbase = "https://archiveofourown.org/series/";
             let externalbase = "https://archiveofourown.org/external_works/";
-            let bookmarkUrl = ao3.linkToAbsolute($(".heading a").first().attr("href"), false);
+            let bookmarkUrl = linkToAbsolute($(".heading a").first().attr("href"), false);
             if (bookmarkUrl?.includes(workbase)) {
                 return "work";
             }
@@ -663,12 +667,12 @@ export async function advancedTagSearch(search, index) {
     }
     let searchstring = `%5Bcanonical%5D=${canonical}&tag_search%5Bfandoms%5D=${fandoms}&tag_search%5Bname%5D=${name}&tag_search%5Bsort_column%5D=${sortBy}&tag_search%5Bsort_direction%5D=${sortDirection}&tag_search%5Btype%5D=${type}`;
     let searchurl = `${baseurl}${searchstring}`.replaceAll(" ", "+");
-    let res = await axios.get(searchurl, ao3.defaults.axios);
-    ao3.getSuccess(res);
+    let res = await axios.get(searchurl, defaults.axios);
+    getSuccess(res);
     let firstLoadContent = res.data;
     let $ = cheerio.load(firstLoadContent);
     //Get the number of history pages
-    let navLength = ao3.getPageNumber($);
+    let navLength = getPageNumber($);
     return { index, navLength, result: parseTagSearch($) };
     function parseTagSearch($) {
         let tags = $("ol.tag li").toArray();
@@ -677,7 +681,7 @@ export async function advancedTagSearch(search, index) {
             let $ = cheerio.load(tag);
             let parsedTag = {
                 name: $("a").first().text(),
-                link: ao3.linkToAbsolute($("a").attr("href"), false),
+                link: linkToAbsolute($("a").attr("href"), false),
                 type: $("span")
                     .text()
                     .replace($("a").first().text(), "")

@@ -1,6 +1,8 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import ao3 from "../index.js";
+import { Work } from "../classes/works.js";
+import { getParsableInfoData, getSuccess, linkToAbsolute } from "./helper.js";
+import { defaults } from "../config/defaults.js";
 /**
  * This function takes a work id, runs the {@link ao3.getInfo} and {@link ao3.getContent} function and returns a new {@link ao3.Work} object.
  *
@@ -8,7 +10,7 @@ import ao3 from "../index.js";
  * @returns a new Work Object
  */
 export async function getWork(id) {
-    return new ao3.Work(await getInfo(id), await getContent(id));
+    return new Work(await getInfo(id), await getContent(id));
 }
 /**
  * This function takes a work id or cheerio object, parses the data and returns an object containing the forword, afterword and each chapter
@@ -17,11 +19,11 @@ export async function getWork(id) {
  * @returns an object containing the forword, afterword and each chapter
  */
 export async function getContent(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     let downloadURL = "https://archiveofourown.org" +
         $(".download").find("li:contains('HTML')").find("a").attr("href");
-    let initialLoad = await axios.get(downloadURL, ao3.defaults.axios);
-    ao3.getSuccess(initialLoad);
+    let initialLoad = await axios.get(downloadURL, defaults.axios);
+    getSuccess(initialLoad);
     let download = initialLoad.data;
     let $content = cheerio.load(download);
     let content = {
@@ -79,7 +81,7 @@ export async function getInfo(fic, id) {
     if (typeof id == "undefined") {
         throw new Error("If the first argument is a Cheerio Object and not an ID, input an ID with the type number as the second argument");
     }
-    fic = await ao3.getParsableInfoData(fic);
+    fic = await getParsableInfoData(fic);
     let functions = [
         getTitle(fic),
         getAuthor(fic),
@@ -125,7 +127,7 @@ export async function getInfo(fic, id) {
  * @returns the title of the work
  */
 export async function getTitle(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $(".preface").find(".title").first().text().trim();
 }
 /**
@@ -134,10 +136,10 @@ export async function getTitle(fic) {
  * @returns the author of the work and the link to to the authors profile
  */
 export async function getAuthor(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return {
         authorName: $("[rel=author]").text(),
-        authorLink: ao3.linkToAbsolute($("[rel=author]").attr("href")),
+        authorLink: linkToAbsolute($("[rel=author]").attr("href")),
     };
 }
 /**
@@ -146,13 +148,13 @@ export async function getAuthor(fic) {
  * @returns an array of objects containing the name of a fandom and the link to the fandom overview
  */
 export async function getFandom(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $(".fandom a")
         .get()
         .map((el) => {
         return {
             fandomName: $(el).text(),
-            fandomLink: ao3.linkToAbsolute($(el).attr("href")),
+            fandomLink: linkToAbsolute($(el).attr("href")),
         };
     });
 }
@@ -162,7 +164,7 @@ export async function getFandom(fic) {
  * @returns the stats of the work
  */
 export async function getStats(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     let statsElement = $("dl.stats");
     return {
         words: getWords(statsElement),
@@ -229,7 +231,7 @@ export async function getStats(fic) {
  * @returns an array of objects containing the name of a relationship and the link to the relationship overview
  */
 export async function getRelationships(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $(".relationship")
         .next()
         .find("a")
@@ -237,7 +239,7 @@ export async function getRelationships(fic) {
         .map((el) => {
         return {
             relationshipName: $(el).text(),
-            relationshipLink: ao3.linkToAbsolute($(el).attr("href")),
+            relationshipLink: linkToAbsolute($(el).attr("href")),
         };
     });
 }
@@ -247,7 +249,7 @@ export async function getRelationships(fic) {
  * @returns an array of objects containing the name of a character and the link to the character overview
  */
 export async function getCharacters(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $(".character")
         .next()
         .find("a")
@@ -255,7 +257,7 @@ export async function getCharacters(fic) {
         .map((el) => {
         return {
             characterName: $(el).text(),
-            characterLink: ao3.linkToAbsolute($(el).attr("href")),
+            characterLink: linkToAbsolute($(el).attr("href")),
         };
     });
 }
@@ -265,10 +267,10 @@ export async function getCharacters(fic) {
  * @returns an object containing the rating of the work and a link to the rating overview
  */
 export async function getRating(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return {
         ratingName: $("dd.rating").text().trim(),
-        ratingLink: ao3.linkToAbsolute($("dd.rating").find("a").attr("href")),
+        ratingLink: linkToAbsolute($("dd.rating").find("a").attr("href")),
     };
 }
 /**
@@ -277,10 +279,10 @@ export async function getRating(fic) {
  * @returns an object containing the warnings of the work and a link to the warnings overview
  */
 export async function getWarnings(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return {
         warningName: $("dd.warning").text().trim(),
-        warningLink: ao3.linkToAbsolute($("dd.warning").find("a").attr("href")),
+        warningLink: linkToAbsolute($("dd.warning").find("a").attr("href")),
     };
 }
 /**
@@ -289,7 +291,7 @@ export async function getWarnings(fic) {
  * @returns an array of objects containing the name of a category and the link to the category overview
  */
 export async function getCategories(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $(".category")
         .next()
         .find("a")
@@ -297,7 +299,7 @@ export async function getCategories(fic) {
         .map((el) => {
         return {
             categoryName: $(el).text(),
-            categoryLink: ao3.linkToAbsolute($(el).attr("href")),
+            categoryLink: linkToAbsolute($(el).attr("href")),
         };
     });
 }
@@ -307,7 +309,7 @@ export async function getCategories(fic) {
  * @returns an array of objects containing the name of a freeform tag and the link to the freeform tag overview
  */
 export async function getTags(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $(".freeform")
         .next()
         .find("a")
@@ -315,7 +317,7 @@ export async function getTags(fic) {
         .map((el) => {
         return {
             tagName: $(el).text(),
-            tagLink: ao3.linkToAbsolute($(el).attr("href")),
+            tagLink: linkToAbsolute($(el).attr("href")),
         };
     });
 }
@@ -325,7 +327,7 @@ export async function getTags(fic) {
  * @returns the language of the work
  */
 export async function getLanguage(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $(".language").first().next().text().replace("\n", "").trim();
 }
 /**
@@ -334,14 +336,14 @@ export async function getLanguage(fic) {
  * @returns an array of objects containing the name of a series, the link to the series overview and a number of the part in ther series
  */
 export async function getSeries(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $("dd.series")
         .find("span.position")
         .get()
         .map((el) => {
         return {
             seriesName: $(el).find("a").text(),
-            seriesLink: ao3.linkToAbsolute($(el).find("a").attr("href")),
+            seriesLink: linkToAbsolute($(el).find("a").attr("href")),
             seriesPart: parseInt($(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")),
         };
     });
@@ -352,7 +354,7 @@ export async function getSeries(fic) {
  * @returns an array of objects containing the name of a collection and the link to the collection overview
  */
 export async function getCollections(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     return $("dd.collections")
         .first()
         .find("a")
@@ -360,7 +362,7 @@ export async function getCollections(fic) {
         .map((el) => {
         return {
             collectionName: $(el).text(),
-            collectionLink: ao3.linkToAbsolute($(el).attr("href")),
+            collectionLink: linkToAbsolute($(el).attr("href")),
         };
     });
 }
@@ -370,7 +372,7 @@ export async function getCollections(fic) {
  * @returns the summary of the work
  */
 export async function getSummary(fic) {
-    let $ = await ao3.getParsableInfoData(fic);
+    let $ = await getParsableInfoData(fic);
     let summaryArray = $(".summary blockquote")
         .find("p")
         .get()

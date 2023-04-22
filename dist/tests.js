@@ -1,4 +1,4 @@
-import ao3 from "./index.js";
+import * as ao3 from "./index.js";
 test();
 async function test() {
     console.time("test");

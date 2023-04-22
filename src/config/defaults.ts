@@ -1,13 +1,20 @@
 import { AxiosResponse } from "axios";
 
-export var batch: number = 10;
+var batch: number = 10;
 
-export var listBuffer: AxiosResponse<any, any>[];
+var listBuffer: AxiosResponse<any, any>[] = [];
 
-export let cachePath = "./data/cache";
+let cachePath = "./data/cache";
 
-export let axios = {
+let axios = {
   headers: {
     "User-Agent": "Axios/1.3.5 ao3-toolkit bot",
   },
+};
+
+export let defaults = {
+  batch,
+  listBuffer,
+  cachePath,
+  axios,
 };

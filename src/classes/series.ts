@@ -1,4 +1,5 @@
-import ao3 from "../index.js";
+import type { SeriesFullInfo, WorkBookmark } from "../types.d.ts";
+import { WorkList } from "./works.js";
 
 /**
  * Class that stores information about a single series.
@@ -7,11 +8,7 @@ export class Series {
   #info;
   #bookmark?;
   #works?;
-  constructor(
-    info: ao3.SeriesFullInfo,
-    bookmark?: ao3.WorkBookmark,
-    works?: ao3.WorkList
-  ) {
+  constructor(info: SeriesFullInfo, bookmark?: WorkBookmark, works?: WorkList) {
     this.#info = info;
     this.#bookmark = bookmark;
     this.#works = works;

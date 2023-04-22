@@ -1,9 +1,9 @@
-login.*
+
 
 node_modules/
 
 data/
 
-
+*.tgz
 
 !docs/

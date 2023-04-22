@@ -1,4 +1,5 @@
-import ao3 from "../index.js";
+import { logindata } from "../config/login.js";
+import { save } from "../utils/cache.js";
 /**
  * Base class for works. Stores information about the work as well as the content and userdata like history and bookmark information.
  */
@@ -56,13 +57,13 @@ export class Work {
     }
     save(username) {
         if (typeof username == "undefined") {
-            username = ao3.defaults.logindata.username;
+            username = logindata.username;
         }
         let context = "undefined"; //Andere Bezeichnung finden?
         if (typeof this.#context !== "undefined") {
             context = this.#context;
         }
-        let saved = ao3.save(context, username, this);
+        let saved = save(context, username, this);
         this.#cached = { cached: true, index: saved.index };
         return saved;
     }
@@ -288,13 +289,13 @@ export class WorkList {
     }
     save(username) {
         if (typeof username == "undefined") {
-            username = ao3.defaults.logindata.username;
+            username = logindata.username;
         }
         let context = "undefined"; //Andere Bezeichnung finden?
         if (typeof this.#context !== "undefined") {
             context = this.#context;
         }
-        let saved = ao3.save(context, username, this);
+        let saved = save(context, username, this);
         this.#cached = { cached: true, index: saved.index };
         return saved;
     }

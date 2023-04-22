@@ -3,9 +3,10 @@ import axios, { AxiosInstance } from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 import * as cheerio from "cheerio";
-
-//INTERNAL MODULES
-import ao3 from "../index.js";
+import type { Login, PageSpan } from "../types.d.ts";
+import { Listtype } from "../enums.js";
+import { getList } from "../utils/lists.js";
+import { defaults } from "../config/defaults.js";
 
 /**
  * The base class of the module. Contains the methods to log in to an ao3 account and create a logged in session, to perform actions only logged in users can do, like fetching their reading history.
@@ -15,7 +16,7 @@ export class Session {
   #logindata;
   #instance: AxiosInstance | undefined;
 
-  constructor(logindata: ao3.Login) {
+  constructor(logindata: Login) {
     this.#logindata = logindata;
 
     this.#instance = undefined;
@@ -59,7 +60,7 @@ export class Session {
     }&user%5Bremember_me%5D=1&commit=Log+in`;
 
     //Check if Login is successfull
-    let loginres = await instance.post(loginurl, payload, ao3.defaults.axios);
+    let loginres = await instance.post(loginurl, payload, defaults.axios);
 
     if (loginres.request.res.responseUrl.includes(this.#logindata.username)) {
       console.log(`Login of user ${this.#logindata.username} successfull`);
@@ -83,11 +84,11 @@ export class Session {
    * Get the reading history of the logged in user (runs the {@link ao3.getList} method)
    * @returns a new user userhistory object
    */
-  async getHistory(span?: number | ao3.PageSpan | number[]) {
-    return await ao3.getList(
+  async getHistory(span?: number | PageSpan | number[]) {
+    return await getList(
       this.#logindata,
       this.#instance,
-      ao3.Listtype.History,
+      Listtype.History,
       span
     );
   }
@@ -96,11 +97,11 @@ export class Session {
    * Get the bookmarks of the logged in user (runs the {@link ao3.getList} method)
    * @returns a new user bookmarks object
    */
-  async getBookmarks(span?: number | ao3.PageSpan | number[]) {
-    return await ao3.getList(
+  async getBookmarks(span?: number | PageSpan | number[]) {
+    return await getList(
       this.#logindata,
       this.#instance,
-      ao3.Listtype.Bookmarks,
+      Listtype.Bookmarks,
       span
     );
   }

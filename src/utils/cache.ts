@@ -1,5 +1,6 @@
-import ao3 from "../index.js";
 import fs from "fs";
+import { Work, WorkList } from "../classes/works.js";
+import { defaults } from "../config/defaults.js";
 
 /**
  * takes a work or worklist and stores it in the cache as a json file
@@ -12,19 +13,19 @@ import fs from "fs";
 export function save(
   context: string,
   username: string,
-  object: ao3.Work | ao3.WorkList
+  object: Work | WorkList
 ) {
   let index = 0;
   let type = "unknown";
-  if (object instanceof ao3.WorkList) {
+  if (object instanceof WorkList) {
     type = "List";
   }
 
-  if (object instanceof ao3.Work) {
+  if (object instanceof Work) {
     type = "Work";
   }
 
-  let dirpath: string = `${ao3.defaults.cachePath}/${username}/${type}s/${context}`;
+  let dirpath: string = `${defaults.cachePath}/${username}/${type}s/${context}`;
 
   //Check if cache folder exists
   if (!fs.existsSync(dirpath)) {
@@ -48,7 +49,7 @@ export function save(
 
   let toSave = undefined;
 
-  if (object instanceof ao3.WorkList) {
+  if (object instanceof WorkList) {
     let works = object.works.map((work) => {
       try {
         return work.objectify();
@@ -63,7 +64,7 @@ export function save(
       works: works,
     };
   }
-  if (object instanceof ao3.Work) {
+  if (object instanceof Work) {
     toSave = {
       work: object.objectify(),
     };
@@ -98,7 +99,7 @@ export function getCached(
   type: string,
   index: number
 ) {
-  let dirpath: string = `${ao3.defaults.cachePath}/${username}/${type}s/${context}`;
+  let dirpath: string = `${defaults.cachePath}/${username}/${type}s/${context}`;
   let filename = `${type}_${context}_${index
     .toString()
     .padStart(3, "0")}_${username}.json`;
@@ -115,14 +116,14 @@ export function getCached(
         return;
       }
 
-      return new ao3.Work(work.info, work.content, work.userdata);
+      return new Work(work.info, work.content, work.userdata);
     });
 
-    return new ao3.WorkList(list);
+    return new WorkList(list);
   }
 
   if (type == "work") {
-    return new ao3.Work(parsed.info, parsed.content, parsed.history);
+    return new Work(parsed.info, parsed.content, parsed.history);
   }
 }
 
@@ -141,7 +142,7 @@ export function deleteCache(
   type: string,
   span?: number[]
 ) {
-  let dirpath: string = `${ao3.defaults.cachePath}/${username}/${type}s/${context}`;
+  let dirpath: string = `${defaults.cachePath}/${username}/${type}s/${context}`;
 
   //Check if cache folder exists
   if (!fs.existsSync(dirpath)) {

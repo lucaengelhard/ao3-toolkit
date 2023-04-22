@@ -1,26 +1,28 @@
-import ao3 from "../index.js";
+import { Listtype } from "../enums.js";
+import type { UserInfo } from "../types.d.ts";
+import { WorkList } from "./works.js";
 
 export class User {
   #info;
   #stats?;
   #works?;
   #lists?;
-  constructor(info: ao3.UserInfo, works: ao3.WorkList, lists: ao3.WorkList[]) {
+  constructor(info: UserInfo, works: WorkList, lists: WorkList[]) {
     this.#info = info;
     this.#works = works;
     this.#lists = lists;
 
     let historycheck = false;
-    let historyList: ao3.WorkList | undefined = undefined;
+    let historyList: WorkList | undefined = undefined;
     this.#lists.forEach((list) => {
-      if (list.context == ao3.Listtype.History && historycheck == false) {
+      if (list.context == Listtype.History && historycheck == false) {
         historycheck = true;
         historyList = list;
       }
     });
 
     if (typeof historyList !== "undefined") {
-      let list: ao3.WorkList = historyList;
+      let list: WorkList = historyList;
 
       let wordsRead = 0;
       let worksRead = list.works.length;

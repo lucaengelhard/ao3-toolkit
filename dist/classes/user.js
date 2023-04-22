@@ -1,4 +1,4 @@
-import ao3 from "../index.js";
+import { Listtype } from "../enums.js";
 export class User {
     #info;
     #stats;
@@ -11,7 +11,7 @@ export class User {
         let historycheck = false;
         let historyList = undefined;
         this.#lists.forEach((list) => {
-            if (list.context == ao3.Listtype.History && historycheck == false) {
+            if (list.context == Listtype.History && historycheck == false) {
                 historycheck = true;
                 historyList = list;
             }
