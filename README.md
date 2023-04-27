@@ -4,6 +4,8 @@ A Toolkit for interfacing with the Archive of Our Own
 
 Coded in TypeScript with nodejs
 
+``` npm i ao3-toolkit ```
+
 ## Features
 
 - Logging in to ao3
