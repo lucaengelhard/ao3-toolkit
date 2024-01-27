@@ -1,6 +1,5 @@
 import {
   ArchiveWarning,
-  Author,
   Category,
   ChapterInformation,
   Character,
@@ -12,6 +11,7 @@ import {
   Tag,
   Title,
 } from "../interfaces/InterfaceWorkInfo";
+import User from "./ClassUser";
 
 /**
  * Class that contains information about a single work.
@@ -35,7 +35,7 @@ import {
 export default class WorkInfo {
   title?: Title;
   id?: number;
-  authors?: Author[];
+  authors?: User[];
   fandom?: Fandom[];
   stats?: WorkStats;
   relationships?: Relationship[];
@@ -53,7 +53,7 @@ export default class WorkInfo {
       | {
           title?: Title;
           id?: number;
-          authors?: Author[];
+          authors?: User[];
           fandom?: Fandom[];
           stats?: WorkStats;
           relationships?: Relationship[];

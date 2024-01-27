@@ -2,11 +2,6 @@ export interface Title {
   title: string;
 }
 
-export interface Author {
-  authorName: string;
-  authorLink: string | undefined;
-}
-
 export interface Fandom {
   fandomName: string;
   fandomLink: string | undefined;

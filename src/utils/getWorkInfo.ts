@@ -2,12 +2,8 @@ import * as cheerio from "cheerio";
 
 import WorkInfo from "../classes/ClassWorkInfo";
 import { getParsableInfodata, linkToAbsolute } from "./helpers";
-import {
-  Author,
-  Fandom,
-  Relationship,
-  Title,
-} from "../interfaces/InterfaceWorkInfo";
+import { Fandom, Relationship, Title } from "../interfaces/InterfaceWorkInfo";
+import User from "../classes/ClassUser";
 
 /**
  *
@@ -48,16 +44,16 @@ export async function getTitle(
  */
 export async function getAuthor(
   input: number | cheerio.CheerioAPI
-): Promise<Author[]> {
+): Promise<User[]> {
   const $ = await getParsableInfodata(input);
 
   return $("[rel=author]")
     .get()
     .map((el: cheerio.Element) => {
-      return {
-        authorName: $(el).text(),
-        authorLink: linkToAbsolute($(el).attr("href")),
-      };
+      return new User({
+        username: $(el).text(),
+        userLink: linkToAbsolute($(el).attr("href")),
+      });
     });
 }
 
