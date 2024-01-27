@@ -1,10 +1,11 @@
 import * as cheerio from "cheerio";
 
-import WorkInfo from "../classes/ClassWorkInfo";
+import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
 import { getParsableInfodata, linkToAbsolute } from "./helpers";
 import {
   ArchiveWarning,
   Category,
+  ChapterInformation,
   Character,
   Collection,
   Fandom,
@@ -306,4 +307,66 @@ export async function getSummary(
     });
 
   return { summary: summaryArray.join("\n") };
+}
+
+export async function getWorkStats(
+  input: number | cheerio.CheerioAPI
+): Promise<WorkStats> {
+  const $: cheerio.CheerioAPI = await getParsableInfodata(input);
+
+  const statsElement = $("dl.stats");
+
+  return new WorkStats({
+    words: getWorkWords(statsElement),
+    chapters: getWorkChapters(statsElement),
+    kudos: getWorkKudos(statsElement),
+    hits: getWorkHits(statsElement),
+    bookmarks: getWorkBookmarks(statsElement),
+  });
+
+  function getWorkWords(stats: cheerio.Cheerio<cheerio.Element>): number {
+    return parseInt(stats.find(".words").next().text().replace(",", ""));
+  }
+
+  function getWorkChapters(
+    stats: cheerio.Cheerio<cheerio.Element>
+  ): ChapterInformation {
+    return {
+      chaptersWritten: getWorkChaptersWritten(stats),
+      chaptersMax: getWorkChaptersMax(stats),
+    };
+
+    function getWorkChaptersWritten(
+      stats: cheerio.Cheerio<cheerio.Element>
+    ): number {
+      const parsed = stats.find(".chapters").next().text().split("/")[0];
+      if (!parsed) {
+        return 0;
+      }
+      return parseInt(parsed);
+    }
+
+    function getWorkChaptersMax(
+      stats: cheerio.Cheerio<cheerio.Element>
+    ): number {
+      const parsed = stats.find(".chapters").next().text().split("/")[1];
+      if (!parsed) {
+        return 0;
+      }
+
+      return parseInt(parsed);
+    }
+  }
+
+  function getWorkKudos(stats: cheerio.Cheerio<cheerio.Element>): number {
+    return parseInt(stats.find(".kudos").next().text());
+  }
+
+  function getWorkHits(stats: cheerio.Cheerio<cheerio.Element>): number {
+    return parseInt(stats.find(".hits").next().text());
+  }
+
+  function getWorkBookmarks(stats: cheerio.Cheerio<cheerio.Element>): number {
+    return parseInt(stats.find(".bookmarks").next().text());
+  }
 }
