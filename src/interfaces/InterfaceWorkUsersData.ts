@@ -1,5 +1,6 @@
+import User from "../classes/ClassUser";
 import { WorkUserData } from "../classes/ClassWorkUserData";
-import { Tag, User } from "./InterfaceWorkInfo";
+import { Tag } from "./InterfaceWorkInfo";
 
 export default interface WorkUsersData {
   users: WorkUserData[];

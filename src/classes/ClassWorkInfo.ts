@@ -18,7 +18,7 @@ import User from "./ClassUser";
  * @param options - can be an object with information about the work or a number that is the id of the work
  * @param options.title - {@link Title} object containing the title of the work
  * @param options.id - number that is the id of the work
- * @param options.author - {@link Author} object containing the name(s) of the author(s) and url(s) to the profile(s)
+ * @param options.author - {@link User} object containing the name(s) of the author(s) and url(s) to the profile(s)
  * @param options.fandom - Array of {@link Fandom } objects associated with the work
  * @param options.stats - {@link WorkStats} Object containing information about the work like length, number of chapters, etc.
  * @param options.relationships - Array of {@link Relationship} objects associated with the work

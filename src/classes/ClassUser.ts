@@ -1,3 +1,8 @@
+/**
+ * Class defining information about a single user
+ * @param user.username - string of the username
+ * @param user.userLink - optional string of link to user profile
+ */
 export default class User {
   username: string;
   userLink?: string;

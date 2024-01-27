@@ -40,7 +40,7 @@ export async function getTitle(
 /**
  *
  * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
- * @returns - Array of {@link Author} objects containing information about the authors of the work
+ * @returns - Array of {@link User} objects containing information about the authors of the work
  */
 export async function getAuthor(
   input: number | cheerio.CheerioAPI
