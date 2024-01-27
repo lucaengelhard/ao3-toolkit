@@ -18,8 +18,10 @@ export interface Character {
 }
 
 export interface Rating {
-  ratingName: string;
-  ratingLink: string | undefined;
+  rating: {
+    ratingName: string;
+    ratingLink: string | undefined;
+  };
 }
 
 export interface ArchiveWarning {
@@ -35,6 +37,10 @@ export interface Category {
 export interface Tag {
   tagName: string;
   tagLink: string | undefined;
+}
+
+export interface Language {
+  language: string;
 }
 
 export interface SeriesInfo {

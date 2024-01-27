@@ -5,6 +5,7 @@ import {
   Character,
   Collection,
   Fandom,
+  Language,
   Rating,
   Relationship,
   SeriesInfo,
@@ -26,7 +27,7 @@ import User from "./ClassUser";
  * @param options.rating - {@link Rating} Object detailing the Rating of the work
  * @param options.archiveWarnings - Array of {@link ArchiveWarning} objects detailing the Archvie Warnings associated with the work
  * @param options.tags - Array of {@link Tag} objects associated with the work
- * @param options.language - string containing the language code of the work
+ * @param options.language - {@link Language } object containing the language code of the work
  * @param options.series - Array of {@link SeriesInfo} objects detailing what Series the work is part of and where in the Series it is positioned
  * @param options.collections - either an Array of {@link Collection} objects detailing what collections the work is part of or a the number of collections the work belongs to.
  * @param options.summary - string containing the summary of the work
@@ -44,7 +45,7 @@ export default class WorkInfo {
   archiveWarnings?: ArchiveWarning[];
   categories?: Category[];
   tags?: Tag[];
-  language?: string;
+  language?: Language;
   series?: SeriesInfo[];
   collections?: Collection[] | number;
   summary?: string;
@@ -62,7 +63,7 @@ export default class WorkInfo {
           archiveWarnings?: ArchiveWarning[];
           categories?: Category[];
           tags?: Tag[];
-          language?: string;
+          language?: Language;
           series?: SeriesInfo[];
           collections?: Collection[] | number;
           summary?: string;
