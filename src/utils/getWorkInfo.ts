@@ -35,6 +35,13 @@ export default async function getWorkInfo(
     getRelationship(work),
     getCharacter(work),
     getRating(work),
+    getArchiveWarnings(work),
+    getCategories(work),
+    getTags(work),
+    getLanguage(work),
+    getSeries(work),
+    getCollections(work),
+    getSummary(work),
   ];
 
   return Object.assign(await Promise.all(parseFuntions));
