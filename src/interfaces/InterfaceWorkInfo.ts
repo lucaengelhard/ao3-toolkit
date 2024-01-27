@@ -43,6 +43,10 @@ export interface Language {
   language: string;
 }
 
+export interface Summary {
+  summary: string;
+}
+
 export interface SeriesInfo {
   seriesName: string;
   seriesLink: string | undefined;

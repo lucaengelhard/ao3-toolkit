@@ -6,10 +6,13 @@ import {
   ArchiveWarning,
   Category,
   Character,
+  Collection,
   Fandom,
   Language,
   Rating,
   Relationship,
+  SeriesInfo,
+  Summary,
   Tag,
   Title,
 } from "../interfaces/InterfaceWorkInfo";
@@ -217,6 +220,11 @@ export async function getTags(
     });
 }
 
+/**
+ *
+ * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
+ * @returns - {@link Language} object containing the language of the work
+ */
 export async function getLanguage(
   input: number | cheerio.CheerioAPI
 ): Promise<Language> {
@@ -225,4 +233,70 @@ export async function getLanguage(
   return {
     language: $(".language").first().next().text().replace("\n", "").trim(),
   };
+}
+
+/**
+ *
+ * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
+ * @returns - Array of {@link SeriesInfo} objects cotaining information about the series associated with the work
+ */
+export async function getSeries(
+  input: number | cheerio.CheerioAPI
+): Promise<SeriesInfo[]> {
+  const $: cheerio.CheerioAPI = await getParsableInfodata(input);
+
+  return $("dd.series")
+    .find("span.position")
+    .get()
+    .map((el) => {
+      return {
+        seriesName: $(el).find("a").text(),
+        seriesLink: linkToAbsolute($(el).find("a").attr("href")),
+        seriesPart: parseInt(
+          $(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")
+        ),
+      };
+    });
+}
+
+/**
+ *
+ * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
+ * @returns - Array of {@link Collection} objects cotaining information about the series associated with the work
+ */
+export async function getCollections(
+  input: number | cheerio.CheerioAPI
+): Promise<Collection[]> {
+  const $: cheerio.CheerioAPI = await getParsableInfodata(input);
+
+  return $("dd.collections")
+    .first()
+    .find("a")
+    .get()
+    .map((el) => {
+      return {
+        collectionName: $(el).text(),
+        collectionLink: linkToAbsolute($(el).attr("href")),
+      };
+    });
+}
+
+/**
+ *
+ * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
+ * @returns - {@link Summary} object containing the language of the work
+ */
+export async function getSummary(
+  input: number | cheerio.CheerioAPI
+): Promise<Summary> {
+  const $: cheerio.CheerioAPI = await getParsableInfodata(input);
+
+  let summaryArray = $(".summary blockquote")
+    .find("p")
+    .get()
+    .map((el) => {
+      return $(el).text();
+    });
+
+  return { summary: summaryArray.join("\n") };
 }

@@ -9,6 +9,7 @@ import {
   Rating,
   Relationship,
   SeriesInfo,
+  Summary,
   Tag,
   Title,
 } from "../interfaces/InterfaceWorkInfo";
@@ -30,7 +31,7 @@ import User from "./ClassUser";
  * @param options.language - {@link Language } object containing the language code of the work
  * @param options.series - Array of {@link SeriesInfo} objects detailing what Series the work is part of and where in the Series it is positioned
  * @param options.collections - either an Array of {@link Collection} objects detailing what collections the work is part of or a the number of collections the work belongs to.
- * @param options.summary - string containing the summary of the work
+ * @param options.summary - {@link Summary} Object containing the summary of the work
  */
 
 export default class WorkInfo {
@@ -47,8 +48,8 @@ export default class WorkInfo {
   tags?: Tag[];
   language?: Language;
   series?: SeriesInfo[];
-  collections?: Collection[] | number;
-  summary?: string;
+  collections?: Collection[];
+  summary?: Summary;
   constructor(
     options?:
       | {
@@ -65,8 +66,8 @@ export default class WorkInfo {
           tags?: Tag[];
           language?: Language;
           series?: SeriesInfo[];
-          collections?: Collection[] | number;
-          summary?: string;
+          collections?: Collection[];
+          summary?: Summary;
         }
       | number
   ) {
