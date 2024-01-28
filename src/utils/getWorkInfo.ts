@@ -4,21 +4,18 @@ import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
 import { getParsableInfodata, linkToAbsolute } from "./helpers";
 import {
   ArchiveWarning,
-  Author,
   Category,
   ChapterInformation,
   Character,
   Collection,
   Fandom,
-  Language,
   Rating,
   Relationship,
   SeriesInfo,
-  Summary,
   Tag,
-  Title,
 } from "../interfaces/InterfaceWorkInfo";
 import User from "../classes/ClassUser";
+import { LanguageCode } from "../enums/EnumLanguageCodes";
 
 /**
  *
@@ -56,9 +53,9 @@ export default async function getWorkInfo(
  */
 export async function getTitle(
   input: number | cheerio.CheerioAPI
-): Promise<Title> {
+): Promise<string> {
   const $ = await getParsableInfodata(input);
-  return { title: $(".preface").find(".title").first().text().trim() };
+  return $(".preface").find(".title").first().text().trim();
 }
 
 /**
@@ -68,19 +65,17 @@ export async function getTitle(
  */
 export async function getAuthor(
   input: number | cheerio.CheerioAPI
-): Promise<Author> {
+): Promise<User[]> {
   const $ = await getParsableInfodata(input);
 
-  return {
-    author: $("[rel=author]")
-      .get()
-      .map((el: cheerio.Element) => {
-        return new User({
-          username: $(el).text(),
-          userLink: linkToAbsolute($(el).attr("href")),
-        });
-      }),
-  };
+  return $("[rel=author]")
+    .get()
+    .map((el: cheerio.Element) => {
+      return new User({
+        username: $(el).text(),
+        userLink: linkToAbsolute($(el).attr("href")),
+      });
+    });
 }
 
 /**
@@ -157,10 +152,8 @@ export async function getRating(
   const $: cheerio.CheerioAPI = await getParsableInfodata(input);
 
   return {
-    rating: {
-      ratingName: $("dd.rating").text().trim(),
-      ratingLink: linkToAbsolute($("dd.rating").find("a").attr("href")),
-    },
+    ratingName: $("dd.rating").text().trim(),
+    ratingLink: linkToAbsolute($("dd.rating").find("a").attr("href")),
   };
 }
 
@@ -238,12 +231,10 @@ export async function getTags(
  */
 export async function getLanguage(
   input: number | cheerio.CheerioAPI
-): Promise<Language> {
+): Promise<string> {
   const $: cheerio.CheerioAPI = await getParsableInfodata(input);
 
-  return {
-    language: $(".language").first().next().text().replace("\n", "").trim(),
-  };
+  return $(".language").first().next().text().replace("\n", "").trim();
 }
 
 /**
@@ -299,7 +290,7 @@ export async function getCollections(
  */
 export async function getSummary(
   input: number | cheerio.CheerioAPI
-): Promise<Summary> {
+): Promise<string> {
   const $: cheerio.CheerioAPI = await getParsableInfodata(input);
 
   let summaryArray = $(".summary blockquote")
@@ -309,7 +300,7 @@ export async function getSummary(
       return $(el).text();
     });
 
-  return { summary: summaryArray.join("\n") };
+  return summaryArray.join("\n");
 }
 
 export async function getWorkStats(

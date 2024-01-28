@@ -1,13 +1,5 @@
 import User from "../classes/ClassUser";
 
-export interface Title {
-  title: string;
-}
-
-export interface Authors {
-  author: User[];
-}
-
 export interface Fandom {
   fandomName: string;
   fandomLink: string | undefined;
@@ -24,10 +16,8 @@ export interface Character {
 }
 
 export interface Rating {
-  rating: {
-    ratingName: string;
-    ratingLink: string | undefined;
-  };
+  ratingName: string;
+  ratingLink: string | undefined;
 }
 
 export interface ArchiveWarning {
@@ -43,14 +33,6 @@ export interface Category {
 export interface Tag {
   tagName: string;
   tagLink: string | undefined;
-}
-
-export interface Language {
-  language: string;
-}
-
-export interface Summary {
-  summary: string;
 }
 
 export interface SeriesInfo {
