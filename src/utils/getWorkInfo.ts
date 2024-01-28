@@ -41,9 +41,33 @@ export default async function getWorkInfo(
     getSeries(work),
     getCollections(work),
     getSummary(work),
+    getWorkStats(work),
   ];
 
-  return new WorkInfo(Object.assign(await Promise.all(parseFuntions)));
+  let resolved = (await Promise.allSettled(parseFuntions)).map((el, i) => {
+    let element: any = el;
+
+    return element;
+  });
+
+  return new WorkInfo({
+    title: resolved[0].value,
+    authors: resolved[1].value,
+    fandom: resolved[2].value,
+    relationships: resolved[3].value,
+    characters: resolved[4].value,
+    rating: resolved[5].value,
+    archiveWarnings: resolved[6].value,
+    categories: resolved[7].value,
+    tags: resolved[8].value,
+    language: resolved[9].value,
+    series: resolved[10].value,
+    collections: resolved[11].value,
+    summary: resolved[12].value,
+    stats: resolved[13].value,
+  });
+
+  //return new WorkInfo(Object.assign(await Promise.all(parseFuntions)));
 }
 
 /**
@@ -167,9 +191,7 @@ export async function getArchiveWarnings(
 ): Promise<ArchiveWarning[]> {
   const $: cheerio.CheerioAPI = await getParsableInfodata(input);
 
-  //Update for warnings!!!
-  return $(".relationship")
-    .next()
+  return $("dd.warning")
     .find("a")
     .get()
     .map((el) => {
@@ -353,14 +375,14 @@ export async function getWorkStats(
   }
 
   function getWorkKudos(stats: cheerio.Cheerio<cheerio.Element>): number {
-    return parseInt(stats.find(".kudos").next().text());
+    return parseInt(stats.find(".kudos").next().text().replace(",", ""));
   }
 
   function getWorkHits(stats: cheerio.Cheerio<cheerio.Element>): number {
-    return parseInt(stats.find(".hits").next().text());
+    return parseInt(stats.find(".hits").next().text().replace(",", ""));
   }
 
   function getWorkBookmarks(stats: cheerio.Cheerio<cheerio.Element>): number {
-    return parseInt(stats.find(".bookmarks").next().text());
+    return parseInt(stats.find(".bookmarks").next().text().replace(",", ""));
   }
 }
