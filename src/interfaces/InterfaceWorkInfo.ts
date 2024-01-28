@@ -1,5 +1,11 @@
+import User from "../classes/ClassUser";
+
 export interface Title {
   title: string;
+}
+
+export interface Authors {
+  author: User[];
 }
 
 export interface Fandom {

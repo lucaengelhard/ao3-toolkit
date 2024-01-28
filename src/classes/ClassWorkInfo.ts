@@ -1,5 +1,6 @@
 import {
   ArchiveWarning,
+  Authors,
   Category,
   ChapterInformation,
   Character,
@@ -37,7 +38,7 @@ import User from "./ClassUser";
 export default class WorkInfo {
   title?: Title;
   id?: number;
-  authors?: User[];
+  authors?: Authors;
   fandom?: Fandom[];
   stats?: WorkStats;
   relationships?: Relationship[];
@@ -55,7 +56,7 @@ export default class WorkInfo {
       | {
           title?: Title;
           id?: number;
-          authors?: User[];
+          authors?: Authors;
           fandom?: Fandom[];
           stats?: WorkStats;
           relationships?: Relationship[];

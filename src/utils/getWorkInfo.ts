@@ -4,6 +4,7 @@ import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
 import { getParsableInfodata, linkToAbsolute } from "./helpers";
 import {
   ArchiveWarning,
+  Author,
   Category,
   ChapterInformation,
   Character,
@@ -45,7 +46,7 @@ export default async function getWorkInfo(
     getSummary(work),
   ];
 
-  return Object.assign(await Promise.all(parseFuntions));
+  return new WorkInfo(Object.assign(await Promise.all(parseFuntions)));
 }
 
 /**
@@ -67,17 +68,19 @@ export async function getTitle(
  */
 export async function getAuthor(
   input: number | cheerio.CheerioAPI
-): Promise<User[]> {
+): Promise<Author> {
   const $ = await getParsableInfodata(input);
 
-  return $("[rel=author]")
-    .get()
-    .map((el: cheerio.Element) => {
-      return new User({
-        username: $(el).text(),
-        userLink: linkToAbsolute($(el).attr("href")),
-      });
-    });
+  return {
+    author: $("[rel=author]")
+      .get()
+      .map((el: cheerio.Element) => {
+        return new User({
+          username: $(el).text(),
+          userLink: linkToAbsolute($(el).attr("href")),
+        });
+      }),
+  };
 }
 
 /**
