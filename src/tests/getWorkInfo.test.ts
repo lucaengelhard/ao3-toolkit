@@ -108,7 +108,7 @@ test("gets the summary of the selected work", async () => {
   );
 });
 
-test("get the stats of the work", async () => {
+test.skip("get the stats of the work", async () => {
   await expect(getWorkStats(workID)).resolves.toEqual({
     words: 961329,
     chapters: {

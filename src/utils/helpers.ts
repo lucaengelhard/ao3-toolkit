@@ -1,6 +1,11 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 
+/**
+ *
+ * @param input - a work id as a number or a parsable cheerio object
+ * @returns a parsable cheerio object
+ */
 export async function getParsableInfodata(
   input: number | cheerio.CheerioAPI
 ): Promise<cheerio.CheerioAPI> {
@@ -18,11 +23,20 @@ export async function getParsableInfodata(
     },
   });
 
-  if (response.status !== 200) {
-    throw new Error(`Error while fetching work: ${response.data}`);
-  }
+  getAxiosSuccess(response);
 
   return cheerio.load(response.data);
+}
+
+/**
+ * Takes a Axios response and throws an error if the request was unsuccessful
+ *
+ * @param res an Axios response
+ */
+export function getAxiosSuccess(res: AxiosResponse) {
+  if (res.status !== 200) {
+    throw new Error(`Error while fetching work: ${res}`);
+  }
 }
 
 export function linkToAbsolute(linktext: string | undefined) {

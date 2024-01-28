@@ -9,8 +9,8 @@ export interface Notes {
 }
 
 export interface Chapter {
-  chapterTitle: string;
-  chapterSummary: string;
-  chapterNotes: string;
-  chapterContent: string | null;
+  chapterTitle?: string;
+  chapterSummary?: string;
+  chapterNotes?: string;
+  chapterContent?: string | null;
 }
