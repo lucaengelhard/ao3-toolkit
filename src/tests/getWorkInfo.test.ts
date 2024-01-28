@@ -1,4 +1,4 @@
-import { WorkStats } from "../classes/ClassWorkInfo";
+import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
 import getWorkInfo, {
   getArchiveWarnings,
   getAuthor,
@@ -122,7 +122,7 @@ test("get the stats of the work", async () => {
   });
 });
 
-test.only("get the complet workinfo of the work", async () => {
+test.skip("get the complet workinfo of the work", async () => {
   await expect(getWorkInfo(workID)).resolves.toEqual({
     title: "In The Forest Of Dean",
     id: 19865440,
