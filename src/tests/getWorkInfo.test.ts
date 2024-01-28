@@ -1,4 +1,4 @@
-import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
+import { WorkStats } from "../classes/ClassWorkInfo";
 import getWorkInfo, {
   getArchiveWarnings,
   getAuthor,
