@@ -1,27 +1,23 @@
 import {
   ArchiveWarning,
-  Authors,
   Category,
   ChapterInformation,
   Character,
   Collection,
   Fandom,
-  Language,
   Rating,
   Relationship,
   SeriesInfo,
-  Summary,
   Tag,
-  Title,
 } from "../interfaces/InterfaceWorkInfo";
 import User from "./ClassUser";
 
 /**
  * Class that contains information about a single work.
  * @param options - can be an object with information about the work or a number that is the id of the work
- * @param options.title - {@link Title} object containing the title of the work
+ * @param options.title - string containing the title of the work
  * @param options.id - number that is the id of the work
- * @param options.author - {@link User} object containing the name(s) of the author(s) and url(s) to the profile(s)
+ * @param options.author - Arry of {@link User} objects containing the name(s) of the author(s) and url(s) to the profile(s)
  * @param options.fandom - Array of {@link Fandom } objects associated with the work
  * @param options.stats - {@link WorkStats} Object containing information about the work like length, number of chapters, etc.
  * @param options.relationships - Array of {@link Relationship} objects associated with the work
@@ -29,16 +25,16 @@ import User from "./ClassUser";
  * @param options.rating - {@link Rating} Object detailing the Rating of the work
  * @param options.archiveWarnings - Array of {@link ArchiveWarning} objects detailing the Archvie Warnings associated with the work
  * @param options.tags - Array of {@link Tag} objects associated with the work
- * @param options.language - {@link Language } object containing the language code of the work
+ * @param options.language - string containing the language code of the work (checked against {@link LanguageCode} enum)
  * @param options.series - Array of {@link SeriesInfo} objects detailing what Series the work is part of and where in the Series it is positioned
  * @param options.collections - either an Array of {@link Collection} objects detailing what collections the work is part of or a the number of collections the work belongs to.
- * @param options.summary - {@link Summary} Object containing the summary of the work
+ * @param options.summary - string containing the summary of the work
  */
 
 export default class WorkInfo {
-  title?: Title;
+  title?: string;
   id?: number;
-  authors?: Authors;
+  authors?: User[];
   fandom?: Fandom[];
   stats?: WorkStats;
   relationships?: Relationship[];
@@ -47,16 +43,16 @@ export default class WorkInfo {
   archiveWarnings?: ArchiveWarning[];
   categories?: Category[];
   tags?: Tag[];
-  language?: Language;
+  language?: string;
   series?: SeriesInfo[];
   collections?: Collection[];
-  summary?: Summary;
+  summary?: string;
   constructor(
     options?:
       | {
-          title?: Title;
+          title?: string;
           id?: number;
-          authors?: Authors;
+          authors?: User[];
           fandom?: Fandom[];
           stats?: WorkStats;
           relationships?: Relationship[];
@@ -65,10 +61,10 @@ export default class WorkInfo {
           archiveWarnings?: ArchiveWarning[];
           categories?: Category[];
           tags?: Tag[];
-          language?: Language;
+          language?: string;
           series?: SeriesInfo[];
           collections?: Collection[];
-          summary?: Summary;
+          summary?: string;
         }
       | number
   ) {
