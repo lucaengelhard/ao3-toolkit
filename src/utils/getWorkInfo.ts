@@ -255,7 +255,7 @@ export async function getLanguage(
 ): Promise<string> {
   const $: cheerio.CheerioAPI = await getParsableInfodata(input);
 
-  return $(".language").first().next().text().replace("\n", "").trim();
+  return $(".language").first().next().text().replaceAll("\n", "").trim();
 }
 
 /**
@@ -276,7 +276,10 @@ export async function getSeries(
         seriesName: $(el).find("a").text(),
         seriesLink: linkToAbsolute($(el).find("a").attr("href")),
         seriesPart: parseInt(
-          $(el).text().replace($(el).find("a").text(), "").replace(/\D/g, "")
+          $(el)
+            .text()
+            .replaceAll($(el).find("a").text(), "")
+            .replaceAll(/\D/g, "")
         ),
       };
     });
@@ -340,7 +343,7 @@ export async function getWorkStats(
   });
 
   function getWorkWords(stats: cheerio.Cheerio<cheerio.Element>): number {
-    return parseInt(stats.find(".words").next().text().replace(",", ""));
+    return parseInt(stats.find(".words").next().text().replaceAll(",", ""));
   }
 
   function getWorkChapters(
@@ -374,14 +377,14 @@ export async function getWorkStats(
   }
 
   function getWorkKudos(stats: cheerio.Cheerio<cheerio.Element>): number {
-    return parseInt(stats.find(".kudos").next().text().replace(",", ""));
+    return parseInt(stats.find(".kudos").next().text().replaceAll(",", ""));
   }
 
   function getWorkHits(stats: cheerio.Cheerio<cheerio.Element>): number {
-    return parseInt(stats.find(".hits").next().text().replace(",", ""));
+    return parseInt(stats.find(".hits").next().text().replaceAll(",", ""));
   }
 
   function getWorkBookmarks(stats: cheerio.Cheerio<cheerio.Element>): number {
-    return parseInt(stats.find(".bookmarks").next().text().replace(",", ""));
+    return parseInt(stats.find(".bookmarks").next().text().replaceAll(",", ""));
   }
 }

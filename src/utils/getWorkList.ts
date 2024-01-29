@@ -199,7 +199,7 @@ function parseListWork(
   if (!idString) {
     idString = "0";
   }
-  const id: number = parseInt(idString.replace("work_", ""));
+  const id: number = parseInt(idString.replaceAll("work_", ""));
 
   let userHistoryData: WorkHistory | undefined;
   let userBookmarkData: WorkBookmark | undefined;
@@ -227,7 +227,7 @@ function parseListWork(
   function parseHistoryWork($: cheerio.CheerioAPI): WorkHistory {
     const viewedText: string = $("h4.viewed.heading")
       .text()
-      .replace("Last visited: ", "")
+      .replaceAll("Last visited: ", "")
       .trim();
 
     const lastindex: number = viewedText.indexOf("(");
@@ -316,7 +316,7 @@ function getListWorkFandom($: cheerio.CheerioAPI): Fandom[] {
 
 function getListWorkStats($: cheerio.CheerioAPI): WorkStats {
   return new WorkStats({
-    words: parseInt($(".stats dd.words").text().replace(",", "")),
+    words: parseInt($(".stats dd.words").text().replaceAll(",", "")),
     chapters: {
       chaptersWritten: parseInt(
         defineParseIntString($(".stats dd.chapters").text().split("/")[0])
@@ -371,7 +371,7 @@ function getListWorkArchiveWarning($: cheerio.CheerioAPI): ArchiveWarning[] {
     .map((el) => {
       return {
         warningName: el.trim(),
-        warningLink: `https://archiveofourown.org/tags/${el.replace(
+        warningLink: `https://archiveofourown.org/tags/${el.replaceAll(
           " ",
           "%20"
         )}/works`,
@@ -388,7 +388,7 @@ function getListWorkCategory($: cheerio.CheerioAPI): Category[] {
         categoryName: el.trim(),
         categoryLink: `https://archiveofourown.org/tags/${el
           .trim()
-          .replace("/", "*s*")}/works`,
+          .replaceAll("/", "*s*")}/works`,
       };
     });
 }
@@ -405,7 +405,7 @@ function getListWorkTags($: cheerio.CheerioAPI): Tag[] {
 }
 
 function getListWorkLanguage($: cheerio.CheerioAPI): string {
-  return $("dd.language").text().replace("\n", "").trim();
+  return $("dd.language").text().replaceAll("\n", "").trim();
 }
 
 function getListWorkSeries($: cheerio.CheerioAPI): SeriesInfo[] {
