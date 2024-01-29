@@ -10,15 +10,70 @@ ao3-toolkit runs on Node.js and is available as a NPM package.
 npm install ao3-toolkit
 ```
 
-## Features
+## Usage
 
-- Logging in to ao3
-- Fetching single works
-  - Fetching work content
-  - Fetching work stats
-- Fetching user history
-- Fetching user bookmarks
-- Sorting lists of works
+### Logging in to ao3
+
+```ts
+import { LoginSession } from "ao3-toolkit";
+
+const session = await new LoginSession({
+  username: string,
+  password: string,
+}).login();
+```
+
+### Fetching single works
+
+```ts
+const work = await getWorkInfo(id: number)
+```
+
+#### Fetching work content
+
+```ts
+const work = await getWorkContent(id: number)
+```
+
+#### Fetching work stats
+
+```ts
+const work = await getWorkStats(id: number)
+```
+
+### Fetching user history
+
+```ts
+import { LoginSession } from "ao3-toolkit";
+
+const session = await new LoginSession({
+  username: string,
+  password: string,
+}).login();
+
+const history = await getWorkList(
+  logindata,
+  session.instance,
+  Listtype.History
+);
+```
+
+### Fetching user bookmarks
+
+```ts
+import { LoginSession } from "ao3-toolkit";
+
+const session = await new LoginSession({
+  username: string,
+  password: string,
+}).login();
+
+const history = await getWorkList(
+  logindata,
+  session.instance,
+  Listtype.Bookmark
+);
+```
 
 ## Roadmap
 
@@ -32,7 +87,7 @@ npm install ao3-toolkit
 
 ## Documentation
 
-[Documentation](https://lucaengelhard.github.io/ao3-toolkit/)
+[Documentation](https://lucaengelhard.github.io/ao3-toolkit/) is generated with [TypeDoc](https://typedoc.org/)
 
 ## Contributing
 
