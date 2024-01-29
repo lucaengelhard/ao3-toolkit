@@ -1,5 +1,3 @@
-import User from "../classes/ClassUser";
-
 export interface Fandom {
   fandomName: string;
   fandomLink: string | undefined;

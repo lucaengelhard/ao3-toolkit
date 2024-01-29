@@ -4,7 +4,7 @@ import {
 } from "../interfaces/InterfaceWorkUsersData";
 import User from "./ClassUser";
 
-export class WorkUserData {
+export default class WorkUserData {
   user: User;
   historyWithWork?: WorkHistory;
   bookmark?: WorkBookmark;

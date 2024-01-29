@@ -25,7 +25,7 @@ import User from "./ClassUser";
  * @param options.rating - {@link Rating} Object detailing the Rating of the work
  * @param options.archiveWarnings - Array of {@link ArchiveWarning} objects detailing the Archvie Warnings associated with the work
  * @param options.tags - Array of {@link Tag} objects associated with the work
- * @param options.language - string containing the language code of the work (checked against {@link LanguageCode} enum)
+ * @param options.language - string containing the language code of the work (checked against {@link LanguageCodes} enum)
  * @param options.series - Array of {@link SeriesInfo} objects detailing what Series the work is part of and where in the Series it is positioned
  * @param options.collections - either an Array of {@link Collection} objects detailing what collections the work is part of or a the number of collections the work belongs to.
  * @param options.summary - string containing the summary of the work

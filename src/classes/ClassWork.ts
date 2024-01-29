@@ -1,6 +1,6 @@
 import WorkContent from "../interfaces/InterfaceWorkContent";
 import WorkInfo from "./ClassWorkInfo";
-import { WorkUserData } from "./ClassWorkUserData";
+import WorkUserData from "./ClassWorkUserData";
 
 /**
  * Base class that holds information about a single Work and optional data based on the context or the user. (e.g. history/bookmarks)

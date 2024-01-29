@@ -20,7 +20,7 @@ import {
   WorkHistory,
 } from "../interfaces/InterfaceWorkUsersData";
 import User from "../classes/ClassUser";
-import { WorkUserData } from "../classes/ClassWorkUserData";
+import WorkUserData from "../classes/ClassWorkUserData";
 import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
 import {
   ArchiveWarning,
