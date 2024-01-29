@@ -1,6 +1,32 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/types.d.ts"],
+  "entryPoints": ["src/index.ts"],
+  "exclude": ["src/tests/**/*.ts"],
   "out": "docs",
-  "entryPointStrategy": "resolve"
+  "entryPointStrategy": "resolve",
+  "kindSortOrder": [
+    "Class",
+    "Function",
+    "Reference",
+    "Project",
+    "Module",
+    "Namespace",
+    "Variable",
+    "Interface",
+    "TypeAlias",
+    "Constructor",
+    "Property",
+    "Accessor",
+    "Method",
+    "Parameter",
+    "TypeParameter",
+    "TypeLiteral",
+    "CallSignature",
+    "ConstructorSignature",
+    "IndexSignature",
+    "GetSignature",
+    "SetSignature",
+    "Enum",
+    "EnumMember"
+  ]
 }

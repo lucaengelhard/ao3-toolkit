@@ -4,8 +4,6 @@ A Toolkit for interfacing with the Archive of Our Own
 
 Coded in TypeScript with nodejs
 
-``` npm i ao3-toolkit ```
-
 ## Features
 
 - Logging in to ao3
@@ -14,6 +12,13 @@ Coded in TypeScript with nodejs
   - Fetching work stats
 - Fetching user history
 - Fetching user bookmarks
+
+## Roadmap
+
+- Fetching work comments
+- Fetching user stats
+  - favourite tags
+  - favourite fandoms
 - Sorting WorkLists
   - by words
   - by kudos
@@ -26,13 +31,6 @@ Coded in TypeScript with nodejs
 - Fetching user stats
   - words read
   - fics read
-
-## Roadmap
-
-- Fetching work comments
-- Fetching user stats
-  - favourite tags
-  - favourite fandoms
 
 ## Documentation
 

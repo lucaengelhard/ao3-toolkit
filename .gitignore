@@ -1,9 +1,4 @@
-
-
-node_modules/
-
-data/
-
-*.tgz
-
-!docs/
+node_modules
+dist
+coverage
+.env

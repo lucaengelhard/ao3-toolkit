@@ -1,18 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES6",
-    "strict": true,
+    "target": "ES2020",
+    "module": "CommonJS",
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "dist",
-    "moduleResolution": "node",
-    "declaration": true,
-    "declarationDir": "./dist/types",
-    "declarationMap": true
-  },
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Recommended",
-  "include": ["src/**/*"]
+    "strict": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true
+  }
 }
