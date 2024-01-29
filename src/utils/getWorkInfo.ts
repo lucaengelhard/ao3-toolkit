@@ -15,7 +15,6 @@ import {
   Tag,
 } from "../interfaces/InterfaceWorkInfo";
 import User from "../classes/ClassUser";
-import { LanguageCode } from "../enums/EnumLanguageCodes";
 
 /**
  *
@@ -73,7 +72,7 @@ export default async function getWorkInfo(
 /**
  *
  * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
- * @returns - {@link Title} object containing the title of the work
+ * @returns string containing the title of the work
  */
 export async function getTitle(
   input: number | cheerio.CheerioAPI
@@ -249,7 +248,7 @@ export async function getTags(
 /**
  *
  * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
- * @returns - {@link Language} object containing the language of the work
+ * @returns string containing the language of the work
  */
 export async function getLanguage(
   input: number | cheerio.CheerioAPI
@@ -308,7 +307,7 @@ export async function getCollections(
 /**
  *
  * @param input - either a work id in form of a number or a parsable {@link cheerio.CheerioAPI} Object
- * @returns - {@link Summary} object containing the language of the work
+ * @returns string containing the language of the work
  */
 export async function getSummary(
   input: number | cheerio.CheerioAPI

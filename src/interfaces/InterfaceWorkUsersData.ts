@@ -1,4 +1,3 @@
-import User from "../classes/ClassUser";
 import { Tag } from "./InterfaceWorkInfo";
 
 export interface WorkHistory {
