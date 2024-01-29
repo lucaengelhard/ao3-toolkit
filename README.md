@@ -4,7 +4,7 @@ A Toolkit for interfacing with the Archive of Our Own
 
 ## Installation
 
-ao3-toolkit runs on Node.js and is available as a NPM package.
+ao3-toolkit runs on Node.js and is available as a [NPM package](https://www.npmjs.com/package/ao3-toolkit).
 
 ```text
 npm install ao3-toolkit
@@ -26,18 +26,24 @@ const session = await new LoginSession({
 ### Fetching single works
 
 ```ts
+import { getWorkInfo } from "ao3-toolkit";
+
 const work = await getWorkInfo(id: number)
 ```
 
 #### Fetching work content
 
 ```ts
+import { getWorkContent } from "ao3-toolkit";
+
 const work = await getWorkContent(id: number)
 ```
 
 #### Fetching work stats
 
 ```ts
+import { getWorkStats } from "ao3-toolkit";
+
 const work = await getWorkStats(id: number)
 ```
 
