@@ -2,7 +2,13 @@
 
 A Toolkit for interfacing with the Archive of Our Own
 
-Coded in TypeScript with nodejs
+## Installation
+
+ao3-toolkit runs on Node.js and is available as a NPM package.
+
+```text
+npm install ao3-toolkit
+```
 
 ## Features
 
@@ -12,6 +18,7 @@ Coded in TypeScript with nodejs
   - Fetching work stats
 - Fetching user history
 - Fetching user bookmarks
+- Sorting lists of works
 
 ## Roadmap
 
@@ -19,15 +26,6 @@ Coded in TypeScript with nodejs
 - Fetching user stats
   - favourite tags
   - favourite fandoms
-- Sorting WorkLists
-  - by words
-  - by kudos
-  - by hits
-  - by bookmarks
-  - by comments
-  - by chaptercount
-  - by times visited
-  - by last time visited
 - Fetching user stats
   - words read
   - fics read
@@ -36,9 +34,9 @@ Coded in TypeScript with nodejs
 
 [Documentation](https://lucaengelhard.github.io/ao3-toolkit/)
 
-## Feedback
+## Contributing
 
-If you have any feedback, please reach out to me at me@lucaengelhard.com
+This project is written by a lone developer who learns as they go. Contributions are welcome and appreciated. So clone the repository and make a Pull request. If you have any feedback, please open an Issue or reach out to me at me@lucaengelhard.com.
 
 ## Inspiration and similar Projects:
 
