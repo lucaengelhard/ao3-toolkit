@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.0.1
+
+### Patch Changes
+
+- 6f6c07c: Updated the readme
+
 ## 2.0.0
 
 ### Major Changes
