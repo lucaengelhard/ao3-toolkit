@@ -1,4 +1,5 @@
 export interface PageSpan {
-  start: number | undefined;
-  end: number | undefined;
+  start: number;
+  end: number;
+  exclude?: number[];
 }

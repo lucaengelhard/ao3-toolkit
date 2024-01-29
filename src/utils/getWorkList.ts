@@ -25,7 +25,7 @@ export default async function getWorkList(
   logindata: Login,
   instance: AxiosInstance | undefined,
   listtype?: Listtype,
-  span?: PageSpan | number[] | number
+  pageSpan?: PageSpan | number[] | number
 ) {
   if (typeof instance == "undefined") {
     throw new Error(
@@ -64,72 +64,16 @@ export default async function getWorkList(
   //Get the number of history pages
   const navLength = getPageNumber($);
 
-  if (typeof span == "number") {
-    span = {
+  if (typeof pageSpan == "number") {
+    pageSpan = {
       start: 1,
-      end: span,
+      end: pageSpan,
     };
   }
 
-  let resolvedListPages: AxiosResponse<any, any>[] = [];
+  const downloadedPagesStack: AxiosResponse[] = [];
 
-  const batchlength = axiosDefaults.batch;
-  let batchbase = 1;
-
-  //Load every list page
-  for (let i = 1; i <= navLength; i++) {
-    if (typeof span !== "undefined") {
-      if (instaceOfPageSpan(span) && span.hasOwnProperty("start")) {
-        if (typeof span.start == "undefined") {
-          span.start = 0;
-        }
-
-        if (typeof span.end == "undefined") {
-          span.end = navLength;
-        }
-        if (i < span.start || i > span.end) {
-          continue;
-        }
-      }
-      if (instaceOfPageArray(span) && !span.hasOwnProperty("start")) {
-        if (!span.includes(i)) {
-          continue;
-        }
-      }
-    }
-
-    if (batchbase == batchlength) {
-      await delay(1500);
-      batchbase = 1;
-    }
-
-    console.log("getting Page " + i);
-    console.log(`${firstUrl}?page=${i}`);
-
-    try {
-      const loadedpage = await instance.get(
-        `${firstUrl}?page=${i}`,
-        axiosDefaults.axios
-      );
-
-      try {
-        getAxiosSuccess(loadedpage);
-      } catch (error) {
-        console.error(
-          `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.!`
-        );
-
-        continue;
-      }
-      resolvedListPages.push(loadedpage);
-    } catch (error) {
-      console.error(
-        `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.`
-      );
-    }
-    batchbase++;
-  }
-
+  /*
   //Parse each loaded Page
   let parsed: Work[] = [];
 
@@ -145,9 +89,98 @@ export default async function getWorkList(
       }
     });
   });
-
+*/
   return new WorkList(parsed, listtype);
 }
+
+function definePageSpan(
+  pageSpan: PageSpan | number | undefined,
+  navLength: number
+): PageSpan {
+  //If the span is only a number return that number of pages starting from  page 0
+  if (typeof pageSpan === "number") {
+    return { start: 0, end: pageSpan };
+  }
+
+  //If the span is of type PageSpan return it
+  if (instaceOfPageSpan(pageSpan) && pageSpan.hasOwnProperty("start")) {
+    if (typeof pageSpan.start == "undefined") {
+      pageSpan.start = 0;
+    }
+
+    if (typeof pageSpan.end == "undefined") {
+      pageSpan.end = navLength;
+    }
+
+    return pageSpan;
+  }
+
+  return { start: 0, end: navLength };
+}
+
+async function loadListPages(
+  instance: AxiosInstance,
+  firstUrl: string,
+  navLength: number,
+  pageSpan: PageSpan,
+  downloadedPagesStack: AxiosResponse[]
+) {
+  const batchlength = axiosDefaults.batch;
+  let batchbase = 1;
+
+  const cleanedPageSpan = definePageSpan(pageSpan, navLength);
+  for (let i = 1; i <= navLength; i++) {
+    //Check if page should be included
+    if (i < cleanedPageSpan.start || i > cleanedPageSpan.end) {
+      continue;
+    }
+    if (cleanedPageSpan.exclude?.includes(i)) {
+      continue;
+    }
+
+    //check if another request should be made or if there should be a delay (ao3 sometimes blocks an ip after to many requests)
+    if (batchbase == batchlength) {
+      await delay(1500);
+      batchbase = 1;
+    }
+
+    //Load Page
+    const loadedPage = await streamListPage(instance, i, firstUrl);
+    try {
+      getAxiosSuccess(loadedPage);
+    } catch (error) {
+      console.error(
+        `Problems while loading page ${i}. This could be because there were to many requests.!`
+      );
+      continue;
+    }
+    downloadedPagesStack.push(loadedPage);
+    batchbase++;
+  }
+
+  async function streamListPage(
+    instance: AxiosInstance,
+    pageIndex: number,
+    firstUrl: string
+  ): Promise<AxiosResponse<any, any>> {
+    let response = await instance({
+      method: "get",
+      url: `${firstUrl}?page=${pageIndex}`,
+      responseType: "stream",
+      headers: axiosDefaults.axios.headers,
+    });
+
+    response.data.on("data", (chunk: any) => {
+      chunk.length;
+    });
+
+    return response.data.on("end", () => {
+      return response;
+    });
+  }
+}
+
+function handlePageStack(downloadedPagesStack: AxiosResponse[]): Work[] {}
 
 function parseListWork(
   work: cheerio.Element,
