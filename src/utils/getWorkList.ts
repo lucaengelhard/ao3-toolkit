@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance, AxiosProgressEvent, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 import { Login } from "../interfaces/InterfaceUserData";
 import { Listtype } from "../enums/EnumWorkLists";
@@ -20,12 +20,22 @@ import {
 import User from "../classes/ClassUser";
 import { WorkUserData } from "../classes/ClassWorkUserData";
 import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
+import {
+  ArchiveWarning,
+  Category,
+  Character,
+  Fandom,
+  Rating,
+  Relationship,
+  SeriesInfo,
+  Tag,
+} from "../interfaces/InterfaceWorkInfo";
 
 export default async function getWorkList(
   logindata: Login,
   instance: AxiosInstance | undefined,
   listtype?: Listtype,
-  span?: PageSpan | number[] | number
+  pageSpan?: PageSpan | number
 ) {
   if (typeof instance == "undefined") {
     throw new Error(
@@ -64,89 +74,113 @@ export default async function getWorkList(
   //Get the number of history pages
   const navLength = getPageNumber($);
 
-  if (typeof span == "number") {
-    span = {
-      start: 1,
-      end: span,
-    };
-  }
+  /*
+  do {
+    if (!downloadedPagesStack.responses[0]) {
+      console.log("end of while loop");
+      continue;
+    }
+    const toHandle = downloadedPagesStack.responses[0];
+    console.log(toHandle);
 
-  let resolvedListPages: AxiosResponse<any, any>[] = [];
+    downloadedPagesStack.responses.splice(0, 1);
+    handleWorkListPage(toHandle, toHandleStack, listtype, logindata);
+    console.log("end of while loop");
+  } while (
+    !downloadedPagesStack.finished ||
+    downloadedPagesStack.responses.length
+  );
+*/
+  return new WorkList(
+    await loadListPages(
+      instance,
+      firstUrl,
+      navLength,
+      pageSpan,
+      listtype,
+      logindata
+    ),
+    listtype
+  );
+}
+
+async function loadListPages(
+  instance: AxiosInstance,
+  firstUrl: string,
+  navLength: number,
+  pageSpan: PageSpan | number | undefined,
+  listtype: Listtype,
+  logindata: Login
+): Promise<Work[]> {
+  const handledStack: Work[] = [];
 
   const batchlength = axiosDefaults.batch;
   let batchbase = 1;
 
-  //Load every list page
-  for (let i = 1; i <= navLength; i++) {
-    if (typeof span !== "undefined") {
-      if (instaceOfPageSpan(span) && span.hasOwnProperty("start")) {
-        if (typeof span.start == "undefined") {
-          span.start = 0;
-        }
-
-        if (typeof span.end == "undefined") {
-          span.end = navLength;
-        }
-        if (i < span.start || i > span.end) {
-          continue;
-        }
-      }
-      if (instaceOfPageArray(span) && !span.hasOwnProperty("start")) {
-        if (!span.includes(i)) {
-          continue;
-        }
-      }
+  const cleanedPageSpan = definePageSpan(pageSpan, navLength);
+  for (let i = 1; i <= cleanedPageSpan.end; i++) {
+    //Check if page should be included
+    if (i < cleanedPageSpan.start || i > cleanedPageSpan.end) {
+      continue;
+    }
+    if (cleanedPageSpan.exclude?.includes(i)) {
+      continue;
     }
 
+    //check if another request should be made or if there should be a delay (ao3 sometimes blocks an ip after to many requests)
     if (batchbase == batchlength) {
       await delay(1500);
       batchbase = 1;
     }
 
-    console.log("getting Page " + i);
-    console.log(`${firstUrl}?page=${i}`);
+    //Load Page
+    const loadedPage = await loadListPage(instance, i, firstUrl);
 
     try {
-      const loadedpage = await instance.get(
-        `${firstUrl}?page=${i}`,
-        axiosDefaults.axios
-      );
-
-      try {
-        getAxiosSuccess(loadedpage);
-      } catch (error) {
-        console.error(
-          `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.!`
-        );
-
-        continue;
-      }
-      resolvedListPages.push(loadedpage);
+      getAxiosSuccess(loadedPage);
     } catch (error) {
       console.error(
-        `Problems while loading page ${i} of ${listtype} of user ${logindata.username}. This could be because there were to many requests.`
+        `Problems while loading page ${i}. This could be because there were to many requests.!`
       );
+      continue;
     }
+    handleWorkListPage(loadedPage, handledStack, listtype, logindata);
     batchbase++;
   }
 
-  //Parse each loaded Page
-  let parsed: Work[] = [];
+  return handledStack;
+}
 
-  resolvedListPages.forEach((res) => {
-    const $ = cheerio.load(res.data);
-    const works = $("li[role='article']").toArray();
+async function loadListPage(
+  instance: AxiosInstance,
+  pageIndex: number,
+  firstUrl: string
+): Promise<AxiosResponse<any, any>> {
+  console.log(`fetching page ${pageIndex}`);
 
-    works.forEach((work: cheerio.Element) => {
-      try {
-        parsed.push(parseListWork(work, listtype, logindata));
-      } catch (error) {
-        console.log(error);
-      }
-    });
+  return await instance(`${firstUrl}?page=${pageIndex}`, {
+    headers: axiosDefaults.axios.headers,
   });
+}
 
-  return new WorkList(parsed, listtype);
+function handleWorkListPage(
+  toHandle: AxiosResponse,
+  handledStack: Work[],
+  listtype: Listtype,
+  logindata: Login
+) {
+  const $ = cheerio.load(toHandle.data);
+  const works = $("li[role='article']").toArray();
+
+  console.log(toHandle.headers);
+
+  works.forEach((work: cheerio.Element) => {
+    try {
+      handledStack.push(parseListWork(work, listtype, logindata));
+    } catch (error) {
+      console.log(error);
+    }
+  });
 }
 
 function parseListWork(
@@ -235,108 +269,163 @@ function parseListWork(
 
   function parseListWorkInfo($: cheerio.CheerioAPI): WorkInfo {
     return {
-      title: $(".heading a").first().text(),
+      title: getListWorkTitle($),
       id: id,
-      authors: $("[rel=author]")
-        .get()
-        .map((el: cheerio.Element) => {
-          return new User({
-            username: $(el).text(),
-            userLink: linkToAbsolute($(el).attr("href")),
-          });
-        }),
-      fandom: $(".fandoms a")
-        .get()
-        .map((el) => {
-          return {
-            fandomName: $(el).text(),
-            fandomLink: linkToAbsolute($(el).attr("href")),
-          };
-        }),
-      stats: new WorkStats({
-        words: parseInt($(".stats dd.words").text().replace(",", "")),
-        chapters: {
-          chaptersWritten: parseInt(
-            defineParseIntString($(".stats dd.chapters").text().split("/")[0])
-          ),
-          chaptersMax: parseInt(
-            defineParseIntString($(".stats dd.chapters").text().split("/")[1])
-          ),
-        },
-        kudos: parseInt($(".stats dd.kudos").text()),
-        hits: parseInt($(".stats dd.hits").text()),
-        bookmarks: parseInt($(".stats dd.bookmarks").text()),
-      }),
-      relationships: $("li.relationships a")
-        .get()
-        .map((el) => {
-          return {
-            relationshipName: $(el).text(),
-            relationshipLink: linkToAbsolute($(el).attr("href")),
-          };
-        }),
-      characters: $("li.characters a")
-        .get()
-        .map((el) => {
-          return {
-            characterName: $(el).text(),
-            characterLink: linkToAbsolute($(el).attr("href")),
-          };
-        }),
-      rating: {
-        ratingName: $("ul.required-tags rating").text().trim(),
-        ratingLink: linkToAbsolute(
-          `https://archiveofourown.org/tags/${$("ul.required-tags rating")
-            .text()
-            .trim()}/works`
-        ),
-      },
-      archiveWarnings: [
-        {
-          warningName: $(".warnings a").text().trim(),
-          warningLink: linkToAbsolute($(".warnings a").attr("href")),
-        },
-      ],
-      categories: $(".category")
-        .text()
-        .split(",")
-        .map((el) => {
-          return {
-            categoryName: el.trim(),
-            categoryLink: linkToAbsolute(
-              `https://archiveofourown.org/tags/${el
-                .trim()
-                .replace("/", "*s*")}/works`
-            ),
-          };
-        }),
-      tags: $(".freeforms a")
-        .get()
-        .map((el) => {
-          return {
-            tagName: $(el).text(),
-            tagLink: linkToAbsolute($(el).attr("href")),
-          };
-        }),
-      language: $("dd.language").text().replace("\n", "").trim(),
-      series: $("dd.series")
-        .find(".series")
-        .get()
-        .map((el) => {
-          return {
-            seriesName: $(el).find("a").text(),
-            seriesLink: linkToAbsolute($(el).find("a").attr("href")),
-            seriesPart: parseInt($(el).find("strong").text()),
-          };
-        }),
-      summary: $(".summary p")
-        .get()
-        .map((el) => {
-          return $(el).text();
-        })
-        .join("\n"),
+      authors: getListWorkAuthor($),
+      fandom: getListWorkFandom($),
+      stats: getListWorkStats($),
+      relationships: getListWorkRelationship($),
+      characters: getListWorkCharacter($),
+      rating: getListWorkRating($),
+      archiveWarnings: getListWorkArchiveWarning($),
+      categories: getListWorkCategory($),
+      tags: getListWorkTags($),
+      language: getListWorkLanguage($),
+      series: getListWorkSeries($),
+      summary: getListWorkSummary($),
     };
   }
+}
+
+function getListWorkTitle($: cheerio.CheerioAPI): string {
+  return $(".heading a").first().text();
+}
+
+function getListWorkAuthor($: cheerio.CheerioAPI): User[] {
+  return $("[rel=author]")
+    .get()
+    .map((el: cheerio.Element) => {
+      return new User({
+        username: $(el).text(),
+        userLink: linkToAbsolute($(el).attr("href")),
+      });
+    });
+}
+
+function getListWorkFandom($: cheerio.CheerioAPI): Fandom[] {
+  return $(".fandoms a")
+    .get()
+    .map((el) => {
+      return {
+        fandomName: $(el).text(),
+        fandomLink: linkToAbsolute($(el).attr("href")),
+      };
+    });
+}
+
+function getListWorkStats($: cheerio.CheerioAPI): WorkStats {
+  return new WorkStats({
+    words: parseInt($(".stats dd.words").text().replace(",", "")),
+    chapters: {
+      chaptersWritten: parseInt(
+        defineParseIntString($(".stats dd.chapters").text().split("/")[0])
+      ),
+      chaptersMax: parseInt(
+        defineParseIntString($(".stats dd.chapters").text().split("/")[1])
+      ),
+    },
+    kudos: parseInt($(".stats dd.kudos").text()),
+    hits: parseInt($(".stats dd.hits").text()),
+    bookmarks: parseInt($(".stats dd.bookmarks").text()),
+  });
+}
+
+function getListWorkRelationship($: cheerio.CheerioAPI): Relationship[] {
+  return $("li.relationships a")
+    .get()
+    .map((el) => {
+      return {
+        relationshipName: $(el).text(),
+        relationshipLink: linkToAbsolute($(el).attr("href")),
+      };
+    });
+}
+
+function getListWorkCharacter($: cheerio.CheerioAPI): Character[] {
+  return $("li.characters a")
+    .get()
+    .map((el) => {
+      return {
+        characterName: $(el).text(),
+        characterLink: linkToAbsolute($(el).attr("href")),
+      };
+    });
+}
+
+function getListWorkRating($: cheerio.CheerioAPI): Rating {
+  return {
+    ratingName: $("ul.required-tags rating").text().trim(),
+    ratingLink: linkToAbsolute(
+      `https://archiveofourown.org/tags/${$("ul.required-tags rating")
+        .text()
+        .trim()}/works`
+    ),
+  };
+}
+
+function getListWorkArchiveWarning($: cheerio.CheerioAPI): ArchiveWarning[] {
+  return $(".warnings span.text")
+    .text()
+    .split(",")
+    .map((el) => {
+      return {
+        warningName: el.trim(),
+        warningLink: `https://archiveofourown.org/tags/${el.replace(
+          " ",
+          "%20"
+        )}/works`,
+      };
+    });
+}
+
+function getListWorkCategory($: cheerio.CheerioAPI): Category[] {
+  return $(".category")
+    .text()
+    .split(",")
+    .map((el) => {
+      return {
+        categoryName: el.trim(),
+        categoryLink: `https://archiveofourown.org/tags/${el
+          .trim()
+          .replace("/", "*s*")}/works`,
+      };
+    });
+}
+
+function getListWorkTags($: cheerio.CheerioAPI): Tag[] {
+  return $(".freeforms a")
+    .get()
+    .map((el) => {
+      return {
+        tagName: $(el).text(),
+        tagLink: linkToAbsolute($(el).attr("href")),
+      };
+    });
+}
+
+function getListWorkLanguage($: cheerio.CheerioAPI): string {
+  return $("dd.language").text().replace("\n", "").trim();
+}
+
+function getListWorkSeries($: cheerio.CheerioAPI): SeriesInfo[] {
+  return $("ul.series li")
+    .get()
+    .map((el) => {
+      return {
+        seriesName: $(el).find("a").text(),
+        seriesLink: linkToAbsolute($(el).find("a").attr("href")),
+        seriesPart: parseInt($(el).find("strong").text()),
+      };
+    });
+}
+
+function getListWorkSummary($: cheerio.CheerioAPI): string {
+  return $(".summary p")
+    .get()
+    .map((el) => {
+      return $(el).text();
+    })
+    .join("\n");
 }
 
 function instaceOfPageSpan(span: any): span is PageSpan {
@@ -345,4 +434,29 @@ function instaceOfPageSpan(span: any): span is PageSpan {
 
 function instaceOfPageArray(span: any): span is number[] {
   return span;
+}
+
+function definePageSpan(
+  pageSpan: PageSpan | number | undefined,
+  navLength: number
+): PageSpan {
+  //If the span is only a number return that number of pages starting from  page 0
+  if (typeof pageSpan === "number") {
+    return { start: 0, end: pageSpan };
+  }
+
+  //If the span is of type PageSpan return it
+  if (instaceOfPageSpan(pageSpan) && pageSpan.hasOwnProperty("start")) {
+    if (typeof pageSpan.start == "undefined") {
+      pageSpan.start = 0;
+    }
+
+    if (typeof pageSpan.end == "undefined") {
+      pageSpan.end = navLength;
+    }
+
+    return pageSpan;
+  }
+
+  return { start: 0, end: navLength };
 }

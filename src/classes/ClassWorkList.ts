@@ -1,28 +1,18 @@
 import Work from "./ClassWork";
 
 export default class WorkList {
-  #works;
+  works;
   #context;
   //#cached?: Cached;
   constructor(works: Work[], context?: string) {
-    this.#works = works;
+    this.works = works;
 
     this.#context = context;
   }
-
+  /*
   get works() {
     return this.#works;
   }
-
-  /*
-  get cached() {
-    return this.#cached;
-  }
-
-  get context() {
-    return this.#context;
-  }
-*/
 
   sortByHits() {
     this.#works.sort((a: Work, b: Work) => {
@@ -286,5 +276,5 @@ export default class WorkList {
     this.#cached = { cached: true, index: saved.index };
 
     return saved;
-  }
+  }*/
 }
