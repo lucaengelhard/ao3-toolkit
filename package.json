@@ -17,6 +17,9 @@
     "test": "jest --silent=false",
     "release": "pnpm run build && changeset publish && pnpm run docs"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@types/jest": "^29.5.11",
