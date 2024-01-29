@@ -9,52 +9,205 @@ export default class WorkList {
 
     this.#context = context;
   }
-  /*
-  get works() {
-    return this.#works;
-  }
 
   sortByHits() {
-    this.#works.sort((a: Work, b: Work) => {
-      return a.info.stats.hits - b.info.stats.hits;
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.stats?.hits;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.stats?.hits;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
     });
   }
 
   sortByWords() {
-    this.#works.sort((a: Work, b: Work) => {
-      return a.info.stats.words - b.info.stats.words;
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.stats?.words;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.stats?.words;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
     });
   }
 
   sortByKudos() {
-    this.#works.sort((a: Work, b: Work) => {
-      return a.info.stats.kudos - b.info.stats.kudos;
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.stats?.kudos;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.stats?.kudos;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
     });
   }
 
   sortByBookmarks() {
-    this.#works.sort((a: Work, b: Work) => {
-      return a.info.stats.bookmarks - b.info.stats.bookmarks;
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.stats?.bookmarks;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.stats?.bookmarks;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
     });
   }
 
   sortByChaptersWritten() {
-    this.#works.sort((a: Work, b: Work) => {
-      return (
-        a.info.stats.chapters.chaptersWritten -
-        b.info.stats.chapters.chaptersWritten
-      );
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.stats?.chapters.chaptersWritten;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.stats?.chapters.chaptersWritten;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
     });
   }
 
   sortByChaptersMax() {
-    this.#works.sort((a: Work, b: Work) => {
-      return (
-        a.info.stats.chapters.chaptersMax - b.info.stats.chapters.chaptersMax
-      );
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.stats?.chapters.chaptersMax;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.stats?.chapters.chaptersMax;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
     });
   }
 
+  sortByChaptersTagNumber() {
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.tags?.length;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.tags?.length;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
+    });
+  }
+
+  sortByRelationshipNumber() {
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.relationships?.length;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.relationships?.length;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
+    });
+  }
+
+  sortByCharacterNumber() {
+    this.works.sort((a: Work, b: Work) => {
+      let numberA = a.info?.characters?.length;
+      if (!numberA) {
+        numberA = 0;
+      }
+      let numberB = b.info?.characters?.length;
+      if (!numberB) {
+        numberB = 0;
+      }
+
+      return numberA - numberB;
+    });
+  }
+
+  sortByTitle() {
+    this.works.sort((a: Work, b: Work) => {
+      let fa = a.info?.title?.toLowerCase(),
+        fb = b.info?.title?.toLowerCase();
+
+      if (!fa) {
+        fa = "z";
+      }
+
+      if (!fb) {
+        fb = "z";
+      }
+
+      if (fa < fb) {
+        return -1;
+      }
+      if (fa > fb) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  /*
+  
+
+  sortByAuthor() {
+    this.works.sort((a: Work, b: Work) => {
+      let fa = a.info.author.authorName.toLowerCase(),
+        fb = b.info.author.authorName.toLowerCase();
+
+      if (fa < fb) {
+        return -1;
+      }
+      if (fa > fb) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  sortByFandom() {
+    this.works.sort((a: Work, b: Work) => {
+      let fa = "";
+      try {
+        fa = a.info.fandom[0].fandomName.toLowerCase();
+      } catch (error) {}
+
+      let fb = "";
+      try {
+        fb = b.info.fandom[0].fandomName.toLowerCase();
+      } catch (error) {}
+
+      if (fa < fb) {
+        return -1;
+      }
+      if (fa > fb) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+  /* 
   sortByCollectionNumber() {
     this.#works.sort((a: Work, b: Work) => {
       let aNum: number = 0;
@@ -108,110 +261,9 @@ export default class WorkList {
     });
   }
 
-  sortByChaptersTagNumber() {
-    this.#works.sort((a: Work, b: Work) => {
-      return a.info.tags.length - b.info.tags.length;
-    });
-  }
+ 
 
-  sortByRelationshipNumber() {
-    this.#works.sort((a: Work, b: Work) => {
-      return a.info.relationships.length - b.info.relationships.length;
-    });
-  }
-
-  sortByCharacterNumber() {
-    this.#works.sort((a: Work, b: Work) => {
-      return a.info.characters.length - b.info.characters.length;
-    });
-  }
-
-  sortByTitle() {
-    this.#works.sort((a: Work, b: Work) => {
-      let fa = a.info.title.toLowerCase(),
-        fb = b.info.title.toLowerCase();
-
-      if (fa < fb) {
-        return -1;
-      }
-      if (fa > fb) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
-  sortByAuthor() {
-    this.#works.sort((a: Work, b: Work) => {
-      let fa = a.info.author.authorName.toLowerCase(),
-        fb = b.info.author.authorName.toLowerCase();
-
-      if (fa < fb) {
-        return -1;
-      }
-      if (fa > fb) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
-  sortByFandom() {
-    this.#works.sort((a: Work, b: Work) => {
-      let fa = "";
-      try {
-        fa = a.info.fandom[0].fandomName.toLowerCase();
-      } catch (error) {}
-
-      let fb = "";
-      try {
-        fb = b.info.fandom[0].fandomName.toLowerCase();
-      } catch (error) {}
-
-      if (fa < fb) {
-        return -1;
-      }
-      if (fa > fb) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
-  sortByLastRead() {
-    this.#works.sort((a: Work, b: Work) => {
-      if (typeof a.history == "undefined" || typeof b.history == "undefined") {
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          return -1;
-        }
-
-        if (
-          typeof b.history == "undefined" &&
-          typeof a.history !== "undefined"
-        ) {
-          return 1;
-        }
-
-        if (
-          typeof a.history == "undefined" &&
-          typeof b.history == "undefined"
-        ) {
-          return 0;
-        } else if (
-          typeof a.history !== "undefined" &&
-          typeof b.history !== "undefined"
-        ) {
-          let da = a.history.lastVisit.getTime(),
-            db = b.history.lastVisit.getTime();
-          return da - db;
-        }
-      }
-      return 0;
-    });
-  }
+  
 
   sortByTimesVisited() {
     this.#works.sort((a: Work, b: Work) => {
