@@ -1,5 +1,7 @@
 import { AxiosInstance, AxiosProgressEvent, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
+import cliProgress from "cli-progress";
+
 import { Login } from "../interfaces/InterfaceUserData";
 import { Listtype } from "../enums/EnumWorkLists";
 import { PageSpan } from "../interfaces/InterfaceWorkList";
@@ -74,23 +76,6 @@ export default async function getWorkList(
   //Get the number of history pages
   const navLength = getPageNumber($);
 
-  /*
-  do {
-    if (!downloadedPagesStack.responses[0]) {
-      console.log("end of while loop");
-      continue;
-    }
-    const toHandle = downloadedPagesStack.responses[0];
-    console.log(toHandle);
-
-    downloadedPagesStack.responses.splice(0, 1);
-    handleWorkListPage(toHandle, toHandleStack, listtype, logindata);
-    console.log("end of while loop");
-  } while (
-    !downloadedPagesStack.finished ||
-    downloadedPagesStack.responses.length
-  );
-*/
   return new WorkList(
     await loadListPages(
       instance,
@@ -118,6 +103,18 @@ async function loadListPages(
   let batchbase = 1;
 
   const cleanedPageSpan = definePageSpan(pageSpan, navLength);
+
+  const progressBar = new cliProgress.MultiBar(
+    {
+      clearOnComplete: false,
+      hideCursor: true,
+      format: " {bar} | {barname} | {value}/{total}",
+    },
+    cliProgress.Presets.shades_grey
+  );
+
+  const barPages = progressBar.create(cleanedPageSpan.end, 0);
+
   for (let i = 1; i <= cleanedPageSpan.end; i++) {
     //Check if page should be included
     if (i < cleanedPageSpan.start || i > cleanedPageSpan.end) {
@@ -126,6 +123,8 @@ async function loadListPages(
     if (cleanedPageSpan.exclude?.includes(i)) {
       continue;
     }
+
+    barPages.update(i, { barname: "downloaded pages " });
 
     //check if another request should be made or if there should be a delay (ao3 sometimes blocks an ip after to many requests)
     if (batchbase == batchlength) {
@@ -148,6 +147,7 @@ async function loadListPages(
     batchbase++;
   }
 
+  progressBar.stop();
   return handledStack;
 }
 
@@ -156,8 +156,6 @@ async function loadListPage(
   pageIndex: number,
   firstUrl: string
 ): Promise<AxiosResponse<any, any>> {
-  console.log(`fetching page ${pageIndex}`);
-
   return await instance(`${firstUrl}?page=${pageIndex}`, {
     headers: axiosDefaults.axios.headers,
   });
@@ -172,15 +170,18 @@ function handleWorkListPage(
   const $ = cheerio.load(toHandle.data);
   const works = $("li[role='article']").toArray();
 
-  console.log(toHandle.headers);
+  for (let index = 0; index < works.length; index++) {
+    const work: cheerio.Element | undefined = works[index];
+    if (!work) {
+      continue;
+    }
 
-  works.forEach((work: cheerio.Element) => {
     try {
       handledStack.push(parseListWork(work, listtype, logindata));
     } catch (error) {
       console.log(error);
     }
-  });
+  }
 }
 
 function parseListWork(
