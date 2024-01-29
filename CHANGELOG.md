@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.0
+
+### Minor Changes
+
+- e7c9e72: Changed the tsconfig target from ES2020 to ES2021 to change .replace functions with .replaceAll functions
+
 ## 2.0.1
 
 ### Patch Changes
