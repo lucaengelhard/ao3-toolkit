@@ -1,18 +1,19 @@
+import User from "../../dist/classes/ClassUser";
 import {
   WorkHistory,
   WorkBookmark,
 } from "../interfaces/InterfaceWorkUsersData";
 
 export class WorkUserData {
-  username: string;
+  user: User;
   historyWithWork?: WorkHistory;
   bookmark?: WorkBookmark;
   constructor(input: {
-    username: string;
+    user: User;
     historyWithWork?: WorkHistory;
     bookmark?: WorkBookmark;
   }) {
-    this.username = input.username;
+    this.user = input.user;
     this.historyWithWork = input.historyWithWork;
     this.bookmark = input.bookmark;
   }

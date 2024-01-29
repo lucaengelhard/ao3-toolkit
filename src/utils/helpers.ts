@@ -50,3 +50,30 @@ export function linkToAbsolute(linktext: string | undefined) {
   }
   return linktext;
 }
+
+export function defineParseIntString(input: string | undefined): string {
+  if (input) {
+    return input;
+  }
+
+  return "0";
+}
+
+/**
+ *
+ * @param $ cheerio object of a list of works
+ * @returns the number of pages from the bottom navigation
+ */
+export function getPageNumber($: cheerio.CheerioAPI) {
+  return parseInt($(".pagination li").not(".next").last().text());
+}
+
+/**
+ * insert to add a delay in a function
+ *
+ * @param ms number of milliseconds the delay should last
+ * @returns
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
