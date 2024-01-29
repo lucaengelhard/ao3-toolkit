@@ -1,8 +1,8 @@
-import User from "../../dist/classes/ClassUser";
 import {
   WorkHistory,
   WorkBookmark,
 } from "../interfaces/InterfaceWorkUsersData";
+import User from "./ClassUser";
 
 export class WorkUserData {
   user: User;
