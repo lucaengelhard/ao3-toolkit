@@ -1,0 +1,7 @@
+tests
+docs
+jest.config.ts
+.github
+.changeset
+jest.config.ts
+typedoc.json

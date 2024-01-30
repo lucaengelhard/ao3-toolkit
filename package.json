@@ -4,6 +4,10 @@
   "bugs": {
     "url": "https://github.com/lucaengelhard/ao3-toolkit/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucaengelhard/ao3-toolkit"
+  },
   "homepage": "https://github.com/lucaengelhard/ao3-toolkit#readme",
   "license": "MIT",
   "version": "2.1.0",
