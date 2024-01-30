@@ -97,7 +97,7 @@ const history = await getWorkList(
 
 ## Contributing
 
-This project is written by a lone developer who learns as they go. Contributions are welcome and appreciated. So clone the repository and make a Pull request. If you have any feedback, please open an Issue or reach out to me at me@lucaengelhard.com.
+This project is written by a lone developer who learns as they go. Contributions are welcome and appreciated. So clone the repository, make a Pull request and add a [Changeset](https://github.com/changesets/changesets). If you have any feedback, please open an Issue or reach out to me at me@lucaengelhard.com.
 
 ## Inspiration and similar Projects:
 
