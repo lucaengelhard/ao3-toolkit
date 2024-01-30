@@ -5,3 +5,4 @@ jest.config.ts
 .changeset
 jest.config.ts
 typedoc.json
+src

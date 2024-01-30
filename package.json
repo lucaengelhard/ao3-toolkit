@@ -19,7 +19,7 @@
     "lint": "tsc",
     "docs": "npx typedoc",
     "test": "jest --silent=false",
-    "release": "pnpm run build && changeset publish && pnpm run docs"
+    "release": "pnpm run build && changeset publish"
   },
   "publishConfig": {
     "access": "public"
