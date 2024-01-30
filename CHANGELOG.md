@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.2
+
+### Patch Changes
+
+- bddd5cc: Remove github packages
+
 ## 2.1.1
 
 ### Patch Changes
