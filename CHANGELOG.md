@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.1
+
+### Patch Changes
+
+- 834a270: Publish to GitHub Packages
+
 ## 2.1.0
 
 ### Minor Changes
