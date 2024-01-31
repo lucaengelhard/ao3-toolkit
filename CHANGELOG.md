@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.6
+
+### Patch Changes
+
+- 25a33b9: Find scoped package.json with find-up-simple
+
 ## 2.1.5
 
 ### Patch Changes
