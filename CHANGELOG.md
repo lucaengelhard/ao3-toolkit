@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.4
+
+### Patch Changes
+
+- 3eeacaf: Updated behaviour of Axios Header creator
+
 ## 2.1.3
 
 ### Patch Changes
