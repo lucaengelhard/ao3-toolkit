@@ -1,5 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
+import path from "path";
+import fs from "fs";
 
 /**
  *
@@ -78,4 +80,23 @@ export function getPageNumber($: cheerio.CheerioAPI) {
  */
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function findNearestPackageJson(startDir: string): string | undefined {
+  let currentDir = path.resolve(startDir);
+
+  while (currentDir !== "/") {
+    const packageJsonPath = path.join(currentDir, "package.json");
+
+    if (fs.existsSync(packageJsonPath)) {
+      // Package.json found, return its path
+      return packageJsonPath;
+    }
+
+    // Move up to the parent directory
+    currentDir = path.dirname(currentDir);
+  }
+
+  // No package.json found in the directory tree
+  return undefined;
 }

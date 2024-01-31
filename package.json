@@ -42,7 +42,6 @@
     "cheerio": "1.0.0-rc.12",
     "cli-progress": "^3.12.0",
     "dotenv": "^16.4.1",
-    "find-up-simple": "^1.0.0",
     "tough-cookie": "^4.1.3"
   }
 }

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { findUpSync } from "find-up-simple";
+import { findNearestPackageJson } from "../utils/helpers";
 
 export function getAxiosUserAgent() {
   const packageJSON = JSON.parse(
@@ -9,7 +9,7 @@ export function getAxiosUserAgent() {
     })
   );
 
-  let findUpPath = findUpSync("package.json");
+  let findUpPath = findNearestPackageJson(__dirname);
 
   if (!findUpPath) {
     findUpPath = "package.json";
