@@ -1,4 +1,4 @@
-import getWorkContent from "../utils/getWorkContent";
+import { getWorkContent } from "../src";
 
 test.skip("get the content of the work", async () => {
   await expect(getWorkContent(35685640)).resolves.toEqual({
