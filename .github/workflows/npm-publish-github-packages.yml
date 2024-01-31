@@ -25,6 +25,9 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: "@lucaengelhard"
           cache: "pnpm"
+      - uses: jaywcjlove/github-action-package@main
+        with: 
+          rename: "@lucaengelhard/ao3-toolkit"
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: pnpm publish --registry https://npm.pkg.github.com
