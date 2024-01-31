@@ -1,3 +1,4 @@
+//TODO: Write Docs
 export default interface WorkContent {
   notes: Notes;
   chapters: Chapter[];

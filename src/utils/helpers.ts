@@ -39,6 +39,7 @@ export function getAxiosSuccess(res: AxiosResponse) {
   }
 }
 
+//TODO: Write Docs
 export function linkToAbsolute(linktext: string | undefined) {
   if (typeof linktext == "undefined") {
     throw new Error(`link ${linktext} is undefined`);
@@ -51,6 +52,7 @@ export function linkToAbsolute(linktext: string | undefined) {
   return linktext;
 }
 
+//TODO: Write Docs
 export function defineParseIntString(input: string | undefined): string {
   if (input) {
     return input;

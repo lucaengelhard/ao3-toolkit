@@ -5,6 +5,7 @@ import * as cheerio from "cheerio";
 import { Login } from "../interfaces/InterfaceUserData";
 import { axiosDefaults } from "../config/axiosDefaults";
 
+//TODO: Write Docs
 export default class LoginSession {
   #logindata;
   #instance?: AxiosInstance;

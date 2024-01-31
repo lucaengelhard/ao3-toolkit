@@ -1,3 +1,5 @@
+// TODO: Make Mokup data for Jest to parse, so the test will always return successfull
+
 import {
   WorkStats,
   getArchiveWarnings,

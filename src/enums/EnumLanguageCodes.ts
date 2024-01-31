@@ -1,3 +1,5 @@
+//TODO: Write Docs
+//TODO: Rethink usage
 export enum LanguageCodes {
   AfSoomaali = "so",
   Afrikaans = "afr",

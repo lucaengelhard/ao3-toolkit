@@ -1,3 +1,4 @@
+//TODO: Write Docs
 export interface Fandom {
   fandomName: string;
   fandomLink: string | undefined;

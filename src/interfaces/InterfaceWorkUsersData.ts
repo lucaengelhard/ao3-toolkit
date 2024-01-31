@@ -1,5 +1,6 @@
 import { Tag } from "./InterfaceWorkInfo";
 
+//TODO: Write Docs
 export interface WorkHistory {
   lastVisit: Date;
   timesVisited: number;

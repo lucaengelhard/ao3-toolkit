@@ -4,6 +4,7 @@ import {
 } from "../interfaces/InterfaceWorkUsersData";
 import User from "./ClassUser";
 
+//TODO: Write Docs
 export default class WorkUserData {
   user: User;
   historyWithWork?: WorkHistory;
