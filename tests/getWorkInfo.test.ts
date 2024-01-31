@@ -1,5 +1,5 @@
-import { WorkStats } from "../classes/ClassWorkInfo";
-import getWorkInfo, {
+import {
+  WorkStats,
   getArchiveWarnings,
   getAuthor,
   getCategories,
@@ -9,8 +9,9 @@ import getWorkInfo, {
   getRelationship,
   getSummary,
   getTitle,
+  getWorkInfo,
   getWorkStats,
-} from "../utils/getWorkInfo";
+} from "../src";
 
 describe.skip("getting information about a single work", () => {
   const workID = 19865440;

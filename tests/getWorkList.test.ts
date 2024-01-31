@@ -1,9 +1,4 @@
-import LoginSession from "../classes/ClassLoginSession";
-import "dotenv/config";
-import getWorkList from "../utils/getWorkList";
-import { Login } from "../interfaces/InterfaceUserData";
-import { Listtype } from "../enums/EnumWorkLists";
-import WorkList from "../classes/ClassWorkList";
+import { Listtype, Login, LoginSession, WorkList, getWorkList } from "../src";
 
 test("get the first reading history page of the given user", async () => {
   if (!process.env.AO3_LOGIN_USERNAME || !process.env.AO3_LOGIN_PASSWORD) {
