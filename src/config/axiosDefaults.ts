@@ -1,20 +1,26 @@
-function getAxiosUserAgent() {
-  switch (true) {
-    case process.env.npm_package_name === "ao3-toolkit":
-      return `Axios/${process.env.npm_package_dependencies_axios} ${process.env.npm_package_name}/${process.env.npm_package_version} bot`;
+import fs from "fs";
+import path from "path";
 
-    case process.env.npm_package_name === undefined:
-      return `Axios packageUsing:ao3-toolkit bot`;
+export function getAxiosUserAgent() {
+  const packageJSON = JSON.parse(
+    fs.readFileSync("package.json", {
+      encoding: "utf8",
+      flag: "r",
+    })
+  );
 
-    default:
-      return `Axios/${process.env.npm_package_dependencies_axios} ${
-        process.env.npm_package_name
-      }/${
-        process.env.npm_package_version
-          ? process.env.npm_package_version
-          : "unversioned"
-      }/ao3-toolkit/${process.env.npm_package_dependencies_ao3_toolkit} bot`;
-  }
+  const packageInfo = {
+    name: packageJSON["name"],
+    version: packageJSON["version"].replace("^", ""),
+    depsVersion: {
+      ao3Toolkit: packageJSON["dependencies"]["ao3-toolkit"]
+        ? packageJSON["dependencies"]["ao3-toolkit"].replace("^", "")
+        : packageJSON["version"].replace("^", ""),
+      axios: packageJSON["dependencies"]["axios"].replace("^", ""),
+    },
+  };
+
+  return `bot/${packageInfo.name}/${packageInfo.version}/ao3-toolkit/${packageInfo.depsVersion.ao3Toolkit}/Axios/${packageInfo.depsVersion.axios}`;
 }
 
 //TODO: Write Docs
