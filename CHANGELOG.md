@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.5
+
+### Patch Changes
+
+- 1d5180b: axios header behaviour fix
+
 ## 2.1.4
 
 ### Patch Changes
