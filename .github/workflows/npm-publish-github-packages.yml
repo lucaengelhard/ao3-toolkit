@@ -26,6 +26,6 @@ jobs:
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
-      - run: pnpm publish --registry https://npm.pkg.github.com
+      - run: pnpm publish --registry https://npm.pkg.github.com --name @lucaengelhard/ao3-toolkit
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
