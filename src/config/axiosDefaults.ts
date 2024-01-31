@@ -18,7 +18,7 @@ export function getAxiosUserAgent() {
         : packageJSON["version"].replace("^", ""),
       axios: packageJSON["dependencies"]["axios"]
         ? packageJSON["dependencies"]["axios"].replace("^", "")
-        : packageJSON["version"].replace("^", ""),
+        : "",
     },
   };
 
