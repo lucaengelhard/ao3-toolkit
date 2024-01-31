@@ -1,9 +1,22 @@
 import fs from "fs";
-import path from "path";
+import { findUpSync } from "find-up-simple";
 
 export function getAxiosUserAgent() {
   const packageJSON = JSON.parse(
     fs.readFileSync("package.json", {
+      encoding: "utf8",
+      flag: "r",
+    })
+  );
+
+  let findUpPath = findUpSync("package.json");
+
+  if (!findUpPath) {
+    findUpPath = "package.json";
+  }
+
+  const scopedPackageJSON = JSON.parse(
+    fs.readFileSync(findUpPath, {
       encoding: "utf8",
       flag: "r",
     })
@@ -16,8 +29,8 @@ export function getAxiosUserAgent() {
       ao3Toolkit: packageJSON["dependencies"]["ao3-toolkit"]
         ? packageJSON["dependencies"]["ao3-toolkit"].replace("^", "")
         : packageJSON["version"].replace("^", ""),
-      axios: packageJSON["dependencies"]["axios"]
-        ? packageJSON["dependencies"]["axios"].replace("^", "")
+      axios: scopedPackageJSON["dependencies"]["axios"]
+        ? scopedPackageJSON["dependencies"]["axios"].replace("^", "")
         : "",
     },
   };
