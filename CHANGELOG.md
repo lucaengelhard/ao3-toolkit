@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.3
+
+### Patch Changes
+
+- 5c4046e: Dynamically Change the Axios header
+
 ## 2.1.2
 
 ### Patch Changes
