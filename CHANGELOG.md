@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.7
+
+### Patch Changes
+
+- cdf4d12: further fixes to the axios header
+
 ## 2.1.6
 
 ### Patch Changes
