@@ -30,6 +30,6 @@ jobs:
           rename: "@lucaengelhard/ao3-toolkit"
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
-      - run: pnpm publish --registry https://npm.pkg.github.com
+      - run: pnpm publish --registry https://npm.pkg.github.com --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
