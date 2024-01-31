@@ -12,6 +12,10 @@ npm install ao3-toolkit
 
 ## Usage
 
+> [!IMPORTANT]
+> In a [blog post](https://archiveofourown.org/admin_posts/25888?show_comments=true) the admins talk about how they handle data scraping:
+> "We've put in place certain technical measures to hinder large-scale data scraping on AO3, such as rate limiting, and we're constantly monitoring our traffic for signs of abusive data collection. We do not make exceptions for researchers or those wishing to create datasets. However, we don't have a policy against responsible data collection — such as those done by academic researchers, fans backing up works to Wayback Machine or Google's search indexing. Putting systems in place that attempt to block all scraping would be difficult or impossible without also blocking legitimate uses of the site."
+
 ### Logging in to ao3
 
 ```ts
@@ -50,7 +54,7 @@ const work = await getWorkStats(id: number)
 ### Fetching user history
 
 ```ts
-import { LoginSession } from "ao3-toolkit";
+import { LoginSession, getWorkList } from "ao3-toolkit";
 
 const session = await new LoginSession({
   username: string,
@@ -67,7 +71,7 @@ const history = await getWorkList(
 ### Fetching user bookmarks
 
 ```ts
-import { LoginSession } from "ao3-toolkit";
+import { LoginSession, getWorkList } from "ao3-toolkit";
 
 const session = await new LoginSession({
   username: string,
