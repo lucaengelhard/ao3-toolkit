@@ -1,0 +1,25 @@
+name: Publish the docs to GitHub Pages
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run docs
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs
+          branch: docs
