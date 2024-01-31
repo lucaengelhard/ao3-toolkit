@@ -23,9 +23,10 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
+          scope: "@lucaengelhard"
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
-      - run: pnpm publish --registry https://npm.pkg.github.com --name @lucaengelhard/ao3-toolkit
+      - run: pnpm publish --registry https://npm.pkg.github.com
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
