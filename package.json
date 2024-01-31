@@ -6,7 +6,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucaengelhard/ao3-toolkit"
+    "url": "https://github.com/lucaengelhard/ao3-toolkit.git"
   },
   "homepage": "https://github.com/lucaengelhard/ao3-toolkit#readme",
   "license": "MIT",
