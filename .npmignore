@@ -6,3 +6,4 @@ jest.config.ts
 jest.config.ts
 typedoc.json
 src
+.vscode

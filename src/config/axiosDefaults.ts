@@ -16,7 +16,9 @@ export function getAxiosUserAgent() {
       ao3Toolkit: packageJSON["dependencies"]["ao3-toolkit"]
         ? packageJSON["dependencies"]["ao3-toolkit"].replace("^", "")
         : packageJSON["version"].replace("^", ""),
-      axios: packageJSON["dependencies"]["axios"].replace("^", ""),
+      axios: packageJSON["dependencies"]["axios"]
+        ? packageJSON["dependencies"]["axios"].replace("^", "")
+        : packageJSON["version"].replace("^", ""),
     },
   };
 
