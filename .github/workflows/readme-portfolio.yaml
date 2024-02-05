@@ -16,7 +16,8 @@ jobs:
       - uses: sator-imaging/Copy-to-Another-Repository@v1
         with:
           # required parameters
-          target-filepath: "content/ao3-toolkit.md" # file path to copy
+          target-filepath: "ao3-toolkit.md" # file path to copy
           output-branch: "main" # branch name to create pull request
           output-repo: "lucaengelhard/portfolio"
           git-token: ${{ secrets.TOKEN_TO_ACCESS_OUTPUT_REPO }}
+          output-directory: "${{ github.event.repository.name }}/content"
