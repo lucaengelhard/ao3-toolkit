@@ -20,4 +20,4 @@ jobs:
           output-branch: "main" # branch name to create pull request
           output-repo: "lucaengelhard/portfolio"
           git-token: ${{ secrets.TOKEN_TO_ACCESS_OUTPUT_REPO }}
-          output-directory: "${{ github.event.repository.name }}/content"
+          output-directory: "content"
