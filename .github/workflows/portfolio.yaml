@@ -32,4 +32,6 @@ jobs:
           git config --global user.name "Luca Engelhard"
           git add .
           git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
+          git config --unset-all http.https://github.com/.extraheader
+          git push
           gh pr create --fill
