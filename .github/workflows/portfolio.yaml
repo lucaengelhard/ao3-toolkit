@@ -18,12 +18,7 @@ jobs:
           path: "README.md"
       - name: Create target file
         run: echo "${{ steps.read_file.outputs.markdown }}" > ${{ github.event.repository.name }}.md
-
-  create-pr:
-    needs: create-readme-md
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
+      - name: Checkout Portfolio Repo
         uses: actions/checkout@v4
         with:
           repository: lucaengelhard/portfolio
