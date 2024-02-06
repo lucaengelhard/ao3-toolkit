@@ -22,14 +22,14 @@ jobs:
           repository: lucaengelhard/portfolio
           ref: main
       - name: Create target file
-        run: echo "${{ steps.read_file.outputs.markdown }}" > ${{ github.event.repository.name }}.md
+        run: echo "${{ steps.read_file.outputs.markdown }}" > content/${{ github.event.repository.name }}.md
       - name: show that file exists
         run: ls
-      - name: Copy Generated MD File
-        run: cp ${{ github.event.repository.name }}.md content/
       - name: add changes
         run: git add .
-      - name: commit
-        run: git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
+      - name: login & commit
+        run: git config --global user.email "me@lucaengelhard.com"
+      - run: git config --global user.name "Luca Engelhard"
+      - run: git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
       - name: push
         run: gh pr create
