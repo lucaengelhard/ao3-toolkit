@@ -29,8 +29,13 @@ jobs:
       - name: show that file exists
         run: ls
       - run: git add .
-      - run: git config --global user.email "me@lucaengelhard.com"
-      - run: git config --global user.name "Luca Engelhard"
+      - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
+        with:
+          global: true
+          name: "Luca Engelhard"
+          email: "me@lucaengelhard"
+          actor: "lucaengelhard"
+          token: "${{ secrets.TOKEN_TO_ACCESS_OUTPUT_REPO }}"
       - run: git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
       - run: git push
       - run: gh pr create --fill
