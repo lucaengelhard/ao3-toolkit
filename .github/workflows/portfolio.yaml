@@ -28,6 +28,8 @@ jobs:
       - name: Create target file
         run: echo "${{ steps.read_file.outputs.markdown }}" > content/${{ github.event.repository.name }}.md
       - run: |
+          git config --global user.email "me@lucaengelhard.com"
+          git config --global user.name "Luca Engelhard"
           git add .
           git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
           gh pr create --fill
