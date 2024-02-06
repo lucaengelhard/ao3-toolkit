@@ -28,11 +28,9 @@ jobs:
         run: echo "${{ steps.read_file.outputs.markdown }}" > content/${{ github.event.repository.name }}.md
       - name: show that file exists
         run: ls
-      - name: add changes
-        run: git add .
-      - name: login & commit
-        run: git config --global user.email "me@lucaengelhard.com"
+      - run: git add .
+      - run: git config --global user.email "me@lucaengelhard.com"
       - run: git config --global user.name "Luca Engelhard"
       - run: git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
-      - name: push
-        run: gh pr create --fill
+      - run: git push
+      - run: gh pr create --fill
