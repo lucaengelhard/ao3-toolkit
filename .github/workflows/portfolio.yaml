@@ -16,15 +16,15 @@ jobs:
         uses: lucaengelhard/portfolio-readme-parse-action@v1.1
         with:
           path: "README.md"
-      - name: Create target file
-        run: echo "${{ steps.read_file.outputs.markdown }}" > ${{ github.event.repository.name }}.md
-      - name: show that file exists
-        run: ls
       - name: Checkout Portfolio Repo
         uses: actions/checkout@v4
         with:
           repository: lucaengelhard/portfolio
           ref: main
+      - name: Create target file
+        run: echo "${{ steps.read_file.outputs.markdown }}" > ${{ github.event.repository.name }}.md
+      - name: show that file exists
+        run: ls
       - name: Copy Generated MD File
         run: cp ${{ github.event.repository.name }}.md content/
       - name: add changes
