@@ -18,6 +18,8 @@ jobs:
           path: "README.md"
       - name: Create target file
         run: echo "${{ steps.read_file.outputs.markdown }}" > ${{ github.event.repository.name }}.md
+      - name: show that file exists
+        run: ls
       - name: Checkout Portfolio Repo
         uses: actions/checkout@v4
         with:
