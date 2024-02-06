@@ -22,6 +22,7 @@ jobs:
           title: "${{ github.event.repository.name }}"
           tags: "typescript, nodejs, axios"
           thumbnail: "images/ao3-toolkit.png"
+          order: 3
       - name: Checkout Portfolio Repo
         uses: actions/checkout@v4
         with:
