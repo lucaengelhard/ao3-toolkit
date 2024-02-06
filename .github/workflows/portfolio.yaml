@@ -26,10 +26,11 @@ jobs:
           ref: main
           token: ${{ secrets.TOKEN_TO_ACCESS_OUTPUT_REPO }}
       - name: Create target file
-        run: echo "${{ steps.read_file.outputs.markdown }}" > content/${{ github.event.repository.name }}.md
+        run: echo '${{ steps.read_file.outputs.markdown }}' > content/${{ github.event.repository.name }}.md
       - run: |
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
+          git checkout -b ${{ github.event.repository.name }}-readme
           git add .
           git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
           git push
