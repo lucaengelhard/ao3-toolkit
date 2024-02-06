@@ -6,12 +6,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  portfolio:
+  create-readme-md:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
       - name: "Read file contents"
+        id: read_file
         uses: lucaengelhard/portfolio-readme-parse-action@v1.1
         with:
           path: "README.md"
+      - name: Create target file
+        run: echo "${{ steps.read_file.outputs.markdown }}" > ${{ github.event.repository.name }}.md
+
+  create-pr:
+    needs: create-readme-md
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          repository: lucaengelhard/portfolio
+          ref: main
+      - name: Copy Generated MD File
+        run: cp ${{ github.event.repository.name }}.md content/
+      - name: add changes
+        run: git add .
+      - name: commit
+        run: git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
+      - name: push
+        run: gh pr create
