@@ -33,5 +33,5 @@ jobs:
           git checkout -b ${{ github.event.repository.name }}-readme
           git add .
           git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
-          git push --set-upstream origin ${{ github.event.repository.name }}-readme
+          git push -f --set-upstream origin ${{ github.event.repository.name }}-readme
           gh pr create --fill
