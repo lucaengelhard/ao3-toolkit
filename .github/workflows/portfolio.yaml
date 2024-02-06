@@ -1,4 +1,4 @@
-name: Publish to GitHub Packages
+name: Push to Portfolio Content Directory
 
 on:
   push:
@@ -9,6 +9,8 @@ jobs:
   portfolio:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
       - name: "Read file contents"
         uses: andstor/file-reader-action@v1
         with:
