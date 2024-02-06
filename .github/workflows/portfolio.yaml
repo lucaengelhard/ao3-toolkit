@@ -31,7 +31,7 @@ jobs:
           git config --global user.email "me@lucaengelhard.com"
           git config --global user.name "Luca Engelhard"
           git checkout -b ${{ github.event.repository.name }}-readme
-          git pull ${{ github.event.repository.name }}-readme
+          git pull lucaengelhard/portfolio
           git add .
           git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
           git push --set-upstream origin ${{ github.event.repository.name }}-readme
