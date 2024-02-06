@@ -1,0 +1,17 @@
+name: Publish to GitHub Packages
+
+on:
+  push:
+    branches: "main"
+  workflow_dispatch:
+
+jobs:
+  portfolio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Read file contents"
+        uses: andstor/file-reader-action@v1
+        with:
+          path: "README.md"
+      - name: File contents
+        run: echo "${ steps.read_file.outputs.contents }"
