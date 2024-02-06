@@ -27,7 +27,7 @@ jobs:
           ref: main
           token: ${{ secrets.TOKEN_TO_ACCESS_OUTPUT_REPO }}
       - name: Create target file
-        run: echo "${{ steps.read_file.outputs.markdown }}" > content/projects${{ github.event.repository.name }}.md
+        run: echo "${{ steps.read_file.outputs.markdown }}" > content/projects/${{ github.event.repository.name }}.md
       - run: |
           git config --global user.email "me@lucaengelhard.com"
           git config --global user.name "Luca Engelhard"
