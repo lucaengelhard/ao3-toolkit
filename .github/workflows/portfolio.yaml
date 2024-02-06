@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
       - name: "Read file contents"
         id: read_file
-        uses: lucaengelhard/portfolio-readme-parse-action@v1.6
+        uses: lucaengelhard/portfolio-readme-parse-action@v1.7
         with:
           path: "README.md"
           title: "${{ github.event.repository.name }}"
