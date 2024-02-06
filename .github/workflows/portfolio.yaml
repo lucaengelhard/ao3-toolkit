@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  GH_TOKEN: ${{ github.token }}
+  GH_TOKEN: ${{ secrets.TOKEN_TO_ACCESS_OUTPUT_REPO }}
 
 jobs:
   create-readme-md:
