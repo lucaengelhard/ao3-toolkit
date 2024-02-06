@@ -12,6 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: "Read file contents"
-        uses: lucaengelhard/portfolio-readme-parse-action
+        uses: lucaengelhard/portfolio-readme-parse-action@v1
         with:
           path: "README.md"
