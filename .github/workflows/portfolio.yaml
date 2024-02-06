@@ -35,4 +35,4 @@ jobs:
       - run: git config --global user.name "Luca Engelhard"
       - run: git commit -m "Adding or Updating ${{ github.event.repository.name }} to content directory"
       - name: push
-        run: gh pr create
+        run: gh pr create --fill
