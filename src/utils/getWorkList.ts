@@ -1,6 +1,5 @@
 import { AxiosInstance, AxiosProgressEvent, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
-import cliProgress from "cli-progress";
 
 import { Login } from "../interfaces/InterfaceUserData";
 import { Listtype } from "../enums/EnumWorkLists";
@@ -105,17 +104,6 @@ async function loadListPages(
 
   const cleanedPageSpan = definePageSpan(pageSpan, navLength);
 
-  const progressBar = new cliProgress.MultiBar(
-    {
-      clearOnComplete: false,
-      hideCursor: true,
-      format: " {bar} | {barname} | {value}/{total}",
-    },
-    cliProgress.Presets.shades_grey
-  );
-
-  const barPages = progressBar.create(cleanedPageSpan.end, 0);
-
   for (let i = 1; i <= cleanedPageSpan.end; i++) {
     //Check if page should be included
     if (i < cleanedPageSpan.start || i > cleanedPageSpan.end) {
@@ -124,8 +112,6 @@ async function loadListPages(
     if (cleanedPageSpan.exclude?.includes(i)) {
       continue;
     }
-
-    barPages.update(i, { barname: "downloaded pages " });
 
     //check if another request should be made or if there should be a delay (ao3 sometimes blocks an ip after to many requests)
     if (batchbase == batchlength) {
@@ -148,7 +134,6 @@ async function loadListPages(
     batchbase++;
   }
 
-  progressBar.stop();
   return handledStack;
 }
 

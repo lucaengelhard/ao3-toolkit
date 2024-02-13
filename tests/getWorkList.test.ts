@@ -1,6 +1,6 @@
 import { Listtype, Login, LoginSession, WorkList, getWorkList } from "../src";
 
-test.skip("get the first reading history page of the given user", async () => {
+test("get the first reading history page of the given user", async () => {
   if (!process.env.AO3_LOGIN_USERNAME || !process.env.AO3_LOGIN_PASSWORD) {
     throw new Error();
   }
