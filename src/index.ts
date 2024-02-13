@@ -42,6 +42,7 @@ import getWorkInfo, {
 } from "./utils/getWorkInfo";
 import getWorkList from "./utils/getWorkList";
 import { getParsableInfodata, getPageNumber } from "./utils/helpers";
+import "dotenv/config";
 
 //TODO: Create Object
 export {

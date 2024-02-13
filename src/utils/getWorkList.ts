@@ -38,20 +38,11 @@ export default async function getWorkList(
   instance: AxiosInstance | undefined,
   listtype?: Listtype,
   pageSpan?: PageSpan | number
-) {
+): Promise<WorkList | undefined> {
   if (typeof instance == "undefined") {
     throw new Error(
       "instance is undefined. There needs to be a logged in session"
     );
-  }
-
-  if (typeof listtype == "undefined") {
-    return;
-  }
-  if (listtype == Listtype.History) {
-  }
-
-  if (listtype == Listtype.Bookmarks) {
   }
 
   let firstUrl = "";

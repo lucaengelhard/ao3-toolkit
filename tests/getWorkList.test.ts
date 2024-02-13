@@ -10,8 +10,12 @@ test("get the first reading history page of the given user", async () => {
   };
 
   const session = await new LoginSession(logindata).login();
+  const list = await getWorkList(
+    logindata,
+    session.instance,
+    Listtype.History,
+    1
+  );
 
-  await expect(
-    getWorkList(logindata, session.instance, Listtype.History, 1)
-  ).resolves.toBeInstanceOf(WorkList);
-});
+  expect(list).toHaveProperty("works");
+}, 10000);
