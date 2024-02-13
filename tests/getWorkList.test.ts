@@ -1,6 +1,7 @@
 import { Listtype, Login, LoginSession, WorkList, getWorkList } from "../src";
+import "dotenv/config";
 
-test.skip("get the first reading history page of the given user", async () => {
+test("get the first reading history page of the given user", async () => {
   if (!process.env.AO3_LOGIN_USERNAME || !process.env.AO3_LOGIN_PASSWORD) {
     throw new Error();
   }
@@ -11,7 +12,13 @@ test.skip("get the first reading history page of the given user", async () => {
 
   const session = await new LoginSession(logindata).login();
 
-  await expect(
-    getWorkList(logindata, session.instance, Listtype.History, 1)
-  ).resolves.toBeInstanceOf(WorkList);
-});
+  const list = await getWorkList(
+    logindata,
+    session.instance,
+    Listtype.History,
+    1
+  );
+  console.log(list);
+
+  expect(list).resolves.toBeInstanceOf(WorkList);
+}, 100000);

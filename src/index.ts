@@ -43,6 +43,8 @@ import getWorkInfo, {
 import getWorkList from "./utils/getWorkList";
 import { getParsableInfodata, getPageNumber } from "./utils/helpers";
 
+import "dotenv/config";
+
 //TODO: Create Object
 export {
   LoginSession,
@@ -92,3 +94,26 @@ export {
   getParsableInfodata,
   getPageNumber,
 };
+
+jsTest();
+
+async function jsTest() {
+  if (!process.env.AO3_LOGIN_USERNAME || !process.env.AO3_LOGIN_PASSWORD) {
+    throw new Error("login failed");
+  }
+
+  const logindata: Login = {
+    username: process.env.AO3_LOGIN_USERNAME,
+    password: process.env.AO3_LOGIN_PASSWORD,
+  };
+
+  const session = await new LoginSession(logindata).login();
+
+  const list = await getWorkList(
+    logindata,
+    session.instance,
+    Listtype.History,
+    1
+  );
+  console.log(list);
+}
