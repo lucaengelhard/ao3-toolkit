@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.1.8
+
+### Patch Changes
+
+- 3fe7c98: Fixed some issues with getWorkList
+
 ## 2.1.7
 
 ### Patch Changes
