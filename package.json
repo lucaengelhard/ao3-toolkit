@@ -36,7 +36,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@types/cli-progress": "^3.11.5",
     "axios": "^1.6.7",
     "axios-cookiejar-support": "^5.0.0",
     "cheerio": "1.0.0-rc.12",
