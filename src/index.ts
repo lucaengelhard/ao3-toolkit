@@ -44,7 +44,7 @@ import getWorkList from "./utils/getWorkList";
 import { getParsableInfodata, getPageNumber } from "./utils/helpers";
 import "dotenv/config";
 
-//TODO: Create Object
+//TODO: Create Object (https://www.notion.so/Create-Object-48d03e8246f64adca125762ca8e99764)
 export {
   LoginSession,
   User,

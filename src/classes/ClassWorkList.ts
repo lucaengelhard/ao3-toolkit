@@ -1,6 +1,6 @@
 import Work from "./ClassWork";
 
-//TODO: Write Docs
+//TODO: Write Docs (https://www.notion.so/Write-Docs-173043f91b6149e890303ff7cf55b28f)
 export default class WorkList {
   works;
   #context;

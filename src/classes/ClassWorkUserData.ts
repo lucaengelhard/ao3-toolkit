@@ -4,7 +4,7 @@ import {
 } from "../interfaces/InterfaceWorkUsersData";
 import User from "./ClassUser";
 
-//TODO: Write Docs
+//TODO: Write Docs (https://www.notion.so/Write-Docs-02f09f5aed5342ecbaefcbec125062b3)
 export default class WorkUserData {
   user: User;
   historyWithWork?: WorkHistory;

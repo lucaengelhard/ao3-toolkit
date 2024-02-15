@@ -2,7 +2,7 @@ import WorkContent from "../interfaces/InterfaceWorkContent";
 import WorkInfo from "./ClassWorkInfo";
 import WorkUserData from "./ClassWorkUserData";
 
-//TODO: Create Method to fetch new Work
+//TODO: Create Method to fetch new Work (https://www.notion.so/Create-Method-to-fetch-new-Work-8912aeb463104d6389830a877d83a957)
 /**
  * Base class that holds information about a single Work and optional data based on the context or the user. (e.g. history/bookmarks)
  * @param info - {@link WorkInfo} object containing information about the work

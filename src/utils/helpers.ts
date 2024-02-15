@@ -41,7 +41,12 @@ export function getAxiosSuccess(res: AxiosResponse) {
   }
 }
 
-//TODO: Write Docs
+/**
+ * Creates an absolute link from a part of a url
+ *
+ * @param linktext
+ * @returns
+ */
 export function linkToAbsolute(linktext: string | undefined) {
   if (typeof linktext == "undefined") {
     throw new Error(`link ${linktext} is undefined`);
@@ -54,7 +59,7 @@ export function linkToAbsolute(linktext: string | undefined) {
   return linktext;
 }
 
-//TODO: Write Docs
+//TODO: Write Docs (https://www.notion.so/Write-Docs-1953b6cd60e54cfdb7f04a5c3927528c)
 export function defineParseIntString(input: string | undefined): string {
   if (input) {
     return input;

@@ -38,7 +38,7 @@ export function getAxiosUserAgent() {
   return `bot/${packageInfo.name}/${packageInfo.version}/ao3-toolkit/${packageInfo.depsVersion.ao3Toolkit}/Axios/${packageInfo.depsVersion.axios}`;
 }
 
-//TODO: Write Docs
+//TODO: Write Docs (https://www.notion.so/Write-Docs-6bf773f91ce64068b8a920428e171ef6)
 export const axiosDefaults = {
   batch: 10,
 

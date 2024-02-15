@@ -32,7 +32,7 @@ import {
   Tag,
 } from "../interfaces/InterfaceWorkInfo";
 
-//TODO: Write Docs
+//TODO: Write Docs (https://www.notion.so/Write-Docs-4e0db3422c3f4e269eaa4a1d16d27fe7)
 export default async function getWorkList(
   logindata: Login,
   instance: AxiosInstance | undefined,

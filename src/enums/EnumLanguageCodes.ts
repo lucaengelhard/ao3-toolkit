@@ -1,5 +1,5 @@
-//TODO: Write Docs
-//TODO: Rethink usage
+//TODO: Write Docs (https://www.notion.so/Write-Docs-0afb5d12d5fd419dae38ff68e19a62cb)
+//TODO: Rethink usage (https://www.notion.so/Rethink-usage-3c5137a9d07a426c8371a9f919363059)
 export enum LanguageCodes {
   AfSoomaali = "so",
   Afrikaans = "afr",

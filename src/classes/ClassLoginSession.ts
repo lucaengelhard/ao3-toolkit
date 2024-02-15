@@ -5,7 +5,7 @@ import * as cheerio from "cheerio";
 import { Login } from "../interfaces/InterfaceUserData";
 import { axiosDefaults } from "../config/axiosDefaults";
 
-//TODO: Write Docs
+//TODO: Write Docs (https://www.notion.so/Write-Docs-2cbcbd3f12334a30b2aa07ed94eb56c2)
 export default class LoginSession {
   #logindata;
   #instance?: AxiosInstance;

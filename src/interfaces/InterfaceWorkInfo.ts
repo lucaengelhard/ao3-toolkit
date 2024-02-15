@@ -1,4 +1,4 @@
-//TODO: Write Docs
+//TODO: Write Docs (https://www.notion.so/Write-Docs-6ed443860cdd4703a3642503a4bf28e7)
 export interface Fandom {
   fandomName: string;
   fandomLink: string | undefined;
