@@ -1,4 +1,4 @@
-// TODO: Make Mockup data for Jest to parse, so the test will always return successfull ('https://www.notion.so/Make-Mokup-data-for-Jest-to-parse-so-the-test-will-always-return-successfull-81e2ec1012cf40d78c9b72c16edaf81b')
+// TODO: Make Mockup data for Jest to parse, so the test will always return successfull
 
 import {
   WorkStats,
