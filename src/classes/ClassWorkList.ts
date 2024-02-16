@@ -1,6 +1,8 @@
 import Work from "./ClassWork";
 
-//TODO: Write Docs (https://www.notion.so/Write-Docs-173043f91b6149e890303ff7cf55b28f)
+/**
+ * This Class describes a list of works. It includes methods to sort the works by different metrics
+ */
 export default class WorkList {
   works;
   #context;

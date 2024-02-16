@@ -57,7 +57,12 @@ export function linkToAbsolute(linktext: string | undefined) {
   return linktext;
 }
 
-//TODO: Write Docs (https://www.notion.so/Write-Docs-1953b6cd60e54cfdb7f04a5c3927528c)
+/**
+ * Make sure the variable in a parseInt is a string
+ *
+ * @param input a string or undefined variable
+ * @returns a string or "0" if input is undefined
+ */
 export function defineParseIntString(input: string | undefined): string {
   if (input) {
     return input;

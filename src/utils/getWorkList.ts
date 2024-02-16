@@ -32,7 +32,16 @@ import {
   Tag,
 } from "../interfaces/InterfaceWorkInfo";
 
-//TODO: Write Docs (https://www.notion.so/Write-Docs-4e0db3422c3f4e269eaa4a1d16d27fe7)
+import LoginSession from "../classes/ClassLoginSession";
+
+/**
+ *
+ * @param logindata - a {@link Login} Object containing the username and password of the logged in user (the password is not used in this case, only the username)
+ * @param instance - AxiosInstance returned by {@link LoginSession.login}
+ * @param listtype - define the {@link Listtype}
+ * @param pageSpan - the {@link pageSpan} to define the pages that should be parsed
+ * @returns a new {@link WorkList} Object
+ */
 export default async function getWorkList(
   logindata: Login,
   instance: AxiosInstance | undefined,

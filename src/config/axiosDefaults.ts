@@ -38,7 +38,9 @@ export function getAxiosUserAgent() {
   return `bot/${packageInfo.name}/${packageInfo.version}/ao3-toolkit/${packageInfo.depsVersion.ao3Toolkit}/Axios/${packageInfo.depsVersion.axios}`;
 }
 
-//TODO: Write Docs (https://www.notion.so/Write-Docs-6bf773f91ce64068b8a920428e171ef6)
+/**
+ * defaults for making axios requests. Includes the User Agent that is sent with every request. It tries to get the name of the package.json of the calling package
+ */
 export const axiosDefaults = {
   batch: 10,
 

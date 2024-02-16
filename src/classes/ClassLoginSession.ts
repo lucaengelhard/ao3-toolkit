@@ -7,7 +7,9 @@ import { axiosDefaults } from "../config/axiosDefaults";
 
 import fs from "fs";
 
-//TODO: Write Docs (https://www.notion.so/Write-Docs-2cbcbd3f12334a30b2aa07ed94eb56c2)
+/**
+ * Class used to log in users. This is needed to access certain pages that are only accessible for logged in users
+ */
 export default class LoginSession {
   #logindata;
   #instance?: AxiosInstance;

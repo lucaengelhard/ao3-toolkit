@@ -1,4 +1,6 @@
-//TODO: Write Docs (https://www.notion.so/Write-Docs-5a4f9a187ce74604b27f079919a8f47a)
+/**
+ * WorkConten is an object containing of the {@link Notes} at the beginning and the end of the work and an array of {@link Chapter}s
+ */
 export default interface WorkContent {
   notes: Notes;
   chapters: Chapter[];
