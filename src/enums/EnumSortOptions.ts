@@ -9,4 +9,5 @@ export enum SortOptions {
   relationships = "relationships",
   characters = "characters",
   title = "title",
+  fandom = "fandom",
 }

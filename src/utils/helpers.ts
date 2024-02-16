@@ -220,6 +220,24 @@ function mergeSortMerge(
         : 0;
       break;
 
+    case SortOptions.fandom:
+      if (left[0]?.info?.fandom) {
+        values.left = left[0].info.fandom[0]?.fandomName
+          ? left[0].info.fandom[0]?.fandomName
+          : "a";
+      } else {
+        values.left = "a";
+      }
+
+      if (right[0]?.info?.fandom) {
+        values.right = right[0].info.fandom[0]?.fandomName
+          ? right[0].info.fandom[0]?.fandomName
+          : "a";
+      } else {
+        values.right = "a";
+      }
+      break;
+
     default:
       throw new Error("Unknown SortOption or SortOption not defined");
   }
