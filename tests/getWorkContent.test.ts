@@ -1,18 +1,23 @@
 import { getWorkContent } from "../src";
 
-test.skip("get the content of the work", async () => {
-  await expect(getWorkContent(35685640)).resolves.toEqual({
-    chapters: [
-      {
-        chapterTitle: "",
-        chapterSummary: "",
-        chapterNotes: "",
-        chapterContent: `<p>Vi and Caitlyn are gay </p><p>Lol</p><p>The end</p>`,
-      },
-    ],
-    notes: {
-      endNote: "Sorry if this got emotional",
-      preNote: "See the end of the work for notes",
-    },
+import axios from "axios";
+import {
+  mockWorkContent,
+  mockWorkContentResponse,
+} from "./_mocks_/getWorkContentMock";
+jest.mock("axios");
+
+describe("get the content of the work", () => {
+  const workID = 19865440;
+  axios.get = jest.fn().mockResolvedValue(mockWorkContentResponse);
+
+  it("returns the content of the work", async () => {
+    const workContent = await getWorkContent(workID);
+    expect(mockWorkContent).toEqual(workContent);
+  });
+
+  it("returns the first chapter of the given work", async () => {
+    const workContent = await getWorkContent(workID);
+    expect(mockWorkContent.chapters[0]).toEqual(workContent.chapters[0]);
   });
 });

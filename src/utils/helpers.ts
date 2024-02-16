@@ -16,9 +16,7 @@ export async function getParsableInfodata(
   }
 
   const url = `https://archiveofourown.org/works/${input}`;
-  const response = await axios({
-    method: "get",
-    url: url,
+  const response = await axios.get(url, {
     headers: {
       cookie: "view_adult=true;",
       "User-Agent": "Axios/1.3.5 ao3-toolkit bot",
