@@ -18,7 +18,7 @@
     "build": "tsup",
     "lint": "tsc",
     "docs": "npx typedoc",
-    "test": "jest",
+    "test": "jest --silent=false",
     "release": "pnpm run build && changeset publish"
   },
   "publishConfig": {

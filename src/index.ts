@@ -5,7 +5,7 @@ import WorkInfo, { WorkStats } from "./classes/ClassWorkInfo";
 import WorkList from "./classes/ClassWorkList";
 import WorkUserData from "./classes/ClassWorkUserData";
 import { axiosDefaults } from "./config/axiosDefaults";
-import { LanguageCodes } from "./enums/EnumLanguageCodes";
+import { LanguageCodes } from "./config/LanguageCodes";
 import { Listtype } from "./enums/EnumWorkLists";
 import { Login } from "./interfaces/InterfaceUserData";
 import WorkContent, { Notes, Chapter } from "./interfaces/InterfaceWorkContent";
