@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosProgressEvent, AxiosResponse } from "axios";
+import { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 
 import { Login } from "../interfaces/InterfaceUserData";
