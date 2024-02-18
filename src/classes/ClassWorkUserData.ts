@@ -1,7 +1,4 @@
-import {
-  WorkHistory,
-  WorkBookmark,
-} from "../interfaces/InterfaceWorkUsersData";
+import { WorkHistory, WorkBookmark } from "../types/TypesWorkUsersData";
 import User from "./ClassUser";
 
 /**

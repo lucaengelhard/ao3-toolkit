@@ -1,4 +1,4 @@
-import { Login } from "../interfaces/InterfaceUserData";
+import { Login } from "../types/TypesUserData";
 
 /**
  * Class defining information about a single user

@@ -13,7 +13,7 @@ import {
   Relationship,
   SeriesInfo,
   Tag,
-} from "../interfaces/InterfaceWorkInfo";
+} from "../types/TypesWorkInfo";
 import User from "../classes/ClassUser";
 
 /**

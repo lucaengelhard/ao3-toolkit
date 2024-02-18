@@ -1,50 +1,50 @@
-export interface Fandom {
+export type Fandom = {
   fandomName: string;
   fandomLink: string | undefined;
-}
+};
 
-export interface Relationship {
+export type Relationship = {
   relationshipName: string;
   relationshipLink: string | undefined;
-}
+};
 
-export interface Character {
+export type Character = {
   characterName: string;
   characterLink: string | undefined;
-}
+};
 
-export interface Rating {
+export type Rating = {
   ratingName: string;
   ratingLink: string | undefined;
-}
+};
 
-export interface ArchiveWarning {
+export type ArchiveWarning = {
   warningName: string;
   warningLink: string | undefined;
-}
+};
 
-export interface Category {
+export type Category = {
   categoryName: string;
   categoryLink: string | undefined;
-}
+};
 
-export interface Tag {
+export type Tag = {
   tagName: string;
   tagLink: string | undefined;
-}
+};
 
-export interface SeriesInfo {
+export type SeriesInfo = {
   seriesName: string;
   seriesLink: string | undefined;
   seriesPart: number;
-}
+};
 
-export interface Collection {
+export type Collection = {
   collectionName: string;
   collectionLink: string | undefined;
-}
+};
 
-export interface ChapterInformation {
+export type ChapterInformation = {
   chaptersWritten: number;
   chaptersMax: number;
-}
+};

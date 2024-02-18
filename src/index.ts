@@ -6,9 +6,9 @@ import WorkList from "./classes/ClassWorkList";
 import WorkUserData from "./classes/ClassWorkUserData";
 import { axiosDefaults } from "./config/axiosDefaults";
 import { LanguageCodes } from "./config/LanguageCodes";
-import { Listtype } from "./enums/EnumWorkLists";
-import { Login } from "./interfaces/InterfaceUserData";
-import WorkContent, { Notes, Chapter } from "./interfaces/InterfaceWorkContent";
+
+import { Login } from "./types/TypesUserData";
+import { Notes, Chapter, WorkContent } from "./types/TypesWorkContent";
 import {
   Fandom,
   Relationship,
@@ -20,9 +20,9 @@ import {
   SeriesInfo,
   Collection,
   ChapterInformation,
-} from "./interfaces/InterfaceWorkInfo";
-import { PageSpan } from "./interfaces/InterfaceWorkList";
-import { WorkHistory, WorkBookmark } from "./interfaces/InterfaceWorkUsersData";
+} from "./types/TypesWorkInfo";
+import { Listtype, PageSpan } from "./types/TypesWorkList";
+import { WorkHistory, WorkBookmark } from "./types/TypesWorkUsersData";
 import getWorkContent from "./utils/getWorkContent";
 import getWorkInfo, {
   getArchiveWarnings,

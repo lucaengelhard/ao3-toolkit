@@ -1,9 +1,9 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 
-import { Login } from "../interfaces/InterfaceUserData";
-import { Listtype } from "../enums/EnumWorkLists";
-import { PageSpan } from "../interfaces/InterfaceWorkList";
+import { Login } from "../types/TypesUserData";
+
+import { Listtype, PageSpan } from "../types/TypesWorkList";
 import {
   defineParseIntString,
   delay,
@@ -14,10 +14,7 @@ import {
 import { axiosDefaults } from "../config/axiosDefaults";
 import WorkList from "../classes/ClassWorkList";
 import Work from "../classes/ClassWork";
-import {
-  WorkBookmark,
-  WorkHistory,
-} from "../interfaces/InterfaceWorkUsersData";
+import { WorkBookmark, WorkHistory } from "../types/TypesWorkUsersData";
 import User from "../classes/ClassUser";
 import WorkUserData from "../classes/ClassWorkUserData";
 import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
@@ -30,7 +27,7 @@ import {
   Relationship,
   SeriesInfo,
   Tag,
-} from "../interfaces/InterfaceWorkInfo";
+} from "../types/TypesWorkInfo";
 
 import LoginSession from "../classes/ClassLoginSession";
 
@@ -56,10 +53,10 @@ export default async function getWorkList(
 
   let firstUrl = "";
   switch (listtype) {
-    case Listtype.History:
+    case "History":
       firstUrl = `/users/${encodeURIComponent(logindata.username)}/readings`;
       break;
-    case Listtype.Bookmarks:
+    case "Bookmarks":
       firstUrl = `/users/${encodeURIComponent(logindata.username)}/bookmarks`;
       break;
     default:
@@ -190,11 +187,11 @@ function parseListWork(
   let userHistoryData: WorkHistory | undefined;
   let userBookmarkData: WorkBookmark | undefined;
   switch (listtype) {
-    case Listtype.History:
+    case "History":
       userHistoryData = parseHistoryWork($);
       break;
 
-    case Listtype.Bookmarks:
+    case "Bookmarks":
       userBookmarkData = parseBookmarkWork($);
       break;
 

@@ -1,14 +1,14 @@
-import { Tag } from "./InterfaceWorkInfo";
+import { Tag } from "./TypesWorkInfo";
 
-export interface WorkHistory {
+export type WorkHistory = {
   lastVisit: Date;
   timesVisited: number;
   ratio: number;
   wordsRead: number;
-}
+};
 
-export interface WorkBookmark {
+export type WorkBookmark = {
   dateBookmarked: Date;
   bookmarkerTags?: Tag[];
   bookmarkNotes?: string;
-}
+};

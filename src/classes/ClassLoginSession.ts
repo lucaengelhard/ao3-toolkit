@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { CookieJar } from "tough-cookie";
 import { wrapper } from "axios-cookiejar-support";
 import * as cheerio from "cheerio";
-import { Login } from "../interfaces/InterfaceUserData";
+import { Login } from "../types/TypesUserData";
 import { axiosDefaults } from "../config/axiosDefaults";
 
 import fs from "fs";

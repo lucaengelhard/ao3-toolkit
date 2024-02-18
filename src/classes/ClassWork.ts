@@ -1,4 +1,4 @@
-import WorkContent from "../interfaces/InterfaceWorkContent";
+import { WorkContent } from "../types/TypesWorkContent";
 import getWorkContent from "../utils/getWorkContent";
 import getWorkInfo from "../utils/getWorkInfo";
 import WorkInfo from "./ClassWorkInfo";
