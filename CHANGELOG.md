@@ -1,5 +1,11 @@
 # ao3-toolkit
 
+## 2.2.0
+
+### Minor Changes
+
+- 24b5354: Added methods to the work class and Language Codes are now bidirectional
+
 ## 2.1.8
 
 ### Patch Changes
