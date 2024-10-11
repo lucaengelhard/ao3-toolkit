@@ -13,7 +13,8 @@ jobs:
       id-token: write
 
     steps:
-      - run: npm install
+      - uses: maximousblk/setup-deno@v2
+      - run: deno install
       - uses: actions/checkout@v4
 
       - name: Publish package
