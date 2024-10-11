@@ -1,4 +1,4 @@
-import {
+import type {
   ArchiveWarning,
   Category,
   ChapterInformation,
@@ -9,8 +9,8 @@ import {
   Relationship,
   SeriesInfo,
   Tag,
-} from "../types/TypesWorkInfo";
-import User from "./ClassUser";
+} from "../types/TypesWorkInfo.ts";
+import type User from "./ClassUser.ts";
 
 /**
  * Class that contains information about a single work.

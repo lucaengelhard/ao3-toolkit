@@ -1,24 +1,24 @@
-import { AxiosInstance, AxiosResponse } from "axios";
+import type { AxiosInstance, AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
 
-import { Login } from "../types/TypesUserData";
+import type { Login } from "../types/TypesUserData.ts";
 
-import { Listtype, PageSpan } from "../types/TypesWorkList";
+import type { Listtype, PageSpan } from "../types/TypesWorkList.ts";
 import {
   defineParseIntString,
   delay,
   getAxiosSuccess,
   getPageNumber,
   linkToAbsolute,
-} from "./helpers";
-import { axiosDefaults } from "../config/axiosDefaults";
-import WorkList from "../classes/ClassWorkList";
-import Work from "../classes/ClassWork";
-import { WorkBookmark, WorkHistory } from "../types/TypesWorkUsersData";
-import User from "../classes/ClassUser";
-import WorkUserData from "../classes/ClassWorkUserData";
-import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
-import {
+} from "./helpers.ts";
+import { axiosDefaults } from "../config/axiosDefaults.ts";
+import WorkList from "../classes/ClassWorkList.ts";
+import Work from "../classes/ClassWork.ts";
+import type { WorkBookmark, WorkHistory } from "../types/TypesWorkUsersData.ts";
+import User from "../classes/ClassUser.ts";
+import WorkUserData from "../classes/ClassWorkUserData.ts";
+import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo.ts";
+import type {
   ArchiveWarning,
   Category,
   Character,
@@ -27,9 +27,9 @@ import {
   Relationship,
   SeriesInfo,
   Tag,
-} from "../types/TypesWorkInfo";
+} from "../types/TypesWorkInfo.ts";
 
-import LoginSession from "../classes/ClassLoginSession";
+import type LoginSession from "../classes/ClassLoginSession.ts";
 
 /**
  *

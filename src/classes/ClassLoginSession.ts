@@ -1,11 +1,9 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { type AxiosInstance } from "axios";
 import { CookieJar } from "tough-cookie";
 import { wrapper } from "axios-cookiejar-support";
 import * as cheerio from "cheerio";
-import { Login } from "../types/TypesUserData";
-import { axiosDefaults } from "../config/axiosDefaults";
-
-import fs from "fs";
+import type { Login } from "../types/TypesUserData.ts";
+import { axiosDefaults } from "../config/axiosDefaults.ts";
 
 /**
  * Class used to log in users. This is needed to access certain pages that are only accessible for logged in users
@@ -17,7 +15,7 @@ export default class LoginSession {
     this.#logindata = logindata;
   }
 
-  async login() {
+  async login(): Promise<{ username: string; instance: AxiosInstance }> {
     if (this.#logindata.username.length == 0) {
       throw new Error("length of username is 0");
     }

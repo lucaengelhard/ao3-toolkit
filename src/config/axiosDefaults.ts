@@ -1,7 +1,7 @@
-import fs from "fs";
-import { findNearestPackageJson } from "../utils/helpers";
+import fs from "node:fs";
+import { findNearestPackageJson } from "../utils/helpers.ts";
 
-export function getAxiosUserAgent() {
+export function getAxiosUserAgent(): string {
   const packageJSON = JSON.parse(
     fs.readFileSync("package.json", {
       encoding: "utf8",
@@ -41,7 +41,14 @@ export function getAxiosUserAgent() {
 /**
  * defaults for making axios requests. Includes the User Agent that is sent with every request. It tries to get the name of the package.json of the calling package
  */
-export const axiosDefaults = {
+export const axiosDefaults: {
+  batch: number;
+  axios: {
+    headers: {
+      "User-Agent": string;
+    };
+  };
+} = {
   batch: 10,
 
   axios: {

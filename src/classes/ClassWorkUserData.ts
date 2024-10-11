@@ -1,5 +1,5 @@
-import { WorkHistory, WorkBookmark } from "../types/TypesWorkUsersData";
-import User from "./ClassUser";
+import type { WorkHistory, WorkBookmark } from "../types/TypesWorkUsersData.ts";
+import type User from "./ClassUser.ts";
 
 /**
  * Class that describes data about a single user like their reading history and bookmarks

@@ -1,15 +1,15 @@
-import LoginSession from "./classes/ClassLoginSession";
-import User from "./classes/ClassUser";
-import Work from "./classes/ClassWork";
-import WorkInfo, { WorkStats } from "./classes/ClassWorkInfo";
-import WorkList from "./classes/ClassWorkList";
-import WorkUserData from "./classes/ClassWorkUserData";
-import { axiosDefaults } from "./config/axiosDefaults";
-import { LanguageCodes } from "./config/LanguageCodes";
+import LoginSession from "./classes/ClassLoginSession.ts";
+import User from "./classes/ClassUser.ts";
+import Work from "./classes/ClassWork.ts";
+import WorkInfo, { WorkStats } from "./classes/ClassWorkInfo.ts";
+import WorkList from "./classes/ClassWorkList.ts";
+import WorkUserData from "./classes/ClassWorkUserData.ts";
+import { axiosDefaults } from "./config/axiosDefaults.ts";
+import { LanguageCodes } from "./config/LanguageCodes.ts";
 
-import { Login } from "./types/TypesUserData";
-import { Notes, Chapter, WorkContent } from "./types/TypesWorkContent";
-import {
+import type { Login } from "./types/TypesUserData.ts";
+import type { Notes, Chapter, WorkContent } from "./types/TypesWorkContent.ts";
+import type {
   Fandom,
   Relationship,
   Character,
@@ -20,10 +20,10 @@ import {
   SeriesInfo,
   Collection,
   ChapterInformation,
-} from "./types/TypesWorkInfo";
-import { Listtype, PageSpan } from "./types/TypesWorkList";
-import { WorkHistory, WorkBookmark } from "./types/TypesWorkUsersData";
-import getWorkContent from "./utils/getWorkContent";
+} from "./types/TypesWorkInfo.ts";
+import type { Listtype, PageSpan } from "./types/TypesWorkList.ts";
+import type { WorkHistory, WorkBookmark } from "./types/TypesWorkUsersData.ts";
+import getWorkContent from "./utils/getWorkContent.ts";
 import getWorkInfo, {
   getArchiveWarnings,
   getAuthor,
@@ -39,9 +39,9 @@ import getWorkInfo, {
   getTags,
   getTitle,
   getWorkStats,
-} from "./utils/getWorkInfo";
-import getWorkList from "./utils/getWorkList";
-import { getParsableInfodata, getPageNumber } from "./utils/helpers";
+} from "./utils/getWorkInfo.ts";
+import getWorkList from "./utils/getWorkList.ts";
+import { getParsableInfodata, getPageNumber } from "./utils/helpers.ts";
 import "dotenv/config";
 
 export {
@@ -54,24 +54,6 @@ export {
   WorkUserData,
   axiosDefaults,
   LanguageCodes,
-  Listtype,
-  Login,
-  WorkContent,
-  Notes,
-  Chapter,
-  Fandom,
-  Relationship,
-  Character,
-  Rating,
-  ArchiveWarning,
-  Category,
-  Tag,
-  SeriesInfo,
-  Collection,
-  ChapterInformation,
-  PageSpan,
-  WorkHistory,
-  WorkBookmark,
   getWorkContent,
   getWorkInfo,
   getTitle,
@@ -91,4 +73,24 @@ export {
   getWorkList,
   getParsableInfodata,
   getPageNumber,
+};
+export type {
+  Listtype,
+  Login,
+  WorkContent,
+  Notes,
+  Chapter,
+  Fandom,
+  Relationship,
+  Character,
+  Rating,
+  ArchiveWarning,
+  Category,
+  Tag,
+  SeriesInfo,
+  Collection,
+  ChapterInformation,
+  PageSpan,
+  WorkHistory,
+  WorkBookmark,
 };

@@ -1,8 +1,8 @@
-import * as cheerio from "cheerio";
+import type * as cheerio from "cheerio";
 
-import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo";
-import { getParsableInfodata, linkToAbsolute } from "./helpers";
-import {
+import WorkInfo, { WorkStats } from "../classes/ClassWorkInfo.ts";
+import { getParsableInfodata, linkToAbsolute } from "./helpers.ts";
+import type {
   ArchiveWarning,
   Category,
   ChapterInformation,
@@ -13,8 +13,8 @@ import {
   Relationship,
   SeriesInfo,
   Tag,
-} from "../types/TypesWorkInfo";
-import User from "../classes/ClassUser";
+} from "../types/TypesWorkInfo.ts";
+import User from "../classes/ClassUser.ts";
 
 /**
  *

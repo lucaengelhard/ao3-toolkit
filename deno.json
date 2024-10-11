@@ -1,5 +1,10 @@
 {
-  "name": "@lucaeng/ao3-toolkit",
-  "version": "0.1.0",
-  "exports": "./src/index.ts"
+  "name": "@lucaengelhard/ao3-toolkit",
+  "version": "2.1.8",
+  "exports": "./src/index.ts",
+  "license": "MIT",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true
+  }
 }

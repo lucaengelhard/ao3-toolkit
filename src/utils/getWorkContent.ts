@@ -1,10 +1,9 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
-import fs from "fs";
 
-import { getAxiosSuccess, getParsableInfodata } from "./helpers";
-import { axiosDefaults } from "../config/axiosDefaults";
-import { WorkContent } from "../types/TypesWorkContent";
+import { getAxiosSuccess, getParsableInfodata } from "./helpers.ts";
+import { axiosDefaults } from "../config/axiosDefaults.ts";
+import type { WorkContent } from "../types/TypesWorkContent.ts";
 
 /**
  * This function takes a work id or cheerio object, parses the data and returns an object containing the forword, afterword and each chapter

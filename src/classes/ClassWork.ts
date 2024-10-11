@@ -1,8 +1,8 @@
-import { WorkContent } from "../types/TypesWorkContent";
-import getWorkContent from "../utils/getWorkContent";
-import getWorkInfo from "../utils/getWorkInfo";
-import WorkInfo from "./ClassWorkInfo";
-import WorkUserData from "./ClassWorkUserData";
+import type { WorkContent } from "../types/TypesWorkContent.ts";
+import getWorkContent from "../utils/getWorkContent.ts";
+import getWorkInfo from "../utils/getWorkInfo.ts";
+import type WorkInfo from "./ClassWorkInfo.ts";
+import type WorkUserData from "./ClassWorkUserData.ts";
 
 /**
  * Base class that holds information about a single Work and optional data based on the context or the user. (e.g. history/bookmarks)
@@ -11,9 +11,9 @@ import WorkUserData from "./ClassWorkUserData";
  * @param userdata - Arry of {@link WorkUserData} objects containing user-linked information relating to the work
  */
 export default class Work {
-  info;
-  content;
-  userdata;
+  info: WorkInfo | undefined;
+  content: WorkContent | undefined;
+  userdata: WorkUserData[] | undefined;
   constructor(
     info?: WorkInfo,
     content?: WorkContent,
@@ -24,7 +24,7 @@ export default class Work {
     this.userdata = userdata;
   }
 
-  async refresh() {
+  async refresh(): Promise<void> {
     if (this.info?.id) {
       this.info = await getWorkInfo(this.info?.id);
     }
@@ -33,7 +33,7 @@ export default class Work {
     }
   }
 
-  public async get(id: number) {
+  public async get(id: number): Promise<Work> {
     return new Work(await getWorkInfo(id), await getWorkContent(id));
   }
 }

@@ -1,10 +1,10 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
 import * as cheerio from "cheerio";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 
-import Work from "../classes/ClassWork";
-import { SortOptions } from "../enums/EnumSortOptions";
+import type Work from "../classes/ClassWork.ts";
+import { SortOptions } from "../enums/EnumSortOptions.ts";
 
 /**
  *
@@ -79,7 +79,7 @@ export function defineParseIntString(input: string | undefined): string {
  * @param $ cheerio object of a list of works
  * @returns the number of pages from the bottom navigation
  */
-export function getPageNumber($: cheerio.CheerioAPI) {
+export function getPageNumber($: cheerio.CheerioAPI): number {
   return parseInt($(".pagination li").not(".next").last().text());
 }
 

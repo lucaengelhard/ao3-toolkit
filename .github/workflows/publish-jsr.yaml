@@ -1,8 +1,9 @@
 name: Publish to JSR
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
 
 jobs:
   publish:
@@ -13,8 +14,6 @@ jobs:
       id-token: write
 
     steps:
-      - uses: maximousblk/setup-deno@v2
-      - run: deno install
       - uses: actions/checkout@v4
 
       - name: Publish package

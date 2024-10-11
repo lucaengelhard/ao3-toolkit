@@ -1,4 +1,4 @@
-import { TwoWayMap } from "../classes/ClassHelpers";
+import { TwoWayMap } from "../classes/ClassHelpers.ts";
 
 const LanguageCodesObject = {
   AfSoomaali: "so",
@@ -126,6 +126,6 @@ const LanguageCodesObject = {
 /**
  * collection of every supported language and the corresponding language code
  */
-export const LanguageCodes = new TwoWayMap(
+export const LanguageCodes: TwoWayMap = new TwoWayMap(
   new Map(Object.entries(LanguageCodesObject))
 );

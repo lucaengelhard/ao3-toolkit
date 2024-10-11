@@ -1,4 +1,4 @@
-import { Login } from "../types/TypesUserData";
+import type { Login } from "../types/TypesUserData.ts";
 
 /**
  * Class defining information about a single user

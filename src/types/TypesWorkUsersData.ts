@@ -1,4 +1,4 @@
-import { Tag } from "./TypesWorkInfo";
+import type { Tag } from "./TypesWorkInfo.ts";
 
 export type WorkHistory = {
   lastVisit: Date;
