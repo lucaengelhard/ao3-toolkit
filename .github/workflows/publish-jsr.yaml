@@ -13,7 +13,7 @@ jobs:
       id-token: write
 
     steps:
-      - run: deno install
+      - run: npm install
       - uses: actions/checkout@v4
 
       - name: Publish package
