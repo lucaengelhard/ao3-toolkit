@@ -1,0 +1,46 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@joyful/option@^0.0.3": "0.0.3",
+    "jsr:@joyful/result@^0.0.7": "0.0.7",
+    "jsr:@libn/query@0.4": "0.4.0",
+    "jsr:@std/assert@1": "1.0.13",
+    "jsr:@std/dotenv@~0.225.6": "0.225.6",
+    "jsr:@std/internal@^1.0.6": "1.0.9"
+  },
+  "jsr": {
+    "@joyful/option@0.0.3": {
+      "integrity": "d8bf539136432d7c23a521ef3ec0fa3552e65a9b5079c74531d0830c482fc8cb",
+      "dependencies": [
+        "jsr:@joyful/result"
+      ]
+    },
+    "@joyful/result@0.0.7": {
+      "integrity": "e603218a2e35a245323b562b7b55c6c820e0cb7f11f839273c073cc88cb84f53"
+    },
+    "@libn/query@0.4.0": {
+      "integrity": "257aafdb3921034d53ad333dc1ee78c730c3c9109a9774f39eebe7550a307e75"
+    },
+    "@std/assert@1.0.13": {
+      "integrity": "ae0d31e41919b12c656c742b22522c32fb26ed0cba32975cb0de2a273cb68b29",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/dotenv@0.225.6": {
+      "integrity": "1d6f9db72f565bd26790fa034c26e45ecb260b5245417be76c2279e5734c421b"
+    },
+    "@std/internal@1.0.9": {
+      "integrity": "bdfb97f83e4db7a13e8faab26fb1958d1b80cc64366501af78a0aee151696eb8"
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@joyful/option@^0.0.3",
+      "jsr:@joyful/result@^0.0.7",
+      "jsr:@libn/query@0.4",
+      "jsr:@std/assert@1",
+      "jsr:@std/dotenv@~0.225.6"
+    ]
+  }
+}
