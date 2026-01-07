@@ -52,3 +52,15 @@ export function reduceResultObj<
 
   return new Ok(res);
 }
+
+export function select<T>(
+  resArr: Result<T[], string>,
+  index: number
+): Result<T, string> {
+  if (resArr.err()) return new Err(resArr.error);
+
+  if (resArr.value[index] === undefined)
+    return new Err(`Index ${index} not in ${resArr}`);
+
+  return new Ok(resArr.value[index]);
+}

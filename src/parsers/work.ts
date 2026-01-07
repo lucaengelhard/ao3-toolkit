@@ -6,6 +6,7 @@ import {
   optionQuerySelector,
   optionQuerySelectorAll,
   reduceResultObj,
+  select,
   type QueryAble,
 } from "../util/helpers.ts";
 import type { Series } from "./series.ts";
@@ -235,13 +236,25 @@ async function getWorkContent(
   if (work.err()) return new Err(work.error);
 
   return reduceResultObj({
-    preNote: getMultiple(
-      work.value,
-      "preNote",
-      "#preface",
-      (el) => el.textContent,
-      (str) => str.includes("Notes")
+    preNote: select(
+      getMultiple(
+        work.value,
+        "preNote",
+        "#preface .userstuff",
+        (el) => el.textContent
+      ),
+      1
     ),
+    endNote: getSingle(work.value, "endNote", "#endnotes blockquote"),
+    chapters: getChapters(work.value),
+  });
+}
+
+function getChapters(work: QueryAble) {
+  return getMultiple(work, "Chapters", "#chapters .meta.group", (el) => {
+    console.log(el);
+
+    return el;
   });
 }
 
